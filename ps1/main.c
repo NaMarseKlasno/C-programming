@@ -4,7 +4,7 @@
 
 int main(void)
 {
-    char *encrypted;
+    char *encrypted, *decrypted;
 
     // even length of string
     encrypted = playfair_encrypt("please", "Taxxxiii");
@@ -12,7 +12,10 @@ int main(void)
     // "Hello world" --> "HELXLOVORLDX"
     // IS JZ JQ XN TK JC
     
+    decrypted = playfair_decrypt("Password", encrypted);
+    printf("%s", decrypted);
+    // TAXIPLEASE
     free(encrypted);
-
+    free(decrypted);
     return 0;
 }
