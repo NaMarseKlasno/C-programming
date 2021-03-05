@@ -155,7 +155,7 @@ char* playfair_encrypt(const char* key, const char* text)
     } //printf("------.----\n");
     
     free(reKey);
-    
+    reKey = NULL;
     /**
      *  Кодируем *char taxt с помощю созданого ключа *char bgArr
      */
@@ -175,7 +175,7 @@ char* playfair_encrypt(const char* key, const char* text)
     unsigned long h = 0;
     for (int i = 0; i < strlen(reText); ++i) if (reText[i] == '.') ++h;
     h = strlen(reText) - h;
-    reText = (char* )realloc(reText, h);
+    reText = realloc(reText, h);
     
     
     int a = 0;
@@ -187,7 +187,7 @@ char* playfair_encrypt(const char* key, const char* text)
         }
         a = 1;
     }
-    reText = (char*)realloc(reText, strlen(text)+numIcv);
+    reText = realloc(reText, strlen(text)+numIcv);
     //char helpText[strlen(text)+numIcv];
     char* helpText = (char*)calloc(strlen(text)+numIcv, sizeof(char));
     
@@ -217,13 +217,14 @@ char* playfair_encrypt(const char* key, const char* text)
     numIcv = strlen(text) - numIcv;
     
     free(reText);
+    reText = NULL;
 
     char* eText = (char*)calloc(strlen(text)+numIcv, sizeof(char));
 
     for (int i = 0; i < strlen(text)+numIcv; ++i) eText[i] = helpText[i];
     numIcv = strlen(eText);
     if (numIcv % 2 != 0) {
-        eText = (char*)realloc(eText, numIcv+1);
+        eText = realloc(eText, numIcv+1);
         for (int i = 0; i < numIcv; i++)
             eText[i] = eText[i];
         eText[numIcv] = 'X';
@@ -233,7 +234,10 @@ char* playfair_encrypt(const char* key, const char* text)
     
     char* reFair = (char*)calloc(numIcv, sizeof(char));
     //char reFair[numIcv];
+    
     free(helpText);
+    helpText = NULL;
+    
     for (int i = 0; i < numIcv; i += 2)
     {
         for (int x = 0; x < SIZE; ++x) {
@@ -271,6 +275,7 @@ char* playfair_encrypt(const char* key, const char* text)
         }
     }
     free(eText);
+    eText = NULL;
     int value = 0;
     for (int i = 0; i < strlen(reFair); i += 2) {
         //printf("%c%c ", reFair[i], reFair[i+1]);
@@ -297,6 +302,7 @@ char* playfair_encrypt(const char* key, const char* text)
     //char res[strlen(reFair)];
     //strcpy(res, reFair);
     free(reFair);
+    reFair = NULL;
     return result;
 }
 /**
@@ -311,3 +317,5 @@ char* playfair_decrypt(const char* key, const char* text)
 {
     return 0;
 }
+
+
