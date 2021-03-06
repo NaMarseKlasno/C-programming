@@ -64,7 +64,6 @@ char* playfair_encrypt(const char* key, const char* text)
     short n = 0;
     
     char helpArr[5][5] = {};
-  
     
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++){
@@ -162,10 +161,10 @@ char* playfair_encrypt(const char* key, const char* text)
                 }
             }
             if (n == strlen(reKey)) cont = false;
-            printf("%c", bgArr[i][j]);
+            //printf("%c", bgArr[i][j]);
         }
-        printf("\n");
-    } printf("------.----\n");
+        //printf("\n");
+    } //printf("------.----\n");
     
     free(reKey);
     reKey = NULL;
@@ -481,16 +480,16 @@ char* playfair_decrypt(const char* key, const char* text)
                                     desct[i+1] = bgArr[x1][y];
                                 }
                                 else if (y == y1) {
-                                    short q = x+1, w = x1+1;
-                                    if(x == 4) q = 0;
-                                    if(x1 == 4) w = 0;
+                                    short q = x-1, w = x1-1;
+                                    if(x == 0) q = 4;
+                                    if(x1 == 0) w = 4;
                                     desct[i] = bgArr[q][y];
                                     desct[i+1] = bgArr[w][y1];
                                 }
                                 else if (x == x1) {
-                                    short s = y+1, d = y1+1;
-                                    if(y == 4) s = 0;
-                                    if(y1 == 4) d = 0;
+                                    short s = y-1, d = y1-1;
+                                    if(y == 0) s = 4;
+                                    if(y1 == 0) d = 4;
                                     desct[i] = bgArr[x][s];
                                     desct[i+1] = bgArr[x1][d];
                                 }
@@ -505,3 +504,4 @@ char* playfair_decrypt(const char* key, const char* text)
     free(reFair);
     return desct;
 }
+
