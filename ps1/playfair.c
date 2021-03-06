@@ -340,6 +340,168 @@ char* playfair_encrypt(const char* key, const char* text)
 
 char* playfair_decrypt(const char* key, const char* text)
 {
-    return 0;
-}
+    if (*key == 0) return NULL;
+    if (*text == 0) return NULL;
+    short n = 0;
+    
+    char helpArr[5][5] = {};
+    
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++){
+            helpArr[i][j] = ALPHA[n];
+            n++;
+        }
+    }
+
+    // Check the key for duplicate letters
+    //char reKey[strlen(key)];
+    char* reKey = checkNull( (char*)calloc(strlen(key), sizeof(char)) );
+    if (reKey == NULL) exit(1);
+    
+    for (int i = 0; i < strlen(key); i++)
+        reKey[i] = key[i];
+    
+    unsigned long len = strlen(reKey);
+
+    if (reKey != 0){
+        int lett = 1;
+        for (int i = 1; i < len; ++i){
+            int j = 0;
+            for (j = 0; j < lett; ++j)
+                if (reKey[i] == reKey[j]){
+                    reKey[i] = 0;
+                    break;
+                }
+            if (j == lett) {
+                reKey[lett] = reKey[i];
+                ++lett;
+            }
+        }
+        reKey[lett] = 0;
+    }
+    
+    // Вывод в терминал
+    
+    //printf("[%s]", reKey);
+    //printf(" - %s\n", key);
+    //printf("---------\n");
+    
+
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            for (int c = 0; c < strlen(reKey); c++) {
+                if(helpArr[i][j] == toupper(reKey[c]) ) helpArr[i][j] = '-';
+            }
+            //printf("%c", helpArr[i][j]);
+        }
+        //printf("\n");
+    }
+    
+    //printf("---------\n");
+
+    n = 0;
+    bool cont = true;
+
+    char bgArr[5][5] = {};
+    
+    short x = 0;
+    short y = 0;
+    bool checkW = false;
+    
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if(cont){
+                bgArr[i][j] = toupper(reKey[n]);
+                if(bgArr[i][j] == 'W' ) {
+                    bgArr[i][j] = 'V';
+                    checkW = true;
+                }
+                n++;
+            }
+            if(!cont){
+                if (helpArr[y][x] == 'V' && checkW == true){
+                    ++x;
+                    if(x == 5){
+                        x = 0;
+                        ++y;
+                    }
+                }
+                while(helpArr[y][x] == '-'){
+                    x++;
+                    if(x == 5){
+                        x = 0;
+                        y++;
+                    }
+                }
+                if(helpArr[y][x] != '-')
+                    bgArr[i][j] = helpArr[y][x];
+                x++;
+                if(x == 5){
+                    x = 0;
+                    y++;
+                }
+            }
+            if (n == strlen(reKey)) cont = false;
+            //printf("%c", bgArr[i][j]);
+        }
+        //printf("\n");
+    } //printf("----------\n");
+    
+    free(reKey);
+    reKey = NULL;
+    
+    char* reFair = checkNull(calloc(strlen(text), sizeof(char)));
+    for (int i = 0; i < strlen(text) +1; ++i) {
+        reFair[i] = text[i];
+    } reFair[strlen(text)] = '\0';
+    char* desct = checkNull(calloc(strlen(text), sizeof(char)));
+
+    
+    //printf("{%s} - до\n", reFair);
+    removeSpaces(reFair);
+    //printf("{%s} - после\n", reFair);
+    //printf("----------\n");
+
+    
+    
+    
+    for (int i = 0; i < strlen(reFair); i += 2)
+    {
+        for (int x = 0; x < SIZE; ++x) {
+            for (int y = 0; y < SIZE; ++y) {
+                if (bgArr[x][y] == reFair[i]) {
+                    
+                    // Проверяем второе значение
+                    for (int x1 = 0; x1 < SIZE; ++x1) {
+                        for (int y1 = 0; y1 < SIZE; ++y1)
+                        {
+                            if (bgArr[x1][y1] == reFair[i+1]) {
+                                if (x != x1 && y != y1) {
+                                    desct[i] = bgArr[x][y1];
+                                    desct[i+1] = bgArr[x1][y];
+                                }
+                                else if (y == y1) {
+                                    short q = x+1, w = x1+1;
+                                    if(x == 4) q = 0;
+                                    if(x1 == 4) w = 0;
+                                    desct[i] = bgArr[q][y];
+                                    desct[i+1] = bgArr[w][y1];
+                                }
+                                else if (x == x1) {
+                                    short s = y+1, d = y1+1;
+                                    if(y == 4) s = 0;
+                                    if(y1 == 4) d = 0;
+                                    desct[i] = bgArr[x][s];
+                                    desct[i+1] = bgArr[x1][d];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    free(reFair);
+    return desct;
 
