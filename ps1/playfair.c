@@ -26,31 +26,26 @@
  */
 
 int removeSpaces(char *string) {
-    int n = 0;
-    if(string != NULL) {
-        unsigned long len = strlen(string);
-        if (string == NULL) {
-            free(string);
-            exit(1);
-        }
-        char arr[len];
-        for (int i = 0; i < strlen(string); ++i) arr[i] = '0';
-        
-        for (int i = 0; i < strlen(string); ++i) {
-            if(string != NULL) {
-                if (!isspace(string[i])) {
-                    arr[n] = string[i];
-                    ++n;
-                }
-            }
-        }
-        for (int i = 0; i < strlen(string); ++i) string[i] = '0';
+    if (string == NULL) return 1;
     
-        for (int i = 0; i < strlen(string); ++i) {
-            if (arr[i] != '0')
-                string[i] = arr[i];
-            else string[i] = '\0';
+    int n = 0;
+    unsigned long len = strlen(string);
+
+    char arr[len];
+    for (int i = 0; i < strlen(string); ++i) arr[i] = '0';
+    
+    for (int i = 0; i < strlen(string); ++i) {
+        if (!isspace(string[i])) {
+            arr[n] = string[i];
+            ++n;
         }
+    }
+    for (int i = 0; i < strlen(string); ++i) string[i] = '0';
+
+    for (int i = 0; i < strlen(string); ++i) {
+        if (arr[i] != '0')
+            string[i] = arr[i];
+        else string[i] = '\0';
     }
     //printf("string: %s\n", string);
     return 0;
@@ -211,8 +206,10 @@ char* playfair_encrypt(const char* key, const char* text)
         }
         a = 1;
     }
-    reText = realloc(reText, strlen(text)+numIcv);
+    unsigned long* fast = strlen(text)+numIcv;
+    reText = realloc(reText, *fast);
     if (reText == NULL) exit(1);
+    free(fast);
 
     //char helpText[strlen(text)+numIcv];
     char* helpText = (char*)calloc(strlen(text)+numIcv, sizeof(char));
