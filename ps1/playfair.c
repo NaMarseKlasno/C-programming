@@ -59,8 +59,8 @@ int removeSpaces(char *string) {
 
 char* playfair_encrypt(const char* key, const char* text)
 {
-    if (key == NULL) return NULL;
-    if (text == NULL) return NULL;
+    if (*key == 0) return NULL;
+    if (*text == 0) return NULL;
     short n = 0;
     
     char helpArr[5][5] = {};
@@ -72,9 +72,7 @@ char* playfair_encrypt(const char* key, const char* text)
             n++;
         }
     }
-    
-    
-    
+
     // Check the key for duplicate letters
     //char reKey[strlen(key)];
     char* reKey = checkNull( (char*)calloc(strlen(key), sizeof(char)) );
@@ -82,7 +80,6 @@ char* playfair_encrypt(const char* key, const char* text)
     
     for (int i = 0; i < strlen(key); i++)
         reKey[i] = key[i];
-    //if (reKey == NULL) return NULL;
     
     unsigned long len = strlen(reKey);
 
@@ -102,13 +99,6 @@ char* playfair_encrypt(const char* key, const char* text)
         }
         reKey[lett] = 0;
     }
-    
-
-    //dellDuplicates(reKey);
-    
-    
-    
-    
     
     // Вывод в терминал
     
@@ -172,10 +162,10 @@ char* playfair_encrypt(const char* key, const char* text)
                 }
             }
             if (n == strlen(reKey)) cont = false;
-            //printf("%c", bgArr[i][j]);
+            printf("%c", bgArr[i][j]);
         }
-        //printf("\n");
-    } //printf("------.----\n");
+        printf("\n");
+    } printf("------.----\n");
     
     free(reKey);
     reKey = NULL;
