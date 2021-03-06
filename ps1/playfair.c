@@ -504,4 +504,4 @@ char* playfair_decrypt(const char* key, const char* text)
     
     free(reFair);
     return desct;
-
+}
