@@ -14,7 +14,8 @@
 
 
 char* reverse(const char* text){
-    if (text == NULL || text == 0) return NULL;
+    if (strlen(text) == 0 || text == NULL) return NULL;
+
     char* reverseText = calloc(strlen(text) + 1, sizeof(char));
     for (int i = 0; i < strlen(text); i++) reverseText[i] = text[i];
     reverseText[strlen(text)] = '\0';
