@@ -64,7 +64,8 @@ int removeSpaces(char *string) {
 char* playfair_encrypt(const char* key, const char* text)
 {
     if (strlen(key) == 0 || key == NULL) return NULL;
-    if (strlen(text) == 0 || text == NULL) return NULL;    short n = 0;
+    if (strlen(text) == 0 || text == NULL) return NULL;    
+    short n = 0;
     
     char helpArr[5][5] = {};
     
