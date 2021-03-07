@@ -30,8 +30,9 @@ void* checkNull(void* p){
     return p;
 }
 
+
 int removeSpaces(char *string) {
-    if (string == 0) exit(1);
+    if (string == 0 ) exit(1);
     
     int n = 0;
     unsigned long len = strlen(string);
@@ -62,8 +63,8 @@ int removeSpaces(char *string) {
 
 char* playfair_encrypt(const char* key, const char* text)
 {
-    if (key == 0) return NULL;;
-    if (text == 0) return NULL;;
+    if (key == 0 || key == NULL) return NULL;;
+    if (text == 0 || text == NULL) return NULL;;
     short n = 0;
     
     char helpArr[5][5] = {};
@@ -342,8 +343,8 @@ char* playfair_encrypt(const char* key, const char* text)
 
 char* playfair_decrypt(const char* key, const char* text)
 {
-    if (key == 0) return NULL;;
-    if (text == 0) return NULL;;
+    if (key == 0 || key == NULL) return NULL;;
+    if (text == 0 || text == NULL) return NULL;;
     short n = 0;
     
     char helpArr[5][5] = {};
