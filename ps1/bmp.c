@@ -43,23 +43,38 @@ char* vigenere_encrypt(const char* key, const char* text){
     if (strlen(key) == 0 || key == NULL) return NULL;
     if (strlen(text) == 0 || text == NULL) return NULL;
     
+    char mainKey[strlen(text)];
+    for (int i = 0, j = 0, c = 0; c < strlen(text); ++i) {
+        if (isalpha(text[i])){
+            mainKey[c] = key[j];
+            ++j;
+            if (j == strlen(key)) j = 0;
+            ++c;
+        }else {
+            mainKey[c] = ' ';
+            c++;
+        }
+    }
+    //printf("%s\n", mainKey);
+    //printf("%s\n", text);
+
+
     int n = 0;
-    int* numKey = (int*)calloc(strlen(key), sizeof(int));
+    int numKey[strlen(mainKey)];
     for (int i = 0; i < 26; ++i){
         for (int j = 0; j < 26; ++j) {
-            if (ALPHAB[j] == toupper(key[i])){
+            if (ALPHAB[j] == toupper(mainKey[i])){
                 numKey[n] = j;
-                //printf("%d ", numText[n]);
                 ++n;
-            }
+            }else numKey[n] = -1;
         }
-    } numKey[strlen(key)] = '\0';
+    } numKey[strlen(mainKey)] = '\0';
   
-    //for (int i = 0; i < strlen(key); ++i) /printf("%i ", numKey[i]);
+    //for (int i = 0; i < strlen(mainKey); ++i) printf("%i ", numKey[i]);
     //printf("\n");
 
     int m = 0;
-    int* numText = (int*)calloc(strlen(text), sizeof(int));
+    int numText[strlen(text)];
     for (int i = 0; i < 26; ++i){
         for (int j = 0; j < 26; ++j) {
             if (ALPHAB[j] == toupper(text[i])){
@@ -73,7 +88,7 @@ char* vigenere_encrypt(const char* key, const char* text){
     //for (int i = 0; i < strlen(text); ++i) printf("%d ", numText[i]);
     //printf("\n");
     
-    free(numKey);
-    free(numText);
+    //free(numKey);
+    //free(numText);
     return NULL;
 }
