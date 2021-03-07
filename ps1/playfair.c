@@ -64,7 +64,14 @@ int removeSpaces(char *string) {
 char* playfair_encrypt(const char* key, const char* text)
 {
     if (strlen(key) == 0 || key == NULL) return NULL;
-    if (strlen(text) == 0 || text == NULL) return NULL;    
+    if (strlen(text) == 0 || text == NULL) return NULL;
+    int countAlpha = 0;
+    for (int i = 0; i < strlen(text); ++i) if (isalpha(text[i])) countAlpha++;
+    if (countAlpha == 0) return NULL;
+    countAlpha = 0;
+    for (int i = 0; i < strlen(key); ++i) if (isalpha(key[i])) countAlpha++;
+    if (countAlpha == 0) return NULL;
+    
     short n = 0;
     
     char helpArr[5][5] = {};
@@ -345,6 +352,14 @@ char* playfair_decrypt(const char* key, const char* text)
 {
     if (strlen(key) == 0 || key == NULL) return NULL;
     if (strlen(text) == 0 || text == NULL) return NULL;
+    
+    int countAlpha = 0;
+    for (int i = 0; i < strlen(text); ++i) if (isalpha(text[i])) countAlpha++;
+    if (countAlpha == 0) return NULL;
+    countAlpha = 0;
+    for (int i = 0; i < strlen(key); ++i) if (isalpha(key[i])) countAlpha++;
+    if (countAlpha == 0) return NULL;
+    
     short n = 0;
     
     char helpArr[5][5] = {};
