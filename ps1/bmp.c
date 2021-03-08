@@ -21,9 +21,6 @@ void* checkNul(void* p){
 
 char* reverse(const char* text){
     if (text[0] == '\0' || text == NULL) return NULL;
-    int countApha = 0;
-    for(int i = 0 ; i < strlen(text); i++) if (isalpha(text[i])) countApha++;
-    if (countApha == 0) return NULL;
 
     char* reverseText = checkNul( calloc(strlen(text) + 1, sizeof(char)) );
     for (int i = 0; i < strlen(text); i++) reverseText[i] = toupper(text[i]);
@@ -114,7 +111,7 @@ char* vigenere_encrypt(const char* key, const char* text){
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
     //printf("\n");
 
-    char* resSting = checkNul(calloc(strlen(text), sizeof(char)));
+    char* resSting = checkNul(calloc(strlen(text)+1, sizeof(char)));
 
     for (int i = 0; i < strlen(text); ++i) {
         for (int j = 0; j < 26; ++j) {
@@ -122,7 +119,7 @@ char* vigenere_encrypt(const char* key, const char* text){
             if (resInt[i] == -1) resSting[i] = text[i];
         }
     }
-    
+    resSting[strlen(text)] = '\0';
     //printf("%s - resString\n", resSting);
     
     return resSting;
