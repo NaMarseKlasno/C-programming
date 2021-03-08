@@ -24,13 +24,8 @@ int main(void)
     // "!DLROW OLLEH"
 
     
-    char* encrypted2;
 
-    // basic test with long text
-    encrypted2 = vigenere_encrypt("CoMPuTeR", "Hello world!");
-    printf("%s\n", encrypted2);
-    // "JSXAI PSINR!"
-
+   
     
 
     return 0;
