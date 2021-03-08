@@ -48,7 +48,7 @@ char* vigenere_encrypt(const char* key, const char* text){
     for (int i = 0; i < strlen(text); ++i) if (isalpha(text[i])) countAlpha++;
     if (countAlpha == 0) return NULL;
     
-    char mainKey[strlen(text)];
+    char mainKey[strlen(text)+1];
     for (int i = 0, j = 0, c = 0; c < strlen(text); ++i) {
         if (isalpha(text[i])){
             mainKey[c] = key[j];
@@ -60,12 +60,12 @@ char* vigenere_encrypt(const char* key, const char* text){
             mainKey[c] = ' ';
             c++;
         }
-    }
+    } mainKey[strlen(text)] = '\0';
     //printf("%s\n", mainKey);
     //printf("%s\n", text);
 
 
-    int numKey[strlen(mainKey)];
+    int numKey[strlen(mainKey)+1];
     for (int i = 0; i < strlen(mainKey); ++i) numKey[i] = 0;
     
     for (int i = 0; i < strlen(mainKey); ++i){
@@ -78,13 +78,13 @@ char* vigenere_encrypt(const char* key, const char* text){
                 //printf("[%d] ", numKey[i]);
             }
         }
-    }
+    } numKey[strlen(mainKey)] = '\0';
     //printf("\n");
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", numKey[i]);
     
     //printf("\n");
    
-    int numText[strlen(text)];
+    int numText[strlen(text) + 1];
     for (int i = 0; i < strlen(text); ++i){
         for (int j = 0; j < 26; ++j) {
             if (ALPHAB[j] == toupper(text[i])) {
@@ -93,13 +93,13 @@ char* vigenere_encrypt(const char* key, const char* text){
             else if (!isalpha(text[i]))
                 numText[i] = -1;
         }
-    }
+    } numText[strlen(text)] = '\0';
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", numText[i]);
     
     //printf("\n");
 
     
-    int resInt[strlen(text)];
+    int resInt[strlen(text)+1];
     for (int i = 0; i < strlen(text); ++i) resInt[i] = 0;
     
     for (int i = 0; i < strlen(text); ++i) {
@@ -107,7 +107,8 @@ char* vigenere_encrypt(const char* key, const char* text){
         if (resInt[i] >= 26) resInt[i] -= 26;
         if (numText[i] == -1) resInt[i] = -1;
         if (numKey[i] == -1) resInt[i] = -1;
-    }
+    } resInt[strlen(text)] = '\0';
+
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
     //printf("\n");
 
@@ -124,7 +125,8 @@ char* vigenere_encrypt(const char* key, const char* text){
     
     return resSting;
 }
-// "JSXAI PSINR!"
+
+
 
 
 
