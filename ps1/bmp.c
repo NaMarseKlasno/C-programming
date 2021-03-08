@@ -20,12 +20,10 @@ void* checkNul(void* p){
 
 
 char* reverse(const char* text){
-    if (text[0] == '\0'  || text == NULL) return NULL;
-    
-    int countAlpha = 0;
-    for (int i = 0; i < strlen(text); ++i) if (isalpha(text[i])) countAlpha++;
-    if (countAlpha == 0) return NULL;
-
+    if (text[0] == '\0' || text == NULL) return NULL;
+    int countApha = 0;
+    for(int i = 0 ; i < strlen(text); i++) if (isalpha(text[i])) countApha++;
+    if (countApha == 0) return NULL;
 
     char* reverseText = checkNul( calloc(strlen(text) + 1, sizeof(char)) );
     for (int i = 0; i < strlen(text); i++) reverseText[i] = toupper(text[i]);
@@ -45,8 +43,13 @@ char* reverse(const char* text){
 
 
 char* vigenere_encrypt(const char* key, const char* text){
-    if (key[0] == '\0' || key == NULL) return NULL;
-    if (text[0] == '\0'  || text == NULL) return NULL;
+    if (key[0] == '\0' || key == NULL || text[0] == '\0'  || text == NULL) return NULL;
+    for(int t = 0 ; t < strlen(key) ; t++)
+        if(!isalpha(key[t]))
+            return NULL;
+    int countAlpha = 0;
+    for (int i = 0; i < strlen(text); ++i) if (isalpha(text[i])) countAlpha++;
+    if (countAlpha == 0) return NULL;
     
     char mainKey[strlen(text)];
     for (int i = 0, j = 0, c = 0; c < strlen(text); ++i) {
