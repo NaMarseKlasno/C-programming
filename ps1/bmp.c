@@ -59,36 +59,45 @@ char* vigenere_encrypt(const char* key, const char* text){
     //printf("%s\n", text);
 
 
-    int n = 0;
     int numKey[strlen(mainKey)];
-    for (int i = 0; i < 26; ++i){
+    for (int i = 0; i < strlen(mainKey); ++i){
         for (int j = 0; j < 26; ++j) {
-            if (ALPHAB[j] == toupper(mainKey[i])){
-                numKey[n] = j;
-                ++n;
-            }else numKey[n] = -1;
+            if (ALPHAB[j] == toupper(mainKey[i])) {
+                numKey[i] = j;
+            }
+            else if (!isalpha(mainKey[i]))
+                numKey[i] = -1;
         }
     } numKey[strlen(mainKey)] = '\0';
-  
-    //for (int i = 0; i < strlen(mainKey); ++i) printf("%i ", numKey[i]);
+    //for (int i = 0; i < strlen(text); ++i) printf("%i ", numKey[i]);
+    
     //printf("\n");
-
-    int m = 0;
+   
     int numText[strlen(text)];
-    for (int i = 0; i < 26; ++i){
+    for (int i = 0; i < strlen(text); ++i){
         for (int j = 0; j < 26; ++j) {
-            if (ALPHAB[j] == toupper(text[i])){
-                numText[m] = j;
-                //printf("%d ", numText[n]);
-                ++m;
+            if (ALPHAB[j] == toupper(text[i])) {
+                numText[i] = j;
             }
+            else if (!isalpha(text[i]))
+                numText[i] = -1;
         }
     } numText[strlen(text)] = '\0';
-  
-    //for (int i = 0; i < strlen(text); ++i) printf("%d ", numText[i]);
-    //printf("\n");
+    //for (int i = 0; i < strlen(text); ++i) printf("%i ", numText[i]);
     
-    //free(numKey);
-    //free(numText);
+    //printf("\n");
+
+    //printf("%d %d\n", numKey[0], numText[0]);
+    
+    int* resInt = checkNull(calloc(strlen(text), sizeof(int)));
+    for (int i = 0; i < strlen(text); ++i) {
+        resInt[i] = numText[i] + numKey[i];
+        if (resInt[i] >= 26) resInt[i] -= 26;
+        if (numText[i] == -1) resInt[i] = -1;
+        if (numKey[i] == -1) resInt[i] = -1;
+    }
+    //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
+    //printf("\n");
+
     return NULL;
 }
