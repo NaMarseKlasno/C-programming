@@ -23,6 +23,13 @@ int main(void)
     printf("%s\n", reversed);
     // "!DLROW OLLEH"
 
+    char* encrypted2;
+
+    // basic test with long text
+    encrypted2 = vigenere_encrypt("a", "Hello world!");
+    printf("%s\n", encrypted2);
+    // "JSXAI PSINR!"
+   
     
 
    
