@@ -13,6 +13,10 @@
 
 #define ALPHAB "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+void* checkNul(void* p){
+    if (p == 0) exit(37);
+    return p;
+}
 
 
 char* reverse(const char* text){
@@ -23,7 +27,7 @@ char* reverse(const char* text){
     if (countAlpha == 0) return NULL;
 
 
-    char* reverseText = calloc(strlen(text) + 1, sizeof(char));
+    char* reverseText = checkNul( calloc(strlen(text) + 1, sizeof(char)) );
     for (int i = 0; i < strlen(text); i++) reverseText[i] = toupper(text[i]);
     reverseText[strlen(text)] = '\0';
     
@@ -107,7 +111,7 @@ char* vigenere_encrypt(const char* key, const char* text){
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
     //printf("\n");
 
-    char* resSting = checkNull(calloc(strlen(text), sizeof(char)));
+    char* resSting = checkNul(calloc(strlen(text), sizeof(char)));
 
     for (int i = 0; i < strlen(text); ++i) {
         for (int j = 0; j < 26; ++j) {
