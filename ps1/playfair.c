@@ -63,14 +63,16 @@ int removeSpaces(char *string) {
 
 char* playfair_encrypt(const char* key, const char* text)
 {
-    if (strlen(key) == 0 || key == NULL) return NULL;
-    if (strlen(text) == 0 || text == NULL) return NULL;
-    int countAlpha = 0;
-    for (int i = 0; i < strlen(text); ++i) if (isalpha(text[i])) countAlpha++;
-    if (countAlpha == 0) return NULL;
-    countAlpha = 0;
-    for (int i = 0; i < strlen(key); ++i) if (isalpha(key[i])) countAlpha++;
-    if (countAlpha == 0) return NULL;
+    if (key[0] == '\0' || key == NULL) return NULL;
+    if (text[0] == '\0'  || text == NULL) return NULL;
+    
+    for(int t = 0 ; t < strlen(key) ; t++)
+        if(!isalpha(key[t] && key[t] != ' '))
+            return NULL;
+    for(int t = 0 ; t < strlen(text) ; t++)
+        if(!isalpha(text[t] && text[t] != ' '))
+            return NULL;
+    
     
     short n = 0;
     
@@ -350,15 +352,15 @@ char* playfair_encrypt(const char* key, const char* text)
 
 char* playfair_decrypt(const char* key, const char* text)
 {
-    if (strlen(key) == 0 || key == NULL) return NULL;
-    if (strlen(text) == 0 || text == NULL) return NULL;
+    if (key[0] == '\0' || key == NULL) return NULL;
+    if (text[0] == '\0'  || text == NULL) return NULL;
     
-    int countAlpha = 0;
-    for (int i = 0; i < strlen(text); ++i) if (isalpha(text[i])) countAlpha++;
-    if (countAlpha == 0) return NULL;
-    countAlpha = 0;
-    for (int i = 0; i < strlen(key); ++i) if (isalpha(key[i])) countAlpha++;
-    if (countAlpha == 0) return NULL;
+    for(int t = 0 ; t < strlen(key) ; t++)
+        if(!isalpha(key[t] && key[t] != ' '))
+            return NULL;
+    for(int t = 0 ; t < strlen(text) ; t++)
+        if(!isalpha(text[t] && text[t] != ' '))
+            return NULL;
     
     short n = 0;
     
