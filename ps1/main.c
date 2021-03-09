@@ -10,11 +10,11 @@ int main(void)
     char *encrypted, *decrypted;
 
     encrypted = playfair_encrypt("please", "Taxxxiii");
-    printf("%s", encrypted);
+    printf("%s\n", encrypted);
     // "Taxxxiii" --> "TAXXXIIXIX"
     // RS EE VJ JV JV
     decrypted = playfair_decrypt("please", encrypted);
-    printf("%s", decrypted);
+    printf("%s\n", decrypted);
     // TAXXXIIXIX
     free(encrypted);
     free(decrypted);
@@ -26,17 +26,31 @@ int main(void)
     char* encrypted2;
 
     // basic test with long text
-    encrypted2 = vigenere_encrypt("a", "Hello world!");
+    encrypted2 = vigenere_encrypt("", "Hello world!");
     printf("%s\n", encrypted2);
     // "JSXAI PSINR!"
 
     char *decrypted2;
-    decrypted2 = vigenere_decrypt("Computer", "LALSDV");
+    decrypted2 = vigenere_decrypt("", "Hhda");
     printf("%s\n", decrypted2);
     
     free(encrypted2);
     free(decrypted2);
+
+    unsigned char* encrypted3;
+
+    // basic test with long text
+    encrypted3 = bit_encrypt("Hello World!");
+    for(int i=0; i < 12; i++) {
+        printf("%x ", encrypted3[i]);
+        //80 9c 95 95 96 11 bc 96 b9 95 9d 10
+    }printf("\n");
     
+
+    
+    free(encrypted3);
 
     return 0;
 }
+
+
