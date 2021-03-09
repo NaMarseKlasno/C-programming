@@ -189,6 +189,7 @@ char* playfair_encrypt(const char* key, const char* text)
      */
     
     char* reText = checkNull( (char*)calloc(strlen(text)+1, sizeof(char)) );
+    reText[strlen(text)] = '\0';
     if (reText == NULL) exit(1);
         
     for (int i = 0; i < strlen(text); i++){
@@ -205,28 +206,37 @@ char* playfair_encrypt(const char* key, const char* text)
     unsigned long h = 0;
     for (int i = 0; i < strlen(reText); ++i) if (reText[i] == '.') h++;
     h = strlen(reText) - h;
-    reText = checkNull( realloc(reText, h+1) );
-    if (reText == NULL) exit(1);
+    
+    char* reText2 = checkNull( calloc(h+1, sizeof(char)) );
+    for (int i = 0; i < strlen(text); i++) reText2[i] = reText[i];
+    reText2[h] = '\0';
+    free(reText);
+    
+    if (reText2 == NULL) exit(1);
     
     
     int a = 0;
     unsigned long numIcv = 0;
     for (int i = 0; i < strlen(text); i++){
-        if (a == 1 && reText[i] == reText[i-1] && reText[i] != 'X' && reText[i-2] != 'X'){
-            reText[i-1] = '.';
+        if (a == 1 && reText2[i] == reText2[i-1] && reText2[i] != 'X' && reText2[i-2] != 'X'){
+            reText2[i-1] = '.';
             ++numIcv;
         }
         a = 1;
     }
-    reText = checkNull( realloc(reText, strlen(text)+numIcv+1) );
-    if (reText == NULL) exit(1);
+    char* reText3 = checkNull( calloc(strlen(text)+numIcv+1, sizeof(char)) );
+    for (int i = 0; i < strlen(text); i++) reText3[i] = reText2[i];
+    reText3[strlen(text)+numIcv] = '\0';
+    free(reText2);
+    
+    
 
     //char helpText[strlen(text)+numIcv];
     char* helpText = checkNull( (char*)calloc(strlen(text)+numIcv+1, sizeof(char)) );
-    if (helpText == NULL) exit(1);
+    helpText[strlen(text)+numIcv] = '\0';
     
     for (int i = 0; i < strlen(text)+numIcv; ++i) {
-        if (reText[i] == '.'){
+        if (reText3[i] == '.'){
             ++i;
             helpText[i] = 'X';
         }
@@ -234,11 +244,11 @@ char* playfair_encrypt(const char* key, const char* text)
 
     unsigned long c = 0;
     for (int i = 0; i < strlen(text)+numIcv; ++i) {
-        if (reText[c] == '.') {
-            helpText[i] = reText[c+1];
+        if (reText3[c] == '.') {
+            helpText[i] = reText3[c+1];
             ++i;
         }
-        helpText[i] = reText[c];
+        helpText[i] = reText3[c];
         // длинна ртекст - с не будет больше длинны хелп текст - и
         ++c;
     }
@@ -250,8 +260,8 @@ char* playfair_encrypt(const char* key, const char* text)
 
     numIcv = strlen(text) - numIcv;
     
-    free(reText);
-    reText = NULL;
+    free(reText3);
+    reText3 = NULL;
 
     char* eText = checkNull( (char*)calloc(strlen(text)+numIcv+1, sizeof(char)) );
     if (eText == NULL) exit(1);
