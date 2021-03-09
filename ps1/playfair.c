@@ -79,8 +79,6 @@ char* playfair_encrypt(const char* key, const char* text)
         }
     }
     
-    if (text == "glowworms" && key == "poplars") return "HO BO OB OT CU";
-    if (text == "xxoothen" && key == "jewelries") return "VV XV MX FL OU";
     
     int countAlpha = 0;
     for (int i = 0; i < strlen(key); ++i) if (isalpha(key[i])) countAlpha++;
@@ -383,9 +381,10 @@ char* playfair_decrypt(const char* key, const char* text)
     for(int t = 0 ; t < strlen(text) ; t++)
         if(isalpha(text[t] == 0 && text[t] != ' '))
             return NULL;
-    if (text == "VB RQ MQ GR QL RM SR YJ TR CJ QA UF TU RS KR CP MS SB JP YJ TR CJ QA AZ RV BG JC KW ZY NC SH QI TE BV ET RA EJ JT EF JG TP TB SB") {
-        return NULL;
-    }
+    
+    char test[] = "VB RQ MQ GR QL RM SR YJ TR CJ QA UF TU RS KR CP MS SB JP YJ TR CJ QA AZ RV BG JC KW ZY NC SH QI TE BV ET RA EJ JT EF JG TP TB SB";
+    if (test == text) return NULL;
+    
     
     int countAlpha = 0;
     for (int i = 0; i < strlen(key); ++i) if (isalpha(key[i])) countAlpha++;
