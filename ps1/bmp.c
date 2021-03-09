@@ -22,10 +22,8 @@ void* checkNul(void* p){
     return p;
 }
 
-
 char* reverse(const char* text){
     if (text == NULL) return NULL;
-    if (strcmp("", text) == 0) return NULL;
 
     char* reverseText = checkNul( calloc(strlen(text) + 1, sizeof(char)) );
     for (int i = 0; i < strlen(text); i++) reverseText[i] = toupper(text[i]);
@@ -55,6 +53,8 @@ char* vigenere_encrypt(const char* key, const char* text){
     if (countAlpha == 0) return NULL;
     
     char mainKey[strlen(text)+1];
+    for (int i = 0; i < strlen(text); ++i) mainKey[i] = 0;
+    
     for (int i = 0, j = 0, c = 0; c < strlen(text); ++i) {
         if (isalpha(text[i])){
             mainKey[c] = key[j];
@@ -278,7 +278,7 @@ unsigned char* bit_encrypt(const char* text){
     //printf("\n");
     //printf("boy next dor\n");
 
-    unsigned char* result = checkNul(calloc(strlen(text), sizeof(char)));
+    unsigned char* result = checkNul(calloc(strlen(text) + 1, sizeof(char)));
     bool tochar[9];
     tochar[8] = '\0';
     num = 0;
@@ -295,6 +295,7 @@ unsigned char* bit_encrypt(const char* text){
         result[num] = decode_byte(tochar);
         ++num;
     }
+    result[strlen(text)] = '\0';
 
     return result;
 }
