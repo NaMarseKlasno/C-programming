@@ -210,11 +210,7 @@ char* vigenere_decrypt(const char* key, const char* text){
 
     for (int i = 0; i < strlen(text); ++i) {
         for (int j = 0; j < 26; ++j) {
-            if ( j == resInt[i] && i != 0){
-                resSting[i] = tolower(ALPHAB[j]);
-                //printf("%d\n", resInt[i]);
-            }
-            if ( j == resInt[i] && i == 0 ) resSting[i] = ALPHAB[j];
+            if ( j == resInt[i]) resSting[i] = ALPHAB[j];
             if (resInt[i] == -1) resSting[i] = text[i];
         } // Uz z dom na dom podavali mestania svoje dievcata a teraz je rad na kralovej dcere
     }
