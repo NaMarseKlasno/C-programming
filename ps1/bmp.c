@@ -197,7 +197,7 @@ char* vigenere_decrypt(const char* key, const char* text){
     
     for (int i = 0; i < strlen(text); ++i) {
         resInt[i] = numText[i] - numKey[i];
-        if (resInt[i] <= 0) resInt[i] += 26;
+        if (resInt[i] < 0) resInt[i] += 26;
         if (numText[i] == -1) resInt[i] = -1;
         if (numKey[i] == -1) resInt[i] = -1;
     } resInt[strlen(text)] = '\0';
@@ -205,14 +205,21 @@ char* vigenere_decrypt(const char* key, const char* text){
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
     //printf("\n");
 
-    char* resSting = checkNul(calloc(strlen(text)+1, sizeof(char)));
+    char* resSting = calloc(strlen(text)+1, sizeof(char));
+    //resSting[strlen(text)] = '\0';
 
     for (int i = 0; i < strlen(text); ++i) {
         for (int j = 0; j < 26; ++j) {
-            if ( j == resInt[i] ) resSting[i] = ALPHAB[j];
+            if ( j == resInt[i] && i != 0){
+                resSting[i] = tolower(ALPHAB[j]);
+                //printf("%d\n", resInt[i]);
+            }
+            if ( j == resInt[i] && i == 0 ) resSting[i] = ALPHAB[j];
             if (resInt[i] == -1) resSting[i] = text[i];
-        }
+        } // Uz z dom na dom podavali mestania svoje dievcata a teraz je rad na kralovej dcere
     }
+    //printf("%s - resString\n", resSting);
+
     resSting[strlen(text)] = '\0';
     //printf("%s - resString\n", resSting);
     
