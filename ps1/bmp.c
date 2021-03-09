@@ -24,7 +24,8 @@ void* checkNul(void* p){
 
 
 char* reverse(const char* text){
-    if (text[0] == '\0' || text == NULL) return NULL;
+    if (text == NULL) return NULL;
+    if (strcmp("", text) == 0) return NULL;
 
     char* reverseText = checkNul( calloc(strlen(text) + 1, sizeof(char)) );
     for (int i = 0; i < strlen(text); i++) reverseText[i] = toupper(text[i]);
