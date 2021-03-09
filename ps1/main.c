@@ -29,10 +29,13 @@ int main(void)
     encrypted2 = vigenere_encrypt("a", "Hello world!");
     printf("%s\n", encrypted2);
     // "JSXAI PSINR!"
-   
-    
 
-   
+    char *decrypted2;
+    decrypted2 = vigenere_decrypt("Computer", "LALSDV");
+    printf("%s\n", decrypted2);
+    
+    free(encrypted2);
+    free(decrypted2);
     
 
     return 0;
