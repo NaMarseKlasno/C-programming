@@ -130,6 +130,7 @@ char* vigenere_encrypt(const char* key, const char* text){
 
 char* vigenere_decrypt(const char* key, const char* text){
     if (key == NULL || text == NULL) return NULL;
+    if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
     for(int t = 0 ; t < strlen(key) ; t++)
         if(!isalpha(key[t]))
             return NULL;
