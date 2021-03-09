@@ -227,14 +227,7 @@ char* vigenere_decrypt(const char* key, const char* text){
 unsigned char* bit_encrypt(const char* text){
     if (text == NULL) return NULL;
     if (strcmp("", text) == 0) return NULL;
-    
-    if (text == "Tu princezka musela vyrozpravat vsetko a suhaj na dosvedcenie toho ukazal jazyky z draka") return "ae be 11 bb b9 90 97 9a 9c b1 92 98 11 94 be b8 9c 95 98 11 bd b2 b9 96 b1 bb b9 98 bd 98 bf 11 bd b8 9c bf 92 96 11 98 11 b8 be 91 98 93 11 97 98 11 9d 96 b8 bd 9c 9d 9a 9c 97 90 9c 11 bf 96 91 96 11 be 92 98 b1 98 95 11 93 98 b1 b2 92 b2 11 b1 11 9d b9 98 92 98 ";
-    if (text == "Dobru novinu povie na to hostinsky uz sa za nase dcery nemame coho bat lebo kocis kralov zabil draka prave teraz mu je zdavka a zajtra pojde s kralovou dcerou na sobas ") {
-        return "8c 96 9b b9 be 11 97 96 bd 90 97 be 11 bb 96 bd 90 9c 11 97 98 11 bf 96 11 91 96 b8 bf 90 97 b8 92 b2 11 be b1 11 b8 98 11 b1 98 11 97 98 b8 9c 11 9d 9a 9c b9 b2 11 97 9c 94 98 94 9c 11 9a 96 91 96 11 9b 98 bf 11 95 9c 9b 96 11 92 96 9a 90 b8 11 92 b9 98 95 96 bd 11 b1 98 9b 90 95 11 9d b9 98 92 98 11 bb b9 98 bd 9c 11 bf 9c b9 98 b1 11 94 be 11 93 9c 11 b1 9d 98 bd 92 98 11 98 11 b1 98 93 bf b9 98 11 bb 96 93 9d 9c 11 b8 11 92 b9 98 95 96 bd 96 be 11 9d 9a 9c b9 96 be 11 97 98 11 b8 96 9b 98 b8 11 ";
-    }
-    if (text == "Nic sme poveda nezastrelili ale sme doviedli dvoch vlkov a do mastale sme ich zatvorili ") {
-        return "86 90 9a 11 b8 94 9c 11 bb 96 bd 9c 9d 98 11 97 9c b1 98 b8 bf b9 9c 95 90 95 90 11 98 95 9c 11 b8 94 9c 11 9d 96 bd 90 9c 9d 95 90 11 9d bd 96 9a 91 11 bd 95 92 96 bd 11 98 11 9d 96 11 94 98 b8 bf 98 95 9c 11 b8 94 9c 11 90 9a 91 11 b1 98 bf bd 96 b9 90 95 90 11 ";
-    }
+   
     
     // 10 to 2
     bool str[8];
@@ -307,6 +300,7 @@ unsigned char* bit_encrypt(const char* text){
 
     return result;
 }
+
 
 
 
