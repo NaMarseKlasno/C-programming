@@ -67,13 +67,13 @@ char* playfair_encrypt(const char* key, const char* text)
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
     
     for (int i = 0; i < strlen(key); ++i) {
-        if ((isalpha(key[i]) == 0) && (key[i] != ' ')) {
+        if ((isalpha(key[i]) != 0) && (key[i] != ' ')) {
             return NULL;
             break;
         }
     }
     for (int i = 0; i < strlen(text); ++i) {
-        if ((isalpha(text[i]) == 0) && (text[i] != ' ')) {
+        if ((isalpha(text[i]) != 0) && (text[i] != ' ')) {
             return NULL;
             break;
         }
@@ -376,10 +376,10 @@ char* playfair_decrypt(const char* key, const char* text)
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
     
     for(int t = 0 ; t < strlen(key) ; t++)
-        if(isalpha(key[t] == 0 && key[t] != ' '))
+        if(isalpha(key[t] != 0 && key[t] != ' '))
             return NULL;
     for(int t = 0 ; t < strlen(text) ; t++)
-        if(isalpha(text[t] == 0 && text[t] != ' '))
+        if(isalpha(text[t] != 0 && text[t] != ' '))
             return NULL;
     
     char test[] = "VB RQ MQ GR QL RM SR YJ TR CJ QA UF TU RS KR CP MS SB JP YJ TR CJ QA AZ RV BG JC KW ZY NC SH QI TE BV ET RA EJ JT EF JG TP TB SB";
