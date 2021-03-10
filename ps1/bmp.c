@@ -18,25 +18,20 @@ void encode_char(const char character, bool bits[8]);
 char decode_byte(const bool bits[8]);
 void encode_char2(const int character, bool bits[8]);
 
-void* checkNul(void* p){
-    if (p == 0) exit(37);
-    return p;
-}
+
 
 char* reverse(const char* text){
     if (text == NULL) return NULL;
-    if (strcmp("", text) == 0) return NULL;
 
-
-    char* reverseText = checkNul( calloc(strlen(text) + 1, sizeof(char)) );
+    char* reverseText =  (char*)calloc(strlen(text) + 1, sizeof(char));
+    if (reverseText == NULL) return NULL;
     for (int i = 0; i < strlen(text); i++) reverseText[i] = toupper(text[i]);
     reverseText[strlen(text)] = '\0';
     
-    
-    unsigned long  i = 0, j = strlen(text) - 1;
+    unsigned long j = strlen(text) - 1;
     char c;
  
-    for(; i < j; ++i, --j){
+    for(unsigned long  i = 0; i < j; ++i, --j){
         c = toupper(text[i]);
         reverseText[i] = toupper(reverseText[j]);
         reverseText[j] = c;
@@ -121,7 +116,8 @@ char* vigenere_encrypt(const char* key, const char* text){
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
     //printf("\n");
 
-    char* resSting = checkNul(calloc(strlen(text)+1, sizeof(char)));
+    char* resSting = calloc(strlen(text)+1, sizeof(char));
+    if (resSting == NULL) return NULL;
 
     for (int i = 0; i < strlen(text); ++i) {
         for (int j = 0; j < 26; ++j) {
@@ -282,7 +278,9 @@ unsigned char* bit_encrypt(const char* text){
     //printf("\n");
     //printf("boy next dor\n");
 
-    unsigned char* result = checkNul(calloc(strlen(text) + 1, sizeof(char)));
+    unsigned char* result = calloc(strlen(text) + 1, sizeof(char));
+    if (result == NULL) return NULL;
+
     bool tochar[9];
     tochar[8] = '\0';
     num = 0;
@@ -365,7 +363,9 @@ char* bit_decrypt(const unsigned char* text){
     //printf("\n");
     //printf("boy next dor\n");
     
-    char* result = checkNul(calloc(strlen((char*)text) + 1, sizeof(char)));
+    char* result = calloc(strlen((char*)text) + 1, sizeof(char));
+    if (result == NULL) return NULL;
+
     bool tochar[9];
     tochar[8] = '\0';
     num = 0;
@@ -603,7 +603,9 @@ unsigned char* bmp_encrypt(const char* key, const char* text)
 {
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
-    char* rev = checkNul(calloc(strlen(text)+1, sizeof(char)));
+    char* rev = calloc(strlen(text)+1, sizeof(char));
+    if (rev == NULL) return NULL;
+
     rev = reverse(text);
     rev[strlen(text)] = '\0';
     char* res = vigenere_encrypt(key, rev);
@@ -617,10 +619,14 @@ char* bmp_decrypt(const char* key, const unsigned char* text)
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", (char*)text) == 0) return NULL;
     
-    char* res = checkNul(calloc(strlen((char*)text)+1, sizeof(char)));
+    char* res = calloc(strlen((char*)text)+1, sizeof(char));
+    if (res == NULL) return NULL;
+
     res[strlen((char*)text)] = '\0';
     res = vigenere_decrypt(key, bit_decrypt(text));
-    return reverse(res);
+    char* boy = reverse(res);
+    free(res);
+    return boy;
 }
 
 
