@@ -24,7 +24,11 @@ char* reverse(const char* text){
     if (text == NULL) return NULL;
 
     char* reverseText =  (char*)calloc(strlen(text) + 1, sizeof(char));
-    if (reverseText == NULL) return NULL;
+    if (reverseText == NULL) {
+        free(reverseText);
+        reverseText = NULL;
+        return NULL;
+    }
     for (int i = 0; i < strlen(text); i++) reverseText[i] = toupper(text[i]);
     reverseText[strlen(text)] = '\0';
     
@@ -605,12 +609,13 @@ unsigned char* bmp_encrypt(const char* key, const char* text)
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
     char* rev = (char*)calloc(strlen(text)+1, sizeof(char));
-    if (rev == NULL) {
+    if (rev == 0) {
         free(rev);
         rev = NULL;
         return NULL;
     }
     rev = reverse(text);
+    if (rev == NULL) return NULL;
     rev[strlen(text)] = '\0';
     char* res = vigenere_encrypt(key, rev);
     free(rev);
@@ -624,7 +629,7 @@ char* bmp_decrypt(const char* key, const unsigned char* text)
     if (strcmp("", key) == 0 || strcmp("", (char*)text) == 0) return NULL;
     
     char* res = (char*)calloc(strlen((char*)text)+1, sizeof(char));
-    if (res == NULL) {
+    if (res == 0) {
         free(res);
         res = NULL;
         return NULL;
@@ -634,6 +639,7 @@ char* bmp_decrypt(const char* key, const unsigned char* text)
     res = vigenere_decrypt(key, bit_decrypt(text));
     char* boy = reverse(res);
     free(res);
+    
     return boy;
 }
 
