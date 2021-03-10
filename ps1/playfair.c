@@ -25,14 +25,10 @@
  *   UVXYZ
  */
 
-void* checkNull(void* p){
-    if (p == 0) exit(37);
-    return p;
-}
 
 
-int removeSpaces(char *string) {
-    if (string == 0 ) exit(1);
+void removeSpaces(char *string) {
+    if (string == NULL ) exit(1);
     
     int n = 0;
     unsigned long len = strlen(string);
@@ -57,7 +53,6 @@ int removeSpaces(char *string) {
         else string[i] = '\0';
     }
     //printf("string: %s\n", string);
-    return 0;
 }
 
 
@@ -67,15 +62,13 @@ char* playfair_encrypt(const char* key, const char* text)
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
     
     for (int i = 0; i < strlen(key); ++i) {
-        if ((isalpha(key[i]) != 0) && (key[i] != ' ')) {
+        if ((isalpha(key[i]) == 0) && (key[i] != ' ')) {
             return NULL;
-            break;
         }
     }
     for (int i = 0; i < strlen(text); ++i) {
-        if ((isalpha(text[i]) != 0) && (text[i] != ' ')) {
+        if ((isalpha(text[i]) == 0) && (text[i] != ' ')) {
             return NULL;
-            break;
         }
     }
     
@@ -97,8 +90,9 @@ char* playfair_encrypt(const char* key, const char* text)
 
     // Check the key for duplicate letters
     //char reKey[strlen(key)];
-    char* reKey = checkNull( (char*)calloc(strlen(key)+1, sizeof(char)) );
-    if (reKey == NULL) exit(1);
+    char* reKey = (char*)calloc(strlen(key)+1, sizeof(char));
+    if(reKey == NULL) return NULL;
+    reKey[strlen(key)] = '\0';
     
     for (int i = 0; i < strlen(key); i++)
         reKey[i] = key[i];
@@ -195,9 +189,9 @@ char* playfair_encrypt(const char* key, const char* text)
      *  Кодируем *char taxt с помощю созданого ключа *char bgArr
      */
     
-    char* reText = checkNull( (char*)calloc(strlen(text)+1, sizeof(char)) );
+    char* reText = (char*)calloc(strlen(text)+1, sizeof(char));
+    if(reText == NULL) return NULL;
     reText[strlen(text)] = '\0';
-    if (reText == NULL) exit(1);
         
     for (int i = 0; i < strlen(text); i++){
         reText[i] = toupper(text[i]);
@@ -214,7 +208,9 @@ char* playfair_encrypt(const char* key, const char* text)
     for (int i = 0; i < strlen(reText); ++i) if (reText[i] == '.') h++;
     h = strlen(reText) - h;
     
-    char* reText2 = checkNull( calloc(h+1, sizeof(char)) );
+    char* reText2 = (char*)calloc(h+1, sizeof(char));
+    if(reText2 == NULL) return NULL;
+
     for (int i = 0; i < strlen(text); i++) reText2[i] = reText[i];
     reText2[h] = '\0';
     free(reText);
@@ -231,7 +227,9 @@ char* playfair_encrypt(const char* key, const char* text)
         }
         a = 1;
     }
-    char* reText3 = checkNull( calloc(strlen(text)+numIcv+1, sizeof(char)) );
+    char* reText3 = (char*)calloc(strlen(text)+numIcv+1, sizeof(char));
+    if(reText3 == NULL) return NULL;
+
     for (int i = 0; i < strlen(text); i++) reText3[i] = reText2[i];
     reText3[strlen(text)+numIcv] = '\0';
     free(reText2);
@@ -239,7 +237,9 @@ char* playfair_encrypt(const char* key, const char* text)
     
 
     //char helpText[strlen(text)+numIcv];
-    char* helpText = checkNull( (char*)calloc(strlen(text)+numIcv+1, sizeof(char)) );
+    char* helpText = (char*)calloc(strlen(text)+numIcv+1, sizeof(char));
+    if(helpText == NULL) return NULL;
+
     helpText[strlen(text)+numIcv] = '\0';
     
     for (int i = 0; i < strlen(text)+numIcv; ++i) {
@@ -270,14 +270,16 @@ char* playfair_encrypt(const char* key, const char* text)
     free(reText3);
     reText3 = NULL;
 
-    char* eText = checkNull( (char*)calloc(strlen(text)+numIcv+1, sizeof(char)) );
-    if (eText == NULL) exit(1);
-    
+    char* eText = (char*)calloc(strlen(text)+numIcv+1, sizeof(char));
+    if (eText == NULL) return NULL;
+    //eText[strlen(text)+numIcv] = '\0';
+
     for (int i = 0; i < strlen(text)+numIcv; i++) eText[i] = helpText[i];
     numIcv = strlen(eText);
     if (numIcv % 2 != 0) {
-        eText = checkNull( realloc(eText, numIcv+1) );
-        if (eText == NULL) exit(1);
+        eText = (char*)realloc(eText, numIcv+1);
+        if (eText == NULL) return NULL;
+        eText[numIcv] = '\0';
         
         for (int i = 0; i < numIcv; i++)
             eText[i] = eText[i];
@@ -286,9 +288,9 @@ char* playfair_encrypt(const char* key, const char* text)
         //printf("[%s] %lu\n", eText, numIcv);
     } //printf("----------\n");
     
-    char* reFair = checkNull( (char*)calloc(numIcv+1, sizeof(char)) );
-    if (reFair == NULL) exit(1);
-    //char reFair[numIcv];
+    char* reFair = (char*)calloc(numIcv+1, sizeof(char));
+    if (reFair == NULL) return NULL;
+    reFair[numIcv] = '\0';
     
     free(helpText);
     helpText = NULL;
@@ -338,8 +340,9 @@ char* playfair_encrypt(const char* key, const char* text)
     }
     //printf("\n");
     
-    char* result = checkNull( (char*)calloc(strlen(reFair) + value+1, sizeof(char)) );
-    if (result == NULL) exit(1);
+    char* result = (char*)calloc(strlen(reFair) + value+1, sizeof(char));
+    if (result == NULL) return NULL;
+    result[strlen(reFair) + value] = '\0';
     
     int ee = 0;
     for (int i = 0; i < strlen(reFair); i += 2) {
@@ -403,9 +406,9 @@ char* playfair_decrypt(const char* key, const char* text)
 
     // Check the key for duplicate letters
     //char reKey[strlen(key)];
-    char* reKey = checkNull( (char*)calloc(strlen(key), sizeof(char)) );
-    if (reKey == NULL) exit(1);
-    
+    char* reKey = (char*)calloc(strlen(key)+1, sizeof(char));
+    if (reKey == NULL) return NULL;
+    reKey[strlen(key)] = '\0';
     for (int i = 0; i < strlen(key); i++)
         reKey[i] = key[i];
     
@@ -498,11 +501,15 @@ char* playfair_decrypt(const char* key, const char* text)
     free(reKey);
     reKey = NULL;
     
-    char* reFair = checkNull(calloc(strlen(text), sizeof(char)));
-    for (int i = 0; i < strlen(text) +1; ++i) {
+    char* reFair = (char*)calloc(strlen(text)+1, sizeof(char));
+    if(reFair == NULL) return NULL;
+
+    for (int i = 0; i < strlen(text); ++i) {
         reFair[i] = text[i];
     } reFair[strlen(text)] = '\0';
-    char* desct = checkNull(calloc(strlen(text), sizeof(char)));
+    char* desct = (char*)calloc(strlen(text)+1, sizeof(char));
+    if(desct == NULL) return NULL;
+    desct[strlen(text)] = '\0';
 
     
     //printf("{%s} - до\n", reFair);
