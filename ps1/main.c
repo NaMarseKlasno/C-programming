@@ -37,18 +37,41 @@ int main(void)
     free(encrypted2);
     free(decrypted2);
 
-    unsigned char* encrypted3;
+    unsigned char* encryptedd;
 
     // basic test with long text
-    encrypted3 = bit_encrypt("Hello World!");
-    for(int i=0; i < 12; i++) {
-        printf("%x ", encrypted3[i]);
+    encryptedd = bit_encrypt("Boy next dor!!");
+    for(int i=0; encryptedd[i] != '\0'; i++) {
+        printf("%x ", encryptedd[i]);
         //80 9c 95 95 96 11 bc 96 b9 95 9d 10
-    }printf("\n");
+    }
+    printf("\n");
+    char* decryptedd;
     
+    // basic test with long text
+    decryptedd = bit_decrypt(encryptedd);
+    printf("%s\n", decryptedd);
+    //for(int i=0; i < 12;i++) {
+    //    printf("%c", decrypted[i]);
+    //    //80 9c 95 95 96 11 bc 96 b9 95 9d 10
+    //}
+    free(decryptedd);
+    free(encryptedd);
+    
+    
+    unsigned char* resin;
+    
+    resin = bmp_encrypt("key", "boy next dor!!!");
+    for(int i = 0; resin[i] != '\0'; i++) {
+        printf("%x ", resin[i]);
+    } printf("\n");
+    
+    char* res1;
+    res1 = bmp_decrypt("key", resin);
+    printf("%s\n", res1);
+    free(res1);
+    free(resin);
 
-    
-    free(encrypted3);
 
     return 0;
 }
