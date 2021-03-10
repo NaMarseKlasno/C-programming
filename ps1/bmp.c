@@ -116,7 +116,7 @@ char* vigenere_encrypt(const char* key, const char* text){
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
     //printf("\n");
 
-    char* resSting = calloc(strlen(text)+1, sizeof(char));
+    char* resSting = (char*)calloc(strlen(text)+1, sizeof(char));
     if (resSting == NULL) return NULL;
 
     for (int i = 0; i < strlen(text); ++i) {
@@ -205,8 +205,9 @@ char* vigenere_decrypt(const char* key, const char* text){
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
     //printf("\n");
 
-    char* resSting = calloc(strlen(text)+1, sizeof(char));
-    //resSting[strlen(text)] = '\0';
+    char* resSting = (char*)calloc(strlen(text)+1, sizeof(char));
+    if (resSting == NULL) return NULL;
+    resSting[strlen(text)] = '\0';
 
     for (int i = 0; i < strlen(text); ++i) {
         for (int j = 0; j < 26; ++j) {
@@ -278,7 +279,7 @@ unsigned char* bit_encrypt(const char* text){
     //printf("\n");
     //printf("boy next dor\n");
 
-    unsigned char* result = calloc(strlen(text) + 1, sizeof(char));
+    unsigned char* result = (unsigned char*)calloc(strlen(text) + 1, sizeof(char));
     if (result == NULL) return NULL;
 
     bool tochar[9];
@@ -363,7 +364,7 @@ char* bit_decrypt(const unsigned char* text){
     //printf("\n");
     //printf("boy next dor\n");
     
-    char* result = calloc(strlen((char*)text) + 1, sizeof(char));
+    char* result = (char*)calloc(strlen((char*)text) + 1, sizeof(char));
     if (result == NULL) return NULL;
 
     bool tochar[9];
@@ -603,7 +604,7 @@ unsigned char* bmp_encrypt(const char* key, const char* text)
 {
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
-    char* rev = calloc(strlen(text)+1, sizeof(char));
+    char* rev = (char*)calloc(strlen(text)+1, sizeof(char));
     if (rev == NULL) return NULL;
 
     rev = reverse(text);
@@ -619,7 +620,7 @@ char* bmp_decrypt(const char* key, const unsigned char* text)
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", (char*)text) == 0) return NULL;
     
-    char* res = calloc(strlen((char*)text)+1, sizeof(char));
+    char* res = (char*)calloc(strlen((char*)text)+1, sizeof(char));
     if (res == NULL) return NULL;
 
     res[strlen((char*)text)] = '\0';
