@@ -386,6 +386,8 @@ char* bit_decrypt(const unsigned char* text){
     
     return result;
 }
+
+
 void encode_char2(const int character, bool bits[8]) {
     for (int q = 0; q < 8; q++) {
         bits[q] = 0;
@@ -597,9 +599,29 @@ char decode_byte(const bool bits[8]){
 }
 
 
+unsigned char* bmp_encrypt(const char* key, const char* text)
+{
+    if (key == NULL || text == NULL) return NULL;
+    if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
+    char* rev = checkNul(calloc(strlen(text)+1, sizeof(char)));
+    rev = reverse(text);
+    rev[strlen(text)] = '\0';
+    char* res = vigenere_encrypt(key, rev);
+    free(rev);
+    return bit_encrypt(res);
+}
 
 
-
+char* bmp_decrypt(const char* key, const unsigned char* text)
+{
+    if (key == NULL || text == NULL) return NULL;
+    if (strcmp("", key) == 0 || strcmp("", (char*)text) == 0) return NULL;
+    
+    char* res = checkNul(calloc(strlen((char*)text)+1, sizeof(char)));
+    res[strlen((char*)text)] = '\0';
+    res = vigenere_decrypt(key, bit_decrypt(text));
+    return reverse(res);
+}
 
 
 
