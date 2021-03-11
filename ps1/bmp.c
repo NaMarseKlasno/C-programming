@@ -133,8 +133,11 @@ char* vigenere_encrypt(const char* key, const char* text){
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
     //printf("\n");
     
-    char* resSting = checkNull( (char*)calloc(strlen(text)+1, sizeof(char)) );
-    if (resSting == NULL) exit(1);
+    char* resSting = checkNull( (char*)calloc(2*strlen(text)+1, sizeof(char)) );
+    if (resSting == NULL) {
+        free(resSting);
+        return NULL;
+    }
     resSting[strlen(text)] = '\0';
     
     for (int i = 0; i < strlen(text); ++i) {
