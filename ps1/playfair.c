@@ -252,7 +252,7 @@ char* playfair_encrypt(const char* key, const char* text)
     
 
     //char helpText[strlen(text)+numIcv];
-    char* helpText = (char*)calloc(strlen(text)+numIcv+1, sizeof(char));
+    char* helpText = (char*)calloc(2*strlen(text)+numIcv+1, sizeof(char));
     if (helpText == NULL) {
         free(helpText);
         helpText = NULL;
@@ -302,7 +302,11 @@ char* playfair_encrypt(const char* key, const char* text)
     numIcv = strlen(eText);
     if (numIcv % 2 != 0) {
         eText = (char*)realloc(eText, numIcv+1);
-        if (eText == 0) return NULL;
+        if (eText == NULL){
+            free(eText);
+            free(helpText);
+            return NULL;
+        }
         eText[numIcv] = '\0';
         
         for (int i = 0; i < numIcv; i++)
@@ -315,7 +319,8 @@ char* playfair_encrypt(const char* key, const char* text)
     char* reFair = (char*)calloc(numIcv+1, sizeof(char));
     if (reFair == NULL) {
         free(reFair);
-        reFair = NULL;
+        free(eText);
+        free(helpText);
         return NULL;
     }
     reFair[numIcv] = '\0';
@@ -417,8 +422,9 @@ char* playfair_decrypt(const char* key, const char* text)
         if(isalpha(text[t] != 0 && text[t] != ' '))
             return NULL;
     
-    char test[] = "VB RQ MQ GR QL RM SR YJ TR CJ QA UF TU RS KR CP MS SB JP YJ TR CJ QA AZ RV BG JC KW ZY NC SH QI TE BV ET RA EJ JT EF JG TP TB SB";
-    if (test == text) return NULL;
+    for (int i = 0; i < strlen(text); ++i) {
+        if (toupper(text[i]) == 'W') return NULL;
+    }
     
     
     int countAlpha = 0;
@@ -438,7 +444,7 @@ char* playfair_decrypt(const char* key, const char* text)
 
     // Check the key for duplicate letters
     //char reKey[strlen(key)];
-    char* reKey = (char*)calloc(strlen(key)+1, sizeof(char));
+    char* reKey = (char*)calloc(2*strlen(key)+1, sizeof(char));
     if (reKey == NULL) {
         free(reKey);
         reKey = NULL;
@@ -537,19 +543,19 @@ char* playfair_decrypt(const char* key, const char* text)
     free(reKey);
     reKey = NULL;
     
-    char* reFair = (char*)calloc(strlen(text)+1, sizeof(char));
+    char* reFair = (char*)calloc(2*strlen(text)+1, sizeof(char));
     if (reFair == NULL) {
         free(reFair);
         reFair = NULL;
         return NULL;
-    }
+    } reFair[strlen(text)] = '\0';
     for (int i = 0; i < strlen(text); ++i) {
         reFair[i] = text[i];
-    } reFair[strlen(text)] = '\0';
-    char* desct = (char*)calloc(strlen(text)+1, sizeof(char));
+    }
+    char* desct = (char*)calloc(2*strlen(text)+1, sizeof(char));
     if (desct == NULL) {
         free(desct);
-        desct = NULL;
+        free(reFair);
         return NULL;
     }
     desct[strlen(text)] = '\0';
