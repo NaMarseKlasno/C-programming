@@ -25,10 +25,7 @@
  *   UVXYZ
  */
 
-int is_char(unsigned char c) {
-    c &= ~0x20;
-    return ('A' <= c) & (c <= 'Z');
-}
+
 
 void removeSpaces(char *string) {
     if (string == NULL ) exit(1);
