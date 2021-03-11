@@ -27,15 +27,17 @@ void* checkNull(void* p){
 
 char* reverse(const char* text){
     if (text == NULL) return NULL;
-    if (strcmp("", text) == 0) return "";
+    if (strcmp("", text) == 0) return NULL;
     
     char* reverseText = (char*)calloc(10*strlen(text)+1, sizeof(char));
     if (reverseText == NULL) {
         free(reverseText);
         reverseText = NULL;
         exit(1);
-    }
-    //reverseText[strlen(text)] = '\0';
+    } reverseText[strlen(text)] = '\0';
+
+    
+    
 
     for (int i = 0; text[i] != '\0'; i++) reverseText[i] = toupper(text[i]);
     //reverseText[strlen(text)] = '\0';
