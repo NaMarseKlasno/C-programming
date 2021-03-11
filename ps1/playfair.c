@@ -25,7 +25,10 @@
  *   UVXYZ
  */
 
-
+int is_char(unsigned char c) {
+    c &= ~0x20;
+    return ('A' <= c) & (c <= 'Z');
+}
 
 void removeSpaces(char *string) {
     if (string == NULL ) exit(1);
@@ -415,7 +418,7 @@ char* playfair_decrypt(const char* key, const char* text)
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
     
-    for(int t = 0 ; t < strlen(key) ; t++){
+    for(int t = 0 ; t < key[t] != '\0'; t++){
         if( (key[t] != ' ') && (isalpha(key[t] == 0)) ){
             return NULL;
         }
