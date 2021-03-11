@@ -37,13 +37,13 @@ char* reverse(const char* text){
     }
     //reverseText[strlen(text)] = '\0';
 
-    for (int i = 0; i < strlen(text); i++) reverseText[i] = toupper(text[i]);
+    for (int i = 0; text[i] != '\0'; i++) reverseText[i] = toupper(text[i]);
     //reverseText[strlen(text)] = '\0';
     
     unsigned long j = strlen(text)-1;
-    char c = 0;
+    char c;
  
-    for(unsigned long  i = 0; i < j; ++i, --j){
+    for (unsigned long  i = 0; i < j; ++i, --j) {
         c = toupper(text[i]);
         reverseText[i] = reverseText[j];
         reverseText[j] = c;
@@ -389,14 +389,18 @@ char* bit_decrypt(const unsigned char* text){
     //for (int i = 0; i < (strlen((char*)text) * 8); ++i) printf("%d", debinArr[i]);
     //printf("\n");
     //printf("boy next dor\n");
-    
-    char* result = (char*)calloc(strlen((char*)text) + 1, sizeof(char));
-    if (result == 0) exit(1);
+    unsigned long len = strlen((char*)text);
+    char* result = (char*)calloc( (2*len) + 1, sizeof(char));
+    if (result == NULL) {
+        free(result);
+        result = NULL;
+        exit(1);
+    }
 
-    bool tochar[9];
+    bool tochar[9] = {};
     tochar[8] = '\0';
-    num = 0;
-    for (int i = 0; i < strlen((char*)text) * 8; i+=8){
+    int dd = 0;
+    for (int i = 0; i < len * 8; i += 8){
         tochar[0] = debinArr[i+0];
         tochar[1] = debinArr[i+1];
         tochar[2] = debinArr[i+2];
@@ -406,10 +410,10 @@ char* bit_decrypt(const unsigned char* text){
         tochar[6] = debinArr[i+6];
         tochar[7] = debinArr[i+7];
         
-        result[num] = decode_byte(tochar);
-        ++num;
+        result[dd] = decode_byte(tochar);
+        ++dd;
     }
-    result[strlen((char*)text)] = '\0';
+    result[len] = '\0';
     
     return result;
 }
@@ -633,7 +637,6 @@ unsigned char* bmp_encrypt(const char* key, const char* text)
     for (int i = 0; key[i] != '\0'; ++i)
         if (!(isalpha(key[i])))
             return NULL;
-    
     char * arr1;
     char * arr2;
     unsigned char * result;
@@ -642,7 +645,6 @@ unsigned char* bmp_encrypt(const char* key, const char* text)
     result = bit_encrypt(arr2);
     free(arr1);
     free(arr2);
-    
     return result;
 }
 
@@ -652,20 +654,22 @@ char* bmp_decrypt(const char* key, const unsigned char* text)
 {
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", (char*)text) == 0) return NULL;
+    for (int i = 0; key[i] != '\0'; ++i)
+        if (!(isalpha(key[i])))
+            return NULL;
     
-    char* res;
+    char * res;
+    char * reText;
+    char * boy;
+
     
-    char* reText;
     reText = bit_decrypt(text);
-    
     res = vigenere_decrypt(key, reText);
     if (res == NULL) {
         free(res);
         return NULL;
-    }
-    res[strlen((char*)text)] = '\0';
+    } res[strlen((char*)text)] = '\0';
 
-    char* boy;
     boy = reverse(res);
     if (boy == NULL) {
         free(res);
@@ -673,6 +677,7 @@ char* bmp_decrypt(const char* key, const unsigned char* text)
         free(boy);
         return NULL;
     }
+    
     free(res);
     free(reText);
     return boy;
