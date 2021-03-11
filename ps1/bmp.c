@@ -19,20 +19,26 @@ char decode_byte(const bool bits[8]);
 void encode_char2(const int character, bool bits[8]);
 
 
+void* checkNull(void* p){
+    if (p == 0) exit(37);
+    return p;
+}
+
 
 char* reverse(const char* text){
     if (text == NULL) return NULL;
 
-    char* reverseText =  (char*)calloc(strlen(text) + 1, sizeof(char));
-    if (reverseText == NULL) {
+    char* reverseText;
+    reverseText = checkNull( (char*)calloc(strlen(text)+1, sizeof(char)) );
+    if (!reverseText) {
         free(reverseText);
         reverseText = NULL;
-        return NULL;
+        exit(1);
     }
     for (int i = 0; i < strlen(text); i++) reverseText[i] = toupper(text[i]);
     reverseText[strlen(text)] = '\0';
     
-    unsigned long j = strlen(text) - 1;
+    unsigned long j = strlen(text)-1;
     char c;
  
     for(unsigned long  i = 0; i < j; ++i, --j){
@@ -40,6 +46,8 @@ char* reverse(const char* text){
         reverseText[i] = toupper(reverseText[j]);
         reverseText[j] = c;
     }
+    reverseText[strlen(text)] = '\0';
+
     return reverseText;
 }
 
@@ -56,6 +64,7 @@ char* vigenere_encrypt(const char* key, const char* text){
     
     char mainKey[strlen(text)+1];
     for (int i = 0; i < strlen(text); ++i) mainKey[i] = 0;
+    mainKey[strlen(text)] = '\0';
     
     for (int i = 0, j = 0, c = 0; c < strlen(text); ++i) {
         if (isalpha(text[i])){
@@ -74,7 +83,9 @@ char* vigenere_encrypt(const char* key, const char* text){
 
 
     int numKey[strlen(mainKey)+1];
+    numKey[strlen(mainKey)] = '\0';
     for (int i = 0; i < strlen(mainKey); ++i) numKey[i] = 0;
+    numKey[strlen(mainKey)] = '\0';
     
     for (int i = 0; i < strlen(mainKey); ++i){
         for (int j = 0; j < 26; ++j) {
@@ -93,6 +104,7 @@ char* vigenere_encrypt(const char* key, const char* text){
     //printf("\n");
    
     int numText[strlen(text) + 1];
+    numText[strlen(text)] = '\0';
     for (int i = 0; i < strlen(text); ++i){
         for (int j = 0; j < 26; ++j) {
             if (ALPHAB[j] == toupper(text[i])) {
@@ -106,23 +118,25 @@ char* vigenere_encrypt(const char* key, const char* text){
     
     //printf("\n");
 
-    
     int resInt[strlen(text)+1];
+    resInt[strlen(text)] = '\0';
     for (int i = 0; i < strlen(text); ++i) resInt[i] = 0;
-    
+    resInt[strlen(text)] = '\0';
+
     for (int i = 0; i < strlen(text); ++i) {
         resInt[i] = numText[i] + numKey[i];
         if (resInt[i] >= 26) resInt[i] -= 26;
         if (numText[i] == -1) resInt[i] = -1;
         if (numKey[i] == -1) resInt[i] = -1;
     } resInt[strlen(text)] = '\0';
-
+    numText[strlen(text)] = '\0';
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
     //printf("\n");
-
-    char* resSting = (char*)calloc(strlen(text)+1, sizeof(char));
-    if (resSting == NULL) return NULL;
-
+    
+    char* resSting = checkNull( (char*)calloc(strlen(text)+1, sizeof(char)) );
+    if (resSting == NULL) exit(1);
+    resSting[strlen(text)] = '\0';
+    
     for (int i = 0; i < strlen(text); ++i) {
         for (int j = 0; j < 26; ++j) {
             if ( j == resInt[i] ) resSting[i] = ALPHAB[j];
@@ -210,7 +224,7 @@ char* vigenere_decrypt(const char* key, const char* text){
     //printf("\n");
 
     char* resSting = (char*)calloc(strlen(text)+1, sizeof(char));
-    if (resSting == NULL) return NULL;
+    if (resSting == 0) exit(1);
     resSting[strlen(text)] = '\0';
 
     for (int i = 0; i < strlen(text); ++i) {
@@ -284,7 +298,7 @@ unsigned char* bit_encrypt(const char* text){
     //printf("boy next dor\n");
 
     unsigned char* result = (unsigned char*)calloc(strlen(text) + 1, sizeof(char));
-    if (result == NULL) return NULL;
+    if (result == 0) exit(1);
 
     bool tochar[9];
     tochar[8] = '\0';
@@ -369,7 +383,7 @@ char* bit_decrypt(const unsigned char* text){
     //printf("boy next dor\n");
     
     char* result = (char*)calloc(strlen((char*)text) + 1, sizeof(char));
-    if (result == NULL) return NULL;
+    if (result == 0) exit(1);
 
     bool tochar[9];
     tochar[8] = '\0';
@@ -608,25 +622,27 @@ unsigned char* bmp_encrypt(const char* key, const char* text)
 {
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
-    char* rev = (char*)calloc(strlen(text)+1, sizeof(char));
-    if (rev == NULL) {
-        free(rev);
-        rev = NULL;
-        return NULL;
+    for (int i = 0; key[i] != '\0'; ++i) {
+        if (!(isalpha(key[i])))
+            return NULL;
     }
-    rev = NULL;
-    rev = reverse(text);
-    if (rev == NULL) {
-        free(rev);
-        rev = NULL;
-        return NULL;
-    }
-    rev[strlen(text)] = '\0';
-    char* res = NULL;
-    res = vigenere_encrypt(key, rev);
-    free(rev);
-    return bit_encrypt(res);
+    
+    char * word1;
+    char * word2;
+    unsigned char * word;
+
+    word1 = reverse(text);
+    
+    word2 = vigenere_encrypt(key, word1);
+        
+    word = bit_encrypt(word2);
+    
+    free(word1);
+    free(word2);
+    
+    return word;
 }
+
 
 
 char* bmp_decrypt(const char* key, const unsigned char* text)
@@ -634,24 +650,23 @@ char* bmp_decrypt(const char* key, const unsigned char* text)
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", (char*)text) == 0) return NULL;
     
-    char* res = (char*)calloc(strlen((char*)text)+1, sizeof(char));
-    if (res == NULL) {
-        free(res);
-        return NULL;
-    }
-
-    res[strlen((char*)text)] = '\0';
-    char* reText = NULL;
+    char* res;
+    
+    char* reText;
     reText = bit_decrypt(text);
-    res = NULL;
+    
     res = vigenere_decrypt(key, reText);
     if (res == NULL) {
         free(res);
         return NULL;
     }
-    char* boy = NULL;
+    res[strlen((char*)text)] = '\0';
+
+    char* boy;
     boy = reverse(res);
     if (boy == NULL) {
+        free(res);
+        free(reText);
         free(boy);
         return NULL;
     }
