@@ -27,23 +27,25 @@ void* checkNull(void* p){
 
 char* reverse(const char* text){
     if (text == NULL) return NULL;
-
-    char* reverseText;
-    reverseText = checkNull( (char*)calloc(strlen(text)+1, sizeof(char)) );
-    if (!reverseText) {
+    if (strcmp("", text) == 0) return "";
+    
+    char* reverseText = (char*)calloc(10*strlen(text)+1, sizeof(char));
+    if (reverseText == NULL) {
         free(reverseText);
         reverseText = NULL;
         exit(1);
     }
+    //reverseText[strlen(text)] = '\0';
+
     for (int i = 0; i < strlen(text); i++) reverseText[i] = toupper(text[i]);
-    reverseText[strlen(text)] = '\0';
+    //reverseText[strlen(text)] = '\0';
     
     unsigned long j = strlen(text)-1;
-    char c;
+    char c = 0;
  
     for(unsigned long  i = 0; i < j; ++i, --j){
         c = toupper(text[i]);
-        reverseText[i] = toupper(reverseText[j]);
+        reverseText[i] = reverseText[j];
         reverseText[j] = c;
     }
     reverseText[strlen(text)] = '\0';
@@ -628,25 +630,20 @@ unsigned char* bmp_encrypt(const char* key, const char* text)
 {
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
-    for (int i = 0; key[i] != '\0'; ++i) {
+    for (int i = 0; key[i] != '\0'; ++i)
         if (!(isalpha(key[i])))
             return NULL;
-    }
     
-    char * word1;
-    char * word2;
-    unsigned char * word;
-
-    word1 = reverse(text);
+    char * arr1;
+    char * arr2;
+    unsigned char * result;
+    arr1 = reverse(text);
+    arr2 = vigenere_encrypt(key, arr1);
+    result = bit_encrypt(arr2);
+    free(arr1);
+    free(arr2);
     
-    word2 = vigenere_encrypt(key, word1);
-        
-    word = bit_encrypt(word2);
-    
-    free(word1);
-    free(word2);
-    
-    return word;
+    return result;
 }
 
 
