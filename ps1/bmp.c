@@ -609,7 +609,7 @@ unsigned char* bmp_encrypt(const char* key, const char* text)
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
     char* rev = (char*)calloc(strlen(text)+1, sizeof(char));
-    if (rev == 0) {
+    if (rev == NULL) {
         free(rev);
         rev = NULL;
         return NULL;
@@ -629,7 +629,7 @@ char* bmp_decrypt(const char* key, const unsigned char* text)
     if (strcmp("", key) == 0 || strcmp("", (char*)text) == 0) return NULL;
     
     char* res = (char*)calloc(strlen((char*)text)+1, sizeof(char));
-    if (res == 0) {
+    if (res == NULL) {
         free(res);
         res = NULL;
         return NULL;
