@@ -226,8 +226,11 @@ char* vigenere_decrypt(const char* key, const char* text){
     //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
     //printf("\n");
 
-    char* resSting = (char*)calloc(strlen(text)+1, sizeof(char));
-    if (resSting == 0) exit(1);
+    char* resSting = (char*)calloc(2*strlen(text)+1, sizeof(char));
+    if (resSting == 0) {
+        free(resSting);
+        return NULL;
+    }
     resSting[strlen(text)] = '\0';
 
     for (int i = 0; i < strlen(text); ++i) {
