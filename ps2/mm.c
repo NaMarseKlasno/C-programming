@@ -24,12 +24,11 @@ int main(void)
 
 void mm(void)
 {
-    time_t start, end;
+    
     
     long long n = 0;
     long long k, i, m, *arr = NULL;
     scanf("%lld", &n);
-    time (&start);
 
     for (m = 0, k = n; k != 0; m++) k /= 10;
     //printf("1st m = %lld\n", m);
@@ -75,7 +74,5 @@ void mm(void)
     free(arr);
     arr = NULL;
 
-    time (&end);
-    double dif = difftime(end, start);
-    printf("Time = %lf\n", dif);
+    
 }
