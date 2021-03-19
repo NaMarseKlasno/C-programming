@@ -37,15 +37,8 @@ void isolation(void)
             mainArr[i][j] = t;
         }
     }
-    //printf("Main arr is down\n");
-
     // выводим в терминал главную матрицу
-    //for (int i = 0; i < a; ++i) {
-    //    for (int j = 0; j < b; ++j) {
-    //        printf("%i ", mainArr[i][j]);
-    //    }
-    //printf("\n");
-    //}
+
 
     //char bgArr[a][b];
     char **bgArr = (char **)calloc(a, sizeof(char *));
@@ -104,53 +97,38 @@ void isolation(void)
                 }
             }
         }
-    } //printf("============\n");
+    }
 
-    int value = 0;
-    //int helpArr[b];
-    int* helpArr = (int *)calloc(b+1, sizeof(int));
+    int* helpArr = (int *)calloc(a+1, sizeof(int));
     if (helpArr == NULL) {
         free(helpArr);
         helpArr = NULL;
         exit(1);
     }
+    int value = 0;
+
     for (int i = 0; i < a; ++i) {
-        for (int j = 0; j < b; ++j) {
-            for (int k = 0; k < a; ++k) {
-                if (bgArr[i][j] == bgArr[k][j]) ++value;
-            } helpArr[j] = value;
+        for (int x = 0; x < a; ++x) {
+            for (int y = 0; y < b; ++y) {
+                if (bgArr[i][y] == bgArr[x][y]) value++;
+            }
+            if (value == b) helpArr[i] = helpArr[i]+1;
             value = 0;
         }
     }
+
+    int max = helpArr[0];
+    for (int i = 0; i < a; ++i) {
+        if (helpArr[i] > max) max = helpArr[i];
+    }
+    //printf("max: %d\n", max);
+
+    int res = (a - max)+1;
+    //if (helpArr[0] == 1) res -= 1;
+    printf("%d\n", res);
+
+    free(helpArr);
+
     for(int i = 0; i < a; i++) free(bgArr[i]);
     free(bgArr);
-
-    // сортировка пузырком массива helpArr
-    int ts;
-    for (int j = 0; j < b - 1; ++j) {
-        if (helpArr[j] > helpArr[j + 1]) {
-            ts = helpArr[j];
-            helpArr[j] = helpArr[j + 1];
-            helpArr[j + 1] = ts;
-        }
-    }
-
-    // просто выводим на экран
-    //for (int i = 0; i < a; ++i) {
-    //    for (int j = 0; j < b; ++j) {
-    //        printf("%c ", bgArr[i][j]);
-    //    }
-    //    printf("\n");
-    //}
-
-    //printf("[%s] %d\n", bgArr[1], value);
-
-    //for (int i = 0; i < b; ++i) {
-    //    printf("%d ", helpArr[i]);
-    //} printf("\n");
-
-    int res = (a - helpArr[0])+1;
-    if (helpArr[0] == 1) res -= 1;
-    printf("%d\n", res);
-    free(helpArr);
 }
