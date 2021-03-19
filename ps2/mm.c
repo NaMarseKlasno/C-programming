@@ -1,27 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void mm(void);
+long long int mm(void);
 
 int main(void)
 {
     // Mighty Method
-    mm();
+    //mm();
+    printf("%lld\n", mm());
     return 0;
 }
 
 
-void mm(void)
+long long int mm(void)
 {
-    long long int n = 0;
+    char num[2000] = {};
+    scanf("%s", num);
+    
+    unsigned long len = strlen(num);
+    
+    long long int sum = 0;
+    for (int i = 0; i < len; ++i) {
+        sum += num[i]-'0';
+    }
+    
+    if (sum < 10) return sum;
+    if (sum == 10) return 1;
+    
+    
+    
+    long long int n = sum;
     long long int k, i, m, *arr = NULL;
-    scanf("%lld", &n);
-    //printf("%lld ", n);
-
+    
     for (m = 0, k = n; k != 0; m++) k /= 10;
-    //printf("1st m = %lld\n", m);
 
-    arr = (long long int*)calloc(10*m+1, sizeof(int));
+    arr = (long long int *)calloc(10*m+1, sizeof(int));
     if (arr == NULL) {
         free(arr);
         arr = NULL;
@@ -34,30 +48,32 @@ void mm(void)
     } //for ( i = m - 1; i >= 0; i--) printf("%lld ",arr[i]); printf("\n");
 
 
-    //printf("m = %lld\n", m);
+        //printf("m = %lld\n", m);
 
     for (int j = 0; m > 1; ++j) {
-        n = 0;
-        for ( i = m - 1; i >= 0; i--) n += arr[i];
-        for (m = 0, k = n; k != 0; m++) k /= 10;
+    n = 0;
+    for ( i = m - 1; i >= 0; i--) n += arr[i];
+    for (m = 0, k = n; k != 0; m++) k /= 10;
 
-        //printf("in end n = %lld\n", n);
-        //printf("in end m = %lld\n", m);
+    //printf("in end n = %lld\n", n);
+    //printf("in end m = %lld\n", m);
 
-        arr = (long long int *)realloc(arr, (10* m * sizeof(int))+1);
-        if (arr == NULL) {
-            free(arr);
-            arr = NULL;
-            exit(1);
+    arr = (long long int *)realloc(arr, (10* m * sizeof(int))+1);
+    if (arr == NULL) {
+        free(arr);
+        arr = NULL;
+        exit(1);
+    }
+    for (i = 0; i < m; i++) {
+        arr[i] = n % 10;
+        n = n / 10;
         }
-        for (i = 0; i < m; i++) {
-            arr[i] = n % 10;
-            n = n / 10;
-        }
-
     }
     n = arr[0];
-    printf("%lld\n", n);
     free(arr);
     arr = NULL;
+    //printf("%lld\n", n);
+    
+    return n;
+    
 }
