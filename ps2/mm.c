@@ -1,3 +1,7 @@
+// Mighty Method
+// Stanislav Voloshyn
+// @pchoul - telegram
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +11,6 @@ long long int mm(void);
 int main(void)
 {
     // Mighty Method
-    //mm();
     printf("%lld\n", mm());
     return 0;
 }
@@ -24,7 +27,7 @@ long long int mm(void)
     for (int i = 0; i < len; ++i) {
         sum += num[i]-'0';
     }
-    
+    //printf("%lld\n", sum);
     if (sum < 10) return sum;
     if (sum == 10) return 1;
     
@@ -58,7 +61,7 @@ long long int mm(void)
     //printf("in end n = %lld\n", n);
     //printf("in end m = %lld\n", m);
 
-    arr = (long long int *)realloc(arr, (10* m * sizeof(int))+1);
+    arr = (long long int *)realloc(arr, (10* m+1 * sizeof(int))+1);
     if (arr == NULL) {
         free(arr);
         arr = NULL;
