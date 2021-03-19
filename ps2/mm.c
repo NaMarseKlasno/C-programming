@@ -18,7 +18,13 @@ int main(void)
 
 long long int mm(void)
 {
-    char num[2000] = {};
+    //char num[2000] = {};
+    char* num = (char*)calloc(20000000, sizeof(char));
+    if (num == NULL) {
+        free(num);
+        num = NULL;
+        exit(1);
+    }
     scanf("%s", num);
     
     unsigned long len = strlen(num);
@@ -38,7 +44,7 @@ long long int mm(void)
     
     for (m = 0, k = n; k != 0; m++) k /= 10;
 
-    arr = (long long int *)calloc(10*m+1, sizeof(int));
+    arr = (long long int *)calloc(2*m+1, sizeof(int));
     if (arr == NULL) {
         free(arr);
         arr = NULL;
@@ -61,7 +67,7 @@ long long int mm(void)
     //printf("in end n = %lld\n", n);
     //printf("in end m = %lld\n", m);
 
-    arr = (long long int *)realloc(arr, (10* m+1 * sizeof(int))+1);
+    arr = (long long int *)realloc(arr, (2* m+1 * sizeof(int))+1);
     if (arr == NULL) {
         free(arr);
         arr = NULL;
@@ -76,7 +82,8 @@ long long int mm(void)
     free(arr);
     arr = NULL;
     //printf("%lld\n", n);
-    
+    free(num);
+
     return n;
     
 }
