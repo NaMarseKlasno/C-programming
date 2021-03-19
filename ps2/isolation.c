@@ -68,6 +68,16 @@ void isolation(void)
             }
         }
     }
+
+    //printf("\n");
+    // муссор
+    for (int i = 0; i < a; ++i) {
+        for (int j = 0; j < b; ++j) {
+            printf("%d ", mainArr[i][j]);
+        } printf("\n");
+    }
+
+
     for(int i = 0; i < a; i++) free(mainArr[i]);
     free(mainArr);
 
@@ -122,6 +132,7 @@ void isolation(void)
         if (helpArr[i] > max) max = helpArr[i];
     }
     //printf("max: %d\n", max);
+
 
     int res = (a - max)+1;
     //if (helpArr[0] == 1) res -= 1;
