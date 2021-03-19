@@ -16,7 +16,7 @@ void mm(void)
     long long n = 0;
     long long k, i, m, *arr = NULL;
     scanf("%lld", &n);
-    printf("%lld ", n);
+    //printf("%lld ", n);
 
     for (m = 0, k = n; k != 0; m++) k /= 10;
     //printf("1st m = %lld\n", m);
