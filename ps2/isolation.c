@@ -71,11 +71,11 @@ void isolation(void)
 
     //printf("\n");
     // муссор
-    for (int i = 0; i < a; ++i) {
-        for (int j = 0; j < b; ++j) {
-            printf("%d ", mainArr[i][j]);
-        } printf("\n");
-    }
+    //for (int i = 0; i < a; ++i) {
+    //    for (int j = 0; j < b; ++j) {
+    //        printf("%d ", mainArr[i][j]);
+    //    } printf("\n");
+    //}
 
 
     for(int i = 0; i < a; i++) free(mainArr[i]);
