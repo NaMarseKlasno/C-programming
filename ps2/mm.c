@@ -13,15 +13,15 @@ int main(void)
 
 void mm(void)
 {
-    long long n = 0;
-    long long k, i, m, *arr = NULL;
+    long long int n = 0;
+    long long int k, i, m, *arr = NULL;
     scanf("%lld", &n);
     //printf("%lld ", n);
 
     for (m = 0, k = n; k != 0; m++) k /= 10;
     //printf("1st m = %lld\n", m);
 
-    arr = (long long*)calloc(10*m+1, sizeof(int));
+    arr = (long long int*)calloc(10*m+1, sizeof(int));
     if (arr == NULL) {
         free(arr);
         arr = NULL;
@@ -44,7 +44,7 @@ void mm(void)
         //printf("in end n = %lld\n", n);
         //printf("in end m = %lld\n", m);
 
-        arr = (long long*)realloc(arr, (10* m * sizeof(int))+1);
+        arr = (long long int *)realloc(arr, (10* m * sizeof(int))+1);
         if (arr == NULL) {
             free(arr);
             arr = NULL;
