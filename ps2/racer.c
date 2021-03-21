@@ -62,14 +62,12 @@ int rac (void)
     i = (float) bubbleSort(mainArr, nParts) * -1;
     //float min = i;
     double value = 0.0;
-    float save = 0.0;
     
     for (i = i; i < 1000; ++i) {
         if (testValue(i, mainArr, t, nParts, &value, count)) {
             printf("%f\n", i);
             return 0;
         } if (value == -1) break;
-        save = value;
     }
     //printf("save: %f\n", save);
     //printf("last i: %f\n", i);
@@ -84,7 +82,6 @@ int rac (void)
 //                              'К' С ПЛАВАЮЩЕЙ ТОЧКОЙ
 //  ====================================================================================
     value = 0.0;
-    save = 0.0;
     count = 1;
     
     for (float i = from; i < to; i += 0.000001) {
@@ -95,7 +92,6 @@ int rac (void)
             to = i-0.000001;
             break;
         }
-        save = value;
         count = 2;
     }
     
