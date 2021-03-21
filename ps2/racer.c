@@ -15,7 +15,7 @@ bool testValue(float k, int arr[][2], int t, int parts) {
             res += (float)arr[i][0] / ((float)arr[i][1] + k);
         }
     }
-    printf("k: %f -> time: %f\n", k, res);
+    //printf("k: %f -> time: %f\n", k, res);
  
     if (res == t) return true;
     return false;
