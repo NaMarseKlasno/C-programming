@@ -5,10 +5,11 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 int bubbleSort (int arr[][2], int n);
 
-bool testValue(float k, int arr[][2], int t, int parts) {
+bool testValue(float k, int arr[][2], int t, int parts, double *value, short count) {
     double res = 0;
     for (int i = 0; i < parts; ++i) {
         if ( ((float)arr[i][1] + k) != 0 ) {
@@ -16,16 +17,33 @@ bool testValue(float k, int arr[][2], int t, int parts) {
         }
     }
     //printf("k: %f -> time: %f\n", k, res);
- 
+    
+    if (count == 1) {
+        if (*value > res) *value = -1;
+        else *value = res;
+    }
+    
+    if (count == 2) {
+        static short nw = 0;
+        if (*value < (double)t && nw != 0) {
+            *value = -1;
+        }
+        else *value = res;
+        nw = 1;
+
+    }
+    
     if (res == t) return true;
     return false;
 }
 
 
 
+
 int rac (void)
 {
     int nParts = 0, q = 0, t = 0;
+    short count = 1;
     scanf("%d %i", &nParts, &t);
 
     int mainArr[nParts][2];
@@ -39,33 +57,58 @@ int rac (void)
 //                              ПРОВЕРКА НА ПРОСТОЙ ОТВЕТ
 //  ====================================================================================
     
-    float i = -999;
+    float i = -1000;
 
     i = (float) bubbleSort(mainArr, nParts) * -1;
-        
-    for (i = i; i < 999; ++i) {
-        if (testValue(i, mainArr, t, nParts)) {
+    //float min = i;
+    double value = 0.0;
+    float save = 0.0;
+    
+    for (i = i; i < 1000; ++i) {
+        if (testValue(i, mainArr, t, nParts, &value, count)) {
             printf("%f\n", i);
             return 0;
+        } if (value == -1) break;
+        save = value;
+    }
+    //printf("save: %f\n", save);
+    //printf("last i: %f\n", i);
+    
+    float from = i-2;
+    float to = i;
+
+    //printf("from: %f\n", from);
+    //printf("to : %f\n", to);
+    //printf("=====================\n");
+//  ====================================================================================
+//                              'К' С ПЛАВАЮЩЕЙ ТОЧКОЙ
+//  ====================================================================================
+    value = 0.0;
+    save = 0.0;
+    count = 1;
+    
+    for (float i = from; i < to; i += 0.000001) {
+        if (testValue(i, mainArr, t, nParts, &value, count)) {
+            printf("%f\n", i);
+            return 0;
+        } if (value == -1) {
+            to = i-0.000001;
+            break;
         }
+        save = value;
+        count = 2;
     }
     
-//  ====================================================================================
-//                         ПРОВЕРКА 'К' С ПЛАВАЮЩЕЙ ТОЧКОЙ
-//  ====================================================================================
-      
+    //printf("save: %f\n", save);
+    printf("%f\n", to);
     
-    
-    
-    
-    printf("%f\n", i);
     return 0;
 }
 
 
-int main(void) {
+int main(void)
+{
     rac();
-    
     return 0;
 }
 
