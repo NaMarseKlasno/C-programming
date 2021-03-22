@@ -25,7 +25,7 @@ bool testValue(double k, int arr[][2], int t, int parts, double *value, short co
 
     if (count == 2) {
         static short nw = 0;
-        if (*value <= (double)t && nw != 0) {
+        if (*value < (double)t && nw != 0) {
             *value = -1;
         }
         else *value = res;
@@ -74,6 +74,8 @@ int rac (void)
 
     double from = i-2;
     double to = i;
+    double toto = to;
+
 
     //printf("from: %f\n", from);
     //printf("to : %f\n", to);
@@ -86,11 +88,12 @@ int rac (void)
     bool same = false;
 
     for (double i = from; i < to; i += 0.000001) {
+        if (i >= 1000.0) return 0;
         if (testValue(i, mainArr, t, nParts, &value, count)) {
             printf("%f\n", i);
             return 0;
         } if (value == -1) {
-            to = i-0.000001;
+            toto = i-0.000001;
             same = true;
             break;
         }
@@ -98,7 +101,7 @@ int rac (void)
     }
 
 
-    if (same) printf("%f\n", to);
+    if (same) printf("%f\n", toto);
 
     return 0;
 }
