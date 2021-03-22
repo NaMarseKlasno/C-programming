@@ -63,7 +63,7 @@ int rac (void)
     //float min = i;
     double value = 0.0;
 
-    for (i = i; i < 1000; ++i) {
+    for (i = i; i < 2003; ++i) {
         if (testValue(i, mainArr, t, nParts, &value, count)) {
             printf("%f\n", i);
             return 0;
@@ -87,13 +87,13 @@ int rac (void)
     count = 1;
     bool same = false;
 
-    for (double i = from; i < to; i += 0.000001) {
+    for (double i = from; i < to; i += 0.0000001) {
         if (i >= 1000.0) return 0;
         if (testValue(i, mainArr, t, nParts, &value, count)) {
             printf("%f\n", i);
             return 0;
         } if (value == -1) {
-            toto = i-0.000001;
+            toto = i-0.00000001;
             same = true;
             break;
         }
