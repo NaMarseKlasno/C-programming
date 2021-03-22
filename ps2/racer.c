@@ -9,30 +9,30 @@
 
 int bubbleSort (int arr[][2], int n);
 
-bool testValue(float k, int arr[][2], int t, int parts, double *value, short count) {
+bool testValue(double k, int arr[][2], int t, int parts, double *value, short count) {
     double res = 0;
     for (int i = 0; i < parts; ++i) {
-        if ( ((float)arr[i][1] + k) != 0 ) {
-            res += (float)arr[i][0] / ((float)arr[i][1] + k);
+        if ( ((double)arr[i][1] + k) != 0 ) {
+            res += (double)arr[i][0] / ((double)arr[i][1] + k);
         }
     }
     //printf("k: %f -> time: %f\n", k, res);
-    
+
     if (count == 1) {
         if (*value > res) *value = -1;
         else *value = res;
     }
-    
+
     if (count == 2) {
         static short nw = 0;
-        if (*value < (double)t && nw != 0) {
+        if (*value <= (double)t && nw != 0) {
             *value = -1;
         }
         else *value = res;
         nw = 1;
 
     }
-    
+
     if (res == t) return true;
     return false;
 }
@@ -56,13 +56,13 @@ int rac (void)
 //  ====================================================================================
 //                              ПРОВЕРКА НА ПРОСТОЙ ОТВЕТ
 //  ====================================================================================
-    
-    float i = -1000;
 
-    i = (float) bubbleSort(mainArr, nParts) * -1;
+    double i = -1000;
+
+    i = (double) bubbleSort(mainArr, nParts) * -1;
     //float min = i;
     double value = 0.0;
-    
+
     for (i = i; i < 1000; ++i) {
         if (testValue(i, mainArr, t, nParts, &value, count)) {
             printf("%f\n", i);
@@ -71,9 +71,9 @@ int rac (void)
     }
     //printf("save: %f\n", save);
     //printf("last i: %f\n", i);
-    
-    float from = i-2;
-    float to = i;
+
+    double from = i-2;
+    double to = i;
 
     //printf("from: %f\n", from);
     //printf("to : %f\n", to);
@@ -83,21 +83,23 @@ int rac (void)
 //  ====================================================================================
     value = 0.0;
     count = 1;
-    
-    for (float i = from; i < to; i += 0.000001) {
+    bool same = false;
+
+    for (double i = from; i < to; i += 0.000001) {
         if (testValue(i, mainArr, t, nParts, &value, count)) {
             printf("%f\n", i);
             return 0;
         } if (value == -1) {
             to = i-0.000001;
+            same = true;
             break;
         }
         count = 2;
     }
-    
-    //printf("save: %f\n", save);
-    printf("%f\n", to);
-    
+
+
+    if (same) printf("%f\n", to);
+
     return 0;
 }
 
@@ -111,20 +113,20 @@ int main(void)
 
 int bubbleSort (int arr[][2], int n) {
     int i, j;
-    
+
     int qwerty[n];
     for (int i = 0; i < n; ++i) qwerty[i] = arr[i][1];
-    
+
     for (i = 0; i < n - 1; i++) {
-       for (j = 0; j < n - i - 1; j++) {
-           if (qwerty[j] > qwerty[j+1]) {
-               int tmp = qwerty[j];
-               qwerty[j] = qwerty[j+1];
-               qwerty[j+1] = tmp;
-           }
+        for (j = 0; j < n - i - 1; j++) {
+            if (qwerty[j] > qwerty[j+1]) {
+                int tmp = qwerty[j];
+                qwerty[j] = qwerty[j+1];
+                qwerty[j+1] = tmp;
+            }
         }
     }
-    
+
     return qwerty[0];
 }
 
@@ -142,3 +144,5 @@ int bubbleSort (int arr[][2], int n) {
 
 
 
+//979.000490763
+//998.000853868
