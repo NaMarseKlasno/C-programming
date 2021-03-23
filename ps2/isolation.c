@@ -1,17 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-void isolation(void);
 
-int main()
-{
-    isolation();
-    return 0;
+typedef struct tree {
+    int key;
+    struct tree *left;
+    struct tree *right;
+    struct tree *parent;
+} node;
+
+node *create(node *root, int key);
+node *add(node *root, int key);
+
+int compare_two_trees(node* tree1, node* tree2) {
+    if (tree1 == NULL && tree2 == NULL) {
+        return 1;
+    }
+    if (tree1 == NULL || tree2 == NULL) {
+        return 0;
+    }
+    return compare_two_trees(tree1->left, tree2->left) && compare_two_trees(tree1->right, tree2->right);
 }
 
-void isolation(void)
-{
-    int a, b, t;
+int main(void) {
+    int a, b;
     scanf("%i %i", &a, &b);
 
     //int mainArr[a][b];
@@ -33,113 +46,87 @@ void isolation(void)
     // заполняем главную матрицу входными данными
     for (int i = 0; i < a; ++i) {
         for (int j = 0; j < b; ++j) {
-            scanf("%i", &t);
-            mainArr[i][j] = t;
+            scanf("%i", &mainArr[i][j]);
         }
     }
-    // выводим в терминал главную матрицу
-
-
-    //char bgArr[a][b];
-    char **bgArr = (char **)calloc(a, sizeof(char *));
-    if (bgArr == NULL) {
-        free(bgArr);
-        bgArr = NULL;
-        exit(1);
-    }
-    for(int i = 0; i < a; i++) {
-        bgArr[i] = (char *)calloc(b, sizeof(char ));
-        if (bgArr == NULL) {
-            free(bgArr);
-            bgArr = NULL;
-            exit(1);
-        }
-    }
+    node* trees[a];
+    
+    node* tree = NULL;
 
     for (int i = 0; i < a; ++i) {
-        for (int j = 0; j < b; ++j) {
-            if (j == 0) bgArr[i][j] = 'Y';
-            else if (mainArr[i][j] < mainArr[i][0]) {
-                if (mainArr[i][j] < mainArr[i][j-1]) bgArr[i][j] = 'A';
-                else bgArr[i][j] = 'B';
-            } else if (mainArr[i][j] > mainArr[i][0]) {
-                if (mainArr[i][j] < mainArr[i][j-1]) bgArr[i][j] = 'C';
-                else bgArr[i][j] = 'D';
-            }
+        tree = create(tree, mainArr[i][0]);
+        trees[i] = tree;
+        
+        for (int j = 1; j < b; j++) {
+            tree = add(tree, mainArr[i][j]);
+        }
+        //preorderf(tree);
+        //printf("\n");
+
+    }
+    int result = 0;
+    
+    for (int i = 0; i < a; ++i) {
+        for (int j = 0; j < a; ++j) {
+            if (i != j && compare_two_trees(trees[i], trees[j])) ++result;
         }
     }
-
-    //printf("\n");
-    // муссор
-    //for (int i = 0; i < a; ++i) {
-    //    for (int j = 0; j < b; ++j) {
-    //        printf("%d ", mainArr[i][j]);
-    //    } printf("\n");
-    //}
-
-
+    result = a - result + 1;
+    printf("%d\n", result);
+    
+    
+    
     for(int i = 0; i < a; i++) free(mainArr[i]);
     free(mainArr);
-
-    //printf("result down\n");
-    //for (int i = 0; i < a; ++i) {
-    //    for (int j = 0; j < b; ++j) {
-    //        printf("%c ", bgArr[i][j]);
-    //    }
-    //    printf("\n");
-    //}
-
-    // LX - A
-    // XL - B
-    // RX - C
-    // XR - D
-    char test;
-
-    // сортировка bgArr
-    for (int i = 0; i < a; ++i)
-    {
-        for (int q = 0; q < b; ++q) {
-            for (int j = 0; j < b - 1; ++j) {
-                if (bgArr[i][j] > bgArr[i][j+1]) {
-                    test = bgArr[i][j];
-                    bgArr[i][j] = bgArr[i][j+1];
-                    bgArr[i][j+1] = test;
-                }
-            }
-        }
-    }
-
-    int* helpArr = (int *)calloc(a+1, sizeof(int));
-    if (helpArr == NULL) {
-        free(helpArr);
-        helpArr = NULL;
-        exit(1);
-    }
-    int value = 0;
-
-    for (int i = 0; i < a; ++i) {
-        for (int x = 0; x < a; ++x) {
-            for (int y = 0; y < b; ++y) {
-                if (bgArr[i][y] == bgArr[x][y]) value++;
-            }
-            if (value == b) helpArr[i] = helpArr[i]+1;
-            value = 0;
-        }
-    }
-
-    int max = helpArr[0];
-    for (int i = 0; i < a; ++i) {
-        if (helpArr[i] > max) max = helpArr[i];
-    }
-    //printf("max: %d\n", max);
-
-
-    int res = (a - max)+1;
-    //if (helpArr[0] == 1) res -= 1;
-    printf("%d\n", res);
-
-    free(helpArr);
-
-    for(int i = 0; i < a; i++) free(bgArr[i]);
-    free(bgArr);
+    free(tree);
+    return 0;
 }
+
+
+
+
+node *create(node *root, int key)
+{
+// Выделение памяти под корень дерева
+    node *tmp = malloc(sizeof(node));
+// Присваивание значения ключу
+    tmp -> key = key;
+// Присваивание указателю на родителя значения NULL
+    tmp -> parent = NULL;
+// Присваивание указателю на левое и правое поддерево значения NULL
+    tmp -> left = tmp -> right = NULL;
+    root = tmp;
+    return root;
+}
+
+node *add(node *root, int key)
+{
+    node *root2 = root, *root3 = NULL;
+// Выделение памяти под узел дерева
+    node *tmp = malloc(sizeof(node));
+// Присваивание значения ключу
+    tmp -> key = key;
+/* Поиск нужной позиции для вставки (руководствуемся правилом
+вставки элементов, см. начало статьи, пункт 3) */
+    while (root2 != NULL)
+    {
+        root3 = root2;
+        if (key < root2 -> key)
+            root2 = root2 -> left;
+        else
+            root2 = root2 -> right;
+    }
+/* Присваивание указателю на родителя значения указателя root3
+(указатель root3 был найден выше) */
+    tmp -> parent = root3;
+// Присваивание указателю на левое и правое поддерево значения NULL
+    tmp -> left = NULL;
+    tmp -> right = NULL;
+/* Вставляем узел в дерево (руководствуемся правилом
+вставки элементов, см. начало статьи, пункт 3) */
+    if (key < root3 -> key) root3 -> left = tmp;
+    else root3 -> right = tmp;
+    return root;
+}
+
+
