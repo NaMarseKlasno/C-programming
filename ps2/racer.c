@@ -54,7 +54,7 @@ int rac (void)
         }
     }
     printf("%d %d\n", nParts, t);
-    printf("\n");
+    //printf("\n");
     for (int i = 0; i < nParts; ++i) {
         for (int j = 0; j < 2; j++) {
             printf("%d ", mainArr[i][j]);
