@@ -68,7 +68,10 @@ int main(void) {
     
     for (int i = 0; i < a; ++i) {
         for (int j = 0; j < a; ++j) {
-            if (i != j && compare_two_trees(trees[i], trees[j])) ++result;
+            if (i != j && compare_two_trees(trees[i], trees[j])) {
+                ++result;
+                break;
+            }
         }
     }
     result = a - result + 1;
