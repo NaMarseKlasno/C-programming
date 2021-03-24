@@ -13,12 +13,12 @@ typedef struct tree {
 node *create(node *root, int key);
 node *add(node *root, int key);
 
-int compare_two_trees(node* tree1, node* tree2) {
+bool compare_two_trees(node* tree1, node* tree2) {
     if (tree1 == NULL && tree2 == NULL) {
-        return 1;
+        return true;
     }
     if (tree1 == NULL || tree2 == NULL) {
-        return 0;
+        return false;
     }
     return compare_two_trees(tree1->left, tree2->left) && compare_two_trees(tree1->right, tree2->right);
 }
@@ -64,17 +64,17 @@ int main(void) {
         //printf("\n");
 
     }
-    int result = 0;
+    int result = a;
     
     for (int i = 0; i < a; ++i) {
-        for (int j = 0; j < a; ++j) {
-            if (i != j && compare_two_trees(trees[i], trees[j])) {
-                ++result;
+        for (int j = i + 1; j < a; ++j) {
+            if (compare_two_trees(trees[i], trees[j]) == true) {
+                result--;
                 break;
             }
         }
     }
-    result = a - result + 1;
+    //result = a - result + 1;
     printf("%d\n", result);
     
     
@@ -90,13 +90,9 @@ int main(void) {
 
 node *create(node *root, int key)
 {
-// Выделение памяти под корень дерева
     node *tmp = malloc(sizeof(node));
-// Присваивание значения ключу
     tmp -> key = key;
-// Присваивание указателю на родителя значения NULL
     tmp -> parent = NULL;
-// Присваивание указателю на левое и правое поддерево значения NULL
     tmp -> left = tmp -> right = NULL;
     root = tmp;
     return root;
@@ -105,12 +101,8 @@ node *create(node *root, int key)
 node *add(node *root, int key)
 {
     node *root2 = root, *root3 = NULL;
-// Выделение памяти под узел дерева
     node *tmp = malloc(sizeof(node));
-// Присваивание значения ключу
     tmp -> key = key;
-/* Поиск нужной позиции для вставки (руководствуемся правилом
-вставки элементов, см. начало статьи, пункт 3) */
     while (root2 != NULL)
     {
         root3 = root2;
@@ -119,14 +111,10 @@ node *add(node *root, int key)
         else
             root2 = root2 -> right;
     }
-/* Присваивание указателю на родителя значения указателя root3
-(указатель root3 был найден выше) */
+
     tmp -> parent = root3;
-// Присваивание указателю на левое и правое поддерево значения NULL
     tmp -> left = NULL;
     tmp -> right = NULL;
-/* Вставляем узел в дерево (руководствуемся правилом
-вставки элементов, см. начало статьи, пункт 3) */
     if (key < root3 -> key) root3 -> left = tmp;
     else root3 -> right = tmp;
     return root;
