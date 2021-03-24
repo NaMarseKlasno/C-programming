@@ -10,24 +10,16 @@ typedef struct tree {
     struct tree *parent;
 } node;
 
-node *create(node *root, int key);
-node *add(node *root, int key);
 
-bool compare_two_trees(node* tree1, node* tree2) {
-    if (tree1 == NULL && tree2 == NULL) {
-        return true;
-    }
-    if (tree1 == NULL || tree2 == NULL) {
-        return false;
-    }
-    return compare_two_trees(tree1->left, tree2->left) && compare_two_trees(tree1->right, tree2->right);
-}
+node *create_tree(node *root, int key);
+node *add_node(node *root, int key);
+bool compare_two_trees(node* tree1, node* tree2);
+
 
 int main(void) {
     int a, b;
     scanf("%i %i", &a, &b);
 
-    //int mainArr[a][b];
     int **mainArr = (int **)calloc(a, sizeof(int *));
     if (mainArr == NULL) {
         free(mainArr);
@@ -42,30 +34,41 @@ int main(void) {
             exit(1);
         }
     }
+    
+//  =================================================================================
+//                   ЗАПОЛНЯЕМ ГЛАВНУЮ МАТРИЦУ ВХОДНЫМИ ДАННЫМИ
+//  =================================================================================
 
-    // заполняем главную матрицу входными данными
     for (int i = 0; i < a; ++i) {
         for (int j = 0; j < b; ++j) {
             scanf("%i", &mainArr[i][j]);
         }
     }
-    node* trees[a];
     
+//  =================================================================================
+//                            ДОБАВЛЯЕМ ВЕТКИ В ДЕРЕВО
+//  =================================================================================
+
+    node* trees[a];
     node* tree = NULL;
 
     for (int i = 0; i < a; ++i) {
-        tree = create(tree, mainArr[i][0]);
+        tree = create_tree(tree, mainArr[i][0]);
         trees[i] = tree;
         
         for (int j = 1; j < b; j++) {
-            tree = add(tree, mainArr[i][j]);
+            tree = add_node(tree, mainArr[i][j]);
         }
         //preorderf(tree);
         //printf("\n");
 
     }
-    int result = a;
     
+//  =================================================================================
+//                    СРАВНИВАЕМ ДВА ДЕРЕВА И ВЫВОДИМ РЕЗУЛЬТАТ
+//  =================================================================================
+    
+    int result = a;
     for (int i = 0; i < a; ++i) {
         for (int j = i + 1; j < a; ++j) {
             if (compare_two_trees(trees[i], trees[j]) == true) {
@@ -77,8 +80,6 @@ int main(void) {
     //result = a - result + 1;
     printf("%d\n", result);
     
-    
-    
     for(int i = 0; i < a; i++) free(mainArr[i]);
     free(mainArr);
     free(tree);
@@ -86,9 +87,7 @@ int main(void) {
 }
 
 
-
-
-node *create(node *root, int key)
+node *create_tree(node *root, int key)
 {
     node *tmp = malloc(sizeof(node));
     tmp -> key = key;
@@ -98,7 +97,8 @@ node *create(node *root, int key)
     return root;
 }
 
-node *add(node *root, int key)
+
+node *add_node(node *root, int key)
 {
     node *root2 = root, *root3 = NULL;
     node *tmp = malloc(sizeof(node));
@@ -121,3 +121,9 @@ node *add(node *root, int key)
 }
 
 
+bool compare_two_trees(node* tree1, node* tree2)
+{
+    if (tree1 == NULL && tree2 == NULL) return true;
+    if (tree1 == NULL || tree2 == NULL) return false;
+    return compare_two_trees(tree1->left, tree2->left) && compare_two_trees(tree1->right, tree2->right);
+}
