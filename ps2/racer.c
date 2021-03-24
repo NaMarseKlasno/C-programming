@@ -63,7 +63,7 @@ int rac (void)
 
     for (i = i; i < 1001; ++i) {
         if (testValue(i, mainArr, t, nParts, &value, count)) {
-            printf("%.6f\n", i);
+            printf("%.5f\n", i);
             return 0;
         } if (value == -1) break;
     }
@@ -86,7 +86,7 @@ int rac (void)
 
     for (long double i = from; i < to; i += 0.000001) {
         if (testValue(i, mainArr, t, nParts, &value, count)) {
-            printf("%.6Lf\n", i);
+            printf("%.5Lf\n", i);
             return 0;
         } if (value == -1) {
             to = i-0.000001;
@@ -95,9 +95,9 @@ int rac (void)
         }
         count = 2;
     }
+    //printf("sisisisisivis\n");
 
-
-    if (same) printf("%.6Lf\n", to);
+    if (same) printf("%.5Lf\n", to);
 
     return 0;
 }
@@ -145,3 +145,4 @@ int bubbleSort (int arr[][2], int n) {
 
 //979.000490763
 
+// 998.00085m3868
