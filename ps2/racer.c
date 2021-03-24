@@ -6,6 +6,9 @@ struct lip
     long double velocity;
     struct lip *next;
 };
+
+
+
 void scan(struct lip *lip, int max)
 {
     for (int i = 0; i < max; i++)
@@ -26,6 +29,10 @@ void freee(struct lip *l, long double size, int i)
     }
     free(l);
 }
+
+
+
+
 long double result(struct lip *lip, long double hoal, long double left, long double right, int lim, int iteration, long double size)
 {
     long double sample = (left + right) / 2;
@@ -55,9 +62,7 @@ int main()
     long double s, res = 0;
     scanf("%Le %Le", &s, &res);
     struct lip *lip = (struct lip *)malloc(sizeof(struct lip));
-    // lip->distance = 0;
-    // lip->velocity = 0;
-    // lip->next = NULL;
+    
     scan(lip, s);
     long double vl = result(lip, res, -10000, 10000, 200, 0,s);
     freee(lip,s,0);
