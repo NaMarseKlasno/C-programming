@@ -59,9 +59,7 @@ int main(void) {
         for (int j = 1; j < b; j++) {
             tree = add_node(tree, mainArr[i][j]);
         }
-        //preorderf(tree);
         //printf("\n");
-
     }
     
 //  =================================================================================
