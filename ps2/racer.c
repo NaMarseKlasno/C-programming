@@ -53,13 +53,13 @@ int rac (void)
             mainArr[i][j] = q;
         }
     }
-    printf("%d %d\n", nParts, t);
+    //printf("%d %d\n", nParts, t);
     //printf("\n");
-    for (int i = 0; i < nParts; ++i) {
-        for (int j = 0; j < 2; j++) {
-            printf("%d ", mainArr[i][j]);
-        } printf("\n");
-    }
+    //for (int i = 0; i < nParts; ++i) {
+    //    for (int j = 0; j < 2; j++) {
+    //        printf("%d ", mainArr[i][j]);
+    //    } printf("\n");
+    //}
 //  ====================================================================================
 //                              ПРОВЕРКА НА ПРОСТОЙ ОТВЕТ
 //  ====================================================================================
