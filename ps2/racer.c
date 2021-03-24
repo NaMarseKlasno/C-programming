@@ -68,11 +68,11 @@ int rac (void)
             return 0;
         } if (value == -1) break;
     }
-    printf("last i: %Lf\n", i);
+    //printf("last i: %Lf\n", i);
     
-    printf("from: %Lf\n", from);
-    printf("to : %Lf\n", to);
-    printf("=====================\n");
+    //printf("from: %Lf\n", from);
+    //printf("to : %Lf\n", to);
+    //printf("=====================\n");
     
 //  ====================================================================================
 //                              'К' С ПЛАВАЮЩЕЙ ТОЧКОЙ
