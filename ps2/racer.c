@@ -1,7 +1,6 @@
 // Stanislav Voloshyn
 // @pchoul - telegram
 
-// Created by Macbook Pro on 20.03.2021.
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -9,8 +8,8 @@
 
 int bubbleSort (int arr[][2], int n);
 
-bool testValue(double k, int arr[][2], int t, int parts, double *value, short count) {
-    double res = 0;
+bool testValue(long double k, int arr[][2], int t, int parts, double *value, short count) {
+    long double res = 0;
     for (int i = 0; i < parts; ++i) {
         if ( ((double)arr[i][1] + k) != 0 ) {
             res += (double)arr[i][0] / ((double)arr[i][1] + k);
@@ -25,7 +24,7 @@ bool testValue(double k, int arr[][2], int t, int parts, double *value, short co
 
     if (count == 2) {
         static short nw = 0;
-        if (*value < (double)t && nw != 0) {
+        if (*value <= (double)t && nw != 0) {
             *value = -1;
         }
         else *value = res;
@@ -36,8 +35,6 @@ bool testValue(double k, int arr[][2], int t, int parts, double *value, short co
     if (res == t) return true;
     return false;
 }
-
-
 
 
 int rac (void)
@@ -53,13 +50,7 @@ int rac (void)
             mainArr[i][j] = q;
         }
     }
-    //printf("%d %d\n", nParts, t);
-    //printf("\n");
-    //for (int i = 0; i < nParts; ++i) {
-    //    for (int j = 0; j < 2; j++) {
-    //        printf("%d ", mainArr[i][j]);
-    //    } printf("\n");
-    //}
+
 //  ====================================================================================
 //                              ПРОВЕРКА НА ПРОСТОЙ ОТВЕТ
 //  ====================================================================================
@@ -70,23 +61,22 @@ int rac (void)
     //float min = i;
     double value = 0.0;
 
-    for (i = i; i < 2003; ++i) {
+    for (i = i; i < 1001; ++i) {
         if (testValue(i, mainArr, t, nParts, &value, count)) {
-            printf("%f\n", i);
+            printf("%.6f\n", i);
             return 0;
         } if (value == -1) break;
     }
     //printf("save: %f\n", save);
     //printf("last i: %f\n", i);
 
-    double from = i-2;
-    double to = i;
-    double toto = to;
-
+    long double from = i-2;
+    long double to = i;
 
     //printf("from: %f\n", from);
     //printf("to : %f\n", to);
     //printf("=====================\n");
+
 //  ====================================================================================
 //                              'К' С ПЛАВАЮЩЕЙ ТОЧКОЙ
 //  ====================================================================================
@@ -94,13 +84,12 @@ int rac (void)
     count = 1;
     bool same = false;
 
-    for (double i = from; i < to; i += 0.0000001) {
-        if (i >= 1000.0) return 0;
+    for (long double i = from; i < to; i += 0.000001) {
         if (testValue(i, mainArr, t, nParts, &value, count)) {
-            printf("%f\n", i);
+            printf("%.6Lf\n", i);
             return 0;
         } if (value == -1) {
-            toto = i-0.00000001;
+            to = i-0.000001;
             same = true;
             break;
         }
@@ -108,7 +97,7 @@ int rac (void)
     }
 
 
-    if (same) printf("%f\n", toto);
+    if (same) printf("%.6Lf\n", to);
 
     return 0;
 }
@@ -155,4 +144,4 @@ int bubbleSort (int arr[][2], int n) {
 
 
 //979.000490763
-//998.000853868
+
