@@ -71,6 +71,7 @@ double cheese (void) {
             printf("%f\n", a2);
             printf("%f\n", a3);
             printf("%f\n", a4);
+            return 0;
 
         }
             
