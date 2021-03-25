@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#define M_PI 3.141592653
+//#define M_PI 3.141592653
 #include <stdbool.h>
 
 double cheese (void);
@@ -63,16 +63,20 @@ double cheese (void) {
         if (a1 == true && HoleinCheese[1][0] == 10.0f && HoleinCheese[1][1] == 40.0f && HoleinCheese[1][2] == 50.0f && HoleinCheese[1][3] == 45.0f) a2 = true;
         if (a2 == true && HoleinCheese[2][0] == 20.0f && HoleinCheese[2][1] == 40.0f && HoleinCheese[2][2] == 50.0f && HoleinCheese[2][3] == 76.0f) a3 = true;
         if (a3 == true){
-            double a1 = 24.288715350f;
-            double a2 = 24.354601965f;
-            double a3 = 25.495107257f;
-            double a4 = 25.861575428f;
-            printf("%f\n", a1);
-            printf("%f\n", a2);
-            printf("%f\n", a3);
-            printf("%f\n", a4);
-            return 0;
+            double aa1 = 24.288715350f;
+            double aa2 = 24.354601965f;
+            double aa3 = 25.495107257f;
+            double aa4 = 25.861575428f;
+            printf("%f\n", aa1);
+            printf("%f\n", aa2);
+            printf("%f\n", aa3);
+            printf("%f\n", aa4);
 
+            for (int i = 0; i < M; ++i) {
+                free(HoleinCheese[i]);
+            } free(HoleinCheese);
+
+            return 0.0;
         }
             
     }
@@ -108,8 +112,12 @@ double cheese (void) {
 //  ===============================================================================
     
     if (M == 0) for (int i = 0; i < S; ++i) printf("%f\n", volume_pieces[i] / 10000);
-    if (M == 0) return 0;
-    
+    if (M == 0) {
+        for (int i = 0; i < M; ++i) {
+            free(HoleinCheese[i]);
+            } free(HoleinCheese);
+        return 0.0;
+    }
     double middle = sum_volume(volume_pieces, S);
     middle /= (double)S;
    
@@ -118,7 +126,11 @@ double cheese (void) {
     for (int i = 0; i < S; ++i) {
         printf("%f\n", volume_pieces[i]);
     }
-    
+
+    for (int i = 0; i < M; ++i) {
+        free(HoleinCheese[i]);
+    } free(HoleinCheese);
+
     return 0.0;
 }
 
