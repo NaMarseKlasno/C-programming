@@ -139,9 +139,9 @@ int rac (void)
         stop = false;
     }
     
-    
+    double suckmydick = 0.0;
     if (same) printf("%.6Lf\n", to);
-    else printf("\n");
+    else printf("%f\n", suckmydick);
     
     return 0;
 }
