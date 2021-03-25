@@ -112,7 +112,8 @@ int rac (void)
 //  ====================================================================================
     value = 0.0;
     count = 1;
-    bool same = false, stop = true;
+    //bool same = false, 
+    bool stop = true;
     
     for (long double i = from; i < to; i += 0.000000001) {
         if (testValue(i, mainArr, t, nParts, &value, count)) {
@@ -121,7 +122,7 @@ int rac (void)
         }
         if (value == -10372) {
             to = i-0.000000001;
-            same = true;
+            //same = true;
             break;
         } count = 2;
         
