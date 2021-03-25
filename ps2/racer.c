@@ -85,8 +85,8 @@ int rac (void)
             return 0;
         } if (value == -10372) break;
 
-        while (stop1 == true && testValue2(0.0, mainArr, t, nParts, &value)) i = 0.0;        
-        while (stop1 == true && testValue2(i+100, mainArr, t, nParts, &value)) i+=1;
+        while (stop1 == true && testValue2(0, mainArr, t, nParts, &value)) i = 0        
+        while (stop1 == true && testValue2(i+100, mainArr, t, nParts, &value)) i+=100;
         while (stop1 == true && testValue2(i+90, mainArr, t, nParts, &value)) i+=90;
         while (stop1 == true && testValue2(i+80, mainArr, t, nParts, &value)) i+=80;
         while (stop1 == true && testValue2(i+70, mainArr, t, nParts, &value)) i+=70;
