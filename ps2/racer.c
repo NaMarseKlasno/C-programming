@@ -67,7 +67,7 @@ int rac (void)
             scanf("%i", &q);
             mainArr[i][j] = q;
         }
-    } 
+    }
     
 //  ====================================================================================
 //                              ПРОВЕРКА НА ПРОСТОЙ ОТВЕТ
@@ -85,7 +85,7 @@ int rac (void)
             return 0;
         } if (value == -10372) break;
 
-        while (stop1 == true && testValue2(0, mainArr, t, nParts, &value)) i = 0        
+        while (stop1 == true && testValue2(0.0f, mainArr, t, nParts, &value)) i = 0.0f;
         while (stop1 == true && testValue2(i+100, mainArr, t, nParts, &value)) i+=100;
         while (stop1 == true && testValue2(i+90, mainArr, t, nParts, &value)) i+=90;
         while (stop1 == true && testValue2(i+80, mainArr, t, nParts, &value)) i+=80;
@@ -96,7 +96,7 @@ int rac (void)
         while (stop1 == true && testValue2(i+30, mainArr, t, nParts, &value)) i+=30;
         while (stop1 == true && testValue2(i+20, mainArr, t, nParts, &value)) i+=20;
         while (stop1 == true && testValue2(i+10, mainArr, t, nParts, &value)) i+=10;
-        while (stop1 == true && testValue2(i+1, mainArr, t, nParts, &value)) i+=1;
+        while (stop1 == true && testValue2(i+5, mainArr, t, nParts, &value)) i+=5;
 
         stop1 = false;
 
@@ -115,7 +115,7 @@ int rac (void)
 //  ====================================================================================
     value = 0.0;
     count = 1;
-    //bool same = false, 
+    //bool same = false,
     bool stop = true;
     
     for (long double i = from; i < to; i += 0.000000001) {
@@ -144,7 +144,7 @@ int rac (void)
     }
     
     //double suckmydick = 0.0;
-    //if (same) 
+    //if (same)
     printf("%.6Lf\n", to);
     //else printf("%f\n", suckmydick);
     
