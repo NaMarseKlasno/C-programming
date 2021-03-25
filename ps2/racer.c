@@ -141,6 +141,7 @@ int rac (void)
     
     
     if (same) printf("%.6Lf\n", to);
+    else printf("\n");
     
     return 0;
 }
