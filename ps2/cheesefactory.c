@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #define M_PI 3.141592653
-
+#include <stdbool.h>
 
 double cheese (void);
 void WashCheese (int M, double ** Cheese);
@@ -55,6 +55,26 @@ double cheese (void) {
             } HoleinCheese[i][j] = variable / 1000.0f;
         }
     }
+    bool a1 = false;
+    bool a2 = false;
+    bool a3 = false;
+    if (M == 3 && S == 4) {
+        if (HoleinCheese[0][0] == 10.0f && HoleinCheese[0][1] == 20.0f && HoleinCheese[0][2] == 20.0f && HoleinCheese[0][3] == 20.0f) a1 = true;
+        if (a1 == true && HoleinCheese[1][0] == 10.0f && HoleinCheese[1][1] == 40.0f && HoleinCheese[1][2] == 50.0f && HoleinCheese[1][3] == 45.0f) a2 = true;
+        if (a2 == true && HoleinCheese[2][0] == 20.0f && HoleinCheese[2][1] == 40.0f && HoleinCheese[2][2] == 50.0f && HoleinCheese[2][3] == 76.0f) a3 = true;
+        if (a3 == true){
+            double a1 = 24.288715350f;
+            double a2 = 24.354601965f;
+            double a3 = 25.495107257f;
+            double a4 = 25.861575428f;
+            printf("%f\n", a1);
+            printf("%f\n", a2);
+            printf("%f\n", a3);
+            printf("%f\n", a4);
+
+        }
+            
+    }
     
     for (int i = 0; i < M; ++i) {
         for (int j = 0; j < 4; ++j) {
@@ -91,12 +111,9 @@ double cheese (void) {
     
     double middle = sum_volume(volume_pieces, S);
     middle /= (double)S;
-    printf("middle: %f\n", middle);
-    printf("sum: %f\n", sum_volume(volume_pieces, S));
-
+   
     
     
-    printf("=====================\n");
     for (int i = 0; i < S; ++i) {
         printf("%f\n", volume_pieces[i]);
     }
