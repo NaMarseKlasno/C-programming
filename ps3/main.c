@@ -1,22 +1,40 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-int main(void)
-{
-char *p;
-p = (char *) malloc(17);
-if(!p) {
-printf("Allocation error.");
-exit (1);
-}
-strcpy(p, "This is 16 chars");
-p = (char *) realloc (p,18);
-if(!p) {
-printf("Allocation error.");
-exit (1);
-}
-strcat (p, ".");
-printf(p);
-free(p);
-return 0;
+#include "k.h"
+#include "hof.h"
+
+int main() {
+    // move right
+    struct game game = {
+            .board = {
+                    {'A', ' ', ' ', ' '},
+                    {'B', ' ', ' ', 'B'},
+                    {'C', 'C', 'C', ' '},
+                    {'D', 'D', 'D', 'D'}
+            },
+            .score = 0
+    };
+
+    bool result = update(&game, 0, 1);
+/*
+game = {
+    .board = {
+        {' ', ' ', ' ', 'A'},
+        {' ', ' ', ' ', 'C'},
+        {' ', ' ', 'C', 'D'},
+        {' ', ' ', 'E', 'E'}
+    },
+    .score = 88
+};
+result = true;
+*/
+
+    for (int i = 0; i < SIZE; i++){
+        for (int j = 0; j < SIZE; ++j) {
+            printf("%c  ", game.board[i][j]);
+        } printf("\n");
+    }
+
+    
+
+    return 0;
 }
