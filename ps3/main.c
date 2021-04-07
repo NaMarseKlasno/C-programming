@@ -26,8 +26,8 @@ int main()
     struct game game = {
             .board = {
                     {'A', ' ', ' ', ' '},
-                    {' ', ' ', ' ', ' '},
-                    {' ', ' ', ' ', ' '},
+                    {' ', ' ', 'A', ' '},
+                    {' ', ' ', ' ', 'B'},
                     {'A', ' ', ' ', ' '}
             },
             .score = 0
@@ -37,6 +37,8 @@ int main()
 
     while (true)
     {
+        if (is_game_won(game)) return 0;
+        if (!is_move_possible(game)) return 0;
         int flag = getchar();
         switch (flag)
         {
