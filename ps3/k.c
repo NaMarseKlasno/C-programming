@@ -3,7 +3,7 @@
 #include "k.h"
 #include <ctype.h>
 
-void sum_up (char arr1[], char arr2[]) {
+void sum_up (char *arr1, char *arr2) {
     int dictionary [11][2] = {
         {'A', 2},
         {'B', 4},
@@ -26,8 +26,8 @@ void sum_up (char arr1[], char arr2[]) {
         //char s2 = arr2[i];
         if (arr1[i] == arr2[i] && arr1[i] != ' ' && isupper(arr1[i]) && isupper(arr2[i])) {
             for (int j = 0; j < 11; ++j) if (arr1[i] == dictionary[j][0]) sum = dictionary[j][1] * 2;
-            for (int j2 = 0; j2 < 11; ++j2) if (sum == dictionary[j2][1]) a = dictionary[j2][0];
-            arr1[i] = tolower(a);
+            for (int j2 = 0; j2 < 11; ++j2) if (sum == dictionary[j2][1]) a = (char)dictionary[j2][0];
+            arr1[i] = (char)tolower(a);
             arr2[i] = ' ';
         } else if (arr1[i] == ' ') {
             arr1[i] = arr2[i];
@@ -90,7 +90,7 @@ bool vector_movement (const struct game game, int dy, int dx) {
                     if (game.board[c][j] == game.board[i][j] && i != c && game.board[c][j] != ' ' && isupper(game.board[c][j]) && (i == c+1 || c == i+1)) return true;
             }
         } return false;
-    }
+    } return false;
 }
 
 
@@ -132,76 +132,86 @@ bool is_move_possible(const struct game game) {
 bool update(struct game *game, int dy, int dx) {
 
     if (dy == 0 && dx == 1 && vector_movement(*game, dy, dx) == true) {  // right
-        char arr1[SIZE + 1] = {};
-        char arr2[SIZE + 1] = {};
+        char *arr1 = (char *) calloc(SIZE + 1, sizeof(char));
+        char *arr2 = (char *) calloc(SIZE + 1, sizeof(char));
 
-        for (int i = SIZE-1; i >= 1; --i) {
+
+        for (int i = SIZE - 1; i >= 1; --i) {
             for (int j = 0; j < SIZE; ++j) arr1[j] = game->board[j][i];
             for (int j = 0; j < SIZE; ++j) arr2[j] = game->board[j][i - 1];
 
-            sum_up(&arr1, &arr2);
+            sum_up(arr1, arr2);
 
             for (int j = 0; j < SIZE; ++j) game->board[j][i] = arr1[j];
-            for (int j = 0; j < SIZE; ++j) game->board[j][i-1] = arr2[j];
+            for (int j = 0; j < SIZE; ++j) game->board[j][i - 1] = arr2[j];
 
             if (i == 1 && vector_movement(*game, dy, dx) == true) i = SIZE;
         }
-        for (int i = 0; i < SIZE; i++)
+        for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; ++j)
-                game->board[i][j] = toupper(game->board[i][j]);
+                game->board[i][j] = (char) toupper((game->board[i][j]));
+        }
+        free(arr1);
+        free(arr2);
         return true;
 
     } else if (dy == 0 && dx == -1 && vector_movement(*game, dy, dx) == true) {  // left
-        char arr1[SIZE + 1] = {};
-        char arr2[SIZE + 1] = {};
+        char *arr1 = (char *) calloc(SIZE + 1, sizeof(char));
+        char *arr2 = (char *) calloc(SIZE + 1, sizeof(char));
 
         for (int i = 0; i < SIZE-1; ++i) {
             for (int j = 0; j < SIZE; ++j) arr1[j] = game->board[j][i];
             for (int j = 0; j < SIZE; ++j) arr2[j] = game->board[j][i+1];
 
-            sum_up(&arr1, &arr2);
+            sum_up(arr1, arr2);
 
             for (int j = 0; j < SIZE; ++j) game->board[j][i] = arr1[j];
             for (int j = 0; j < SIZE; ++j) game->board[j][i+1] = arr2[j];
 
             if (i == SIZE-2 && vector_movement(*game, dy, dx) == true) i = -1;
         }
-        for (int i = 0; i < SIZE; i++)
+        for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; ++j)
-                game->board[i][j] = toupper(game->board[i][j]);
+                game->board[i][j] = (char) toupper(game->board[i][j]);
+        }
+        free(arr1);
+        free(arr2);
         return true;
 
     } else if (dy == 1 && dx == 0 && vector_movement(*game, dy, dx) == true) {  // up
 
-        char arr1[SIZE + 1] = {};
-        char arr2[SIZE + 1] = {};
+        char *arr1 = (char *) calloc(SIZE + 1, sizeof(char));
+        char *arr2 = (char *) calloc(SIZE + 1, sizeof(char));
 
         for (int i = 0; i < SIZE-1; ++i) {
             for (int j = 0; j < SIZE; ++j) arr1[j] = game->board[i][j];
             for (int j = 0; j < SIZE; ++j) arr2[j] = game->board[i+1][j];
 
-            sum_up(&arr1, &arr2);
+            sum_up(arr1, arr2);
 
             for (int j = 0; j < SIZE; ++j) game->board[i][j] = arr1[j];
             for (int j = 0; j < SIZE; ++j) game->board[i+1][j] = arr2[j];
 
             if (i == SIZE-2 && vector_movement(*game, dy, dx) == true) i = -1;
         }
-        for (int i = 0; i < SIZE; i++)
+        for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; ++j)
-                game->board[i][j] = toupper(game->board[i][j]);
+                game->board[i][j] = (char) toupper(game->board[i][j]);
+        }
+        free(arr1);
+        free(arr2);
         return true;
 
     } else if (dy == -1 && dx == 0 && vector_movement(*game, dy, dx) == true) {  // down
 
-        char arr1[SIZE + 1] = {};
-        char arr2[SIZE + 1] = {};
+        char *arr1 = (char *) calloc(SIZE + 1, sizeof(char));
+        char *arr2 = (char *) calloc(SIZE + 1, sizeof(char));
 
         for (int i = SIZE-1; i >= 1; --i) {
             for (int j = 0; j < SIZE; ++j) arr1[j] = game->board[i][j];
             for (int j = 0; j < SIZE; ++j) arr2[j] = game->board[i-1][j];
 
-            sum_up(&arr1, &arr2);
+            sum_up(arr1, arr2);
 
             //for (int j = 0; j < SIZE; ++j) {
             //    printf("%c  ", arr1[j]);
@@ -226,9 +236,12 @@ bool update(struct game *game, int dy, int dx) {
 
             //getchar();
         }
-        for (int i = 0; i < SIZE; i++)
+        for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; ++j)
-                game->board[i][j] = toupper(game->board[i][j]);
+                game->board[i][j] = (char) toupper(game->board[i][j]);
+        }
+        free(arr1);
+        free(arr2);
         return true;
 
     }
