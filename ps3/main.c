@@ -66,4 +66,7 @@ int main()
                 break;
         }
     }
+    free(player1);
+    free(list);
+    return 0;
 }
