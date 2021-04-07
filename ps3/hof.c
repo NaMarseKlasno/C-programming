@@ -122,6 +122,35 @@ bool save(const struct player list[], const int size)
 
 
 bool add_player(struct player list[], int* size, const struct player player) {
-    return 0;
+
+    int my_size = 0;
+    for (int i = 0; list[i].score != '\0'; ++i) my_size++;
+
+    struct player *lines = calloc((unsigned long)my_size+1, sizeof(struct player));
+    for (int i = 0; i < my_size; ++i) {
+        strcpy(lines[i].name, list[i].name);
+        lines[i].score = list[i].score;
+    }
+    strcpy(lines[my_size].name, player.name);
+    lines[my_size].score = player.score;
+    bubbleSort(lines, my_size+1);
+    my_size += 1;
+
+    //for (int i = 0; i < my_size+1; ++i) printf("%s %d\n", lines[i].name, lines[i].score);
+
+    FILE *file;
+    if ((file = fopen("score", "w")) == NULL) return 0;
+
+    for (int i = 0; i < my_size; ++i) {
+        for (int j = 0; lines[i].name[j] != '\0'; ++j) {
+            fputc(lines[i].name[j], file);
+        } fputc(' ', file);
+        fprintf(file, "%d", lines[i].score);
+        if (i != my_size-1) fputc('\n', file);
+    }
+
+    fclose(file);
+    free(lines);
+    return 1;
 }
 
