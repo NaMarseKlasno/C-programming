@@ -115,7 +115,8 @@ bool save(const struct player list[], const int size)
             fputc(lines[i].name[j], file);
         } fputc(' ', file);
         fprintf(file, "%d", lines[i].score);
-        if (i != size-1) fputc('\n', file);
+        //if (i != size-1)
+        fputc('\n', file);
     }
 
     free(lines);
