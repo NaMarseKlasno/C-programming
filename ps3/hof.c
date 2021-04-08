@@ -105,7 +105,10 @@ bool save(const struct player list[], const int size)
     //for (int i = 0; i < size; ++i) printf("%s %d\n", lines[i].name, lines[i].score);
 
     FILE *file;
-    if ((file = fopen("score", "w")) == NULL) return 0;
+    if ((file = fopen("score", "w")) == NULL) {
+        free(lines);
+        return 0;
+    }
 
     for (int i = 0; i < size; ++i) {
         for (int j = 0; lines[i].name[j] != '\0'; ++j) {
@@ -115,6 +118,7 @@ bool save(const struct player list[], const int size)
         if (i != size-1) fputc('\n', file);
     }
 
+    free(lines);
     fclose(file);
     return 1;
 }
@@ -139,7 +143,10 @@ bool add_player(struct player list[], int* size, const struct player player) {
     //for (int i = 0; i < my_size+1; ++i) printf("%s %d\n", lines[i].name, lines[i].score);
 
     FILE *file;
-    if ((file = fopen("score", "w")) == NULL) return 0;
+    if ((file = fopen("score", "w")) == NULL) {
+        free(lines);
+        return 0;
+    }
 
     for (int i = 0; i < my_size; ++i) {
         for (int j = 0; lines[i].name[j] != '\0'; ++j) {
