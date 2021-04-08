@@ -65,7 +65,7 @@ bool vector_movement (const struct game game, int dy, int dx) {
             }
         } return false;
 
-    } else if (dy == 1 && dx == 0) {  // up
+    } else if (dy == -1 && dx == 0) {  // up -> down
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
 
@@ -78,7 +78,7 @@ bool vector_movement (const struct game game, int dy, int dx) {
             }
         } return false;
 
-    } else if (dy == -1 && dx == 0) {  // down
+    } else if (dy == 1 && dx == 0) {  // down -> up
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
 
@@ -122,14 +122,27 @@ bool is_move_possible(const struct game game) {
         for (int j = 0; j < SIZE; ++j) {
             if (game.board[i][j] == ' ') return true;
             for (int c = 0; c < SIZE; c++)
-                if (game.board[c][j] == game.board[i][j] && i != c) return true;
+                if (game.board[c][j] == game.board[i][j] && i != c && (i == c+1 || c == i+1)) return true;
             for (int k = 0; k < SIZE; ++k)
-                if (game.board[i][k] == game.board[i][j] && j != k) return true;
+                if (game.board[i][k] == game.board[i][j] && j != k && (j == k+1 || k == j+1)) return true;
         }
     } return false;
 }
 
 bool update(struct game *game, int dy, int dx) {
+    const int dictionary [11][2] = {
+            {'A', 2},
+            {'B', 4},
+            {'C', 8},
+            {'D', 16},
+            {'E', 32},
+            {'F', 64},
+            {'G', 128},
+            {'H', 256},
+            {'I', 512},
+            {'J', 1024},
+            {'K', 2048}
+    };
 
     if (dy == 0 && dx == 1 && vector_movement(*game, dy, dx) == true) {  // right
         char *arr1 = (char *) calloc(SIZE + 1, sizeof(char));
@@ -147,10 +160,22 @@ bool update(struct game *game, int dy, int dx) {
 
             if (i == 1 && vector_movement(*game, dy, dx) == true) i = SIZE;
         }
+
+        int SCORE = 0;
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; ++j)
-                game->board[i][j] = (char) toupper((game->board[i][j]));
-        }
+            {
+                //   Высчитываем SCORE
+                char tmp = game->board[i][j];
+                if (islower(tmp))
+                    for (int k = 0; k < 11; ++k)
+                        if (toupper(tmp) == (char)dictionary[k][0]) SCORE+=dictionary[k][1];
+
+                //   Упорядочиваем главный массив + записываем значениве в game.score
+                game->board[i][j] = (char) toupper(tmp);
+            }
+        } game->score += SCORE;
+
         free(arr1);
         free(arr2);
         return true;
@@ -170,15 +195,27 @@ bool update(struct game *game, int dy, int dx) {
 
             if (i == SIZE-2 && vector_movement(*game, dy, dx) == true) i = -1;
         }
+
+        int SCORE = 0;
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; ++j)
-                game->board[i][j] = (char) toupper(game->board[i][j]);
-        }
+            {
+                //   Высчитываем SCORE
+                char tmp = game->board[i][j];
+                if (islower(tmp))
+                    for (int k = 0; k < 11; ++k)
+                        if (toupper(tmp) == (char)dictionary[k][0]) SCORE+=dictionary[k][1];
+
+                //   Упорядочиваем главный массив + записываем значениве в game.score
+                game->board[i][j] = (char) toupper(tmp);
+            }
+        } game->score += SCORE;
+
         free(arr1);
         free(arr2);
         return true;
 
-    } else if (dy == 1 && dx == 0 && vector_movement(*game, dy, dx) == true) {  // up
+    } else if (dy == -1 && dx == 0 && vector_movement(*game, dy, dx) == true) {  // up -> down
 
         char *arr1 = (char *) calloc(SIZE + 1, sizeof(char));
         char *arr2 = (char *) calloc(SIZE + 1, sizeof(char));
@@ -194,15 +231,27 @@ bool update(struct game *game, int dy, int dx) {
 
             if (i == SIZE-2 && vector_movement(*game, dy, dx) == true) i = -1;
         }
+
+        int SCORE = 0;
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; ++j)
-                game->board[i][j] = (char) toupper(game->board[i][j]);
-        }
+            {
+                //   Высчитываем SCORE
+                char tmp = game->board[i][j];
+                if (islower(tmp))
+                    for (int k = 0; k < 11; ++k)
+                        if (toupper(tmp) == (char)dictionary[k][0]) SCORE+=dictionary[k][1];
+
+                //   Упорядочиваем главный массив + записываем значениве в game.score
+                game->board[i][j] = (char) toupper(tmp);
+            }
+        } game->score += SCORE;
+
         free(arr1);
         free(arr2);
         return true;
 
-    } else if (dy == -1 && dx == 0 && vector_movement(*game, dy, dx) == true) {  // down
+    } else if (dy == 1 && dx == 0 && vector_movement(*game, dy, dx) == true) {  // down -> up
 
         char *arr1 = (char *) calloc(SIZE + 1, sizeof(char));
         char *arr2 = (char *) calloc(SIZE + 1, sizeof(char));
@@ -236,10 +285,22 @@ bool update(struct game *game, int dy, int dx) {
 
             //getchar();
         }
+
+        int SCORE = 0;
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; ++j)
-                game->board[i][j] = (char) toupper(game->board[i][j]);
-        }
+            {
+                //   Высчитываем SCORE
+                char tmp = game->board[i][j];
+                if (islower(tmp))
+                    for (int k = 0; k < 11; ++k)
+                        if (toupper(tmp) == (char)dictionary[k][0]) SCORE+=dictionary[k][1];
+
+                //   Упорядочиваем главный массив + записываем значениве в game.score
+                game->board[i][j] = (char) toupper(tmp);
+            }
+        } game->score += SCORE;
+
         free(arr1);
         free(arr2);
         return true;
