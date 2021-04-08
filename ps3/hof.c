@@ -134,16 +134,17 @@ bool add_player(struct player list[], int* size, const struct player player) {
     for (int i = 0; i < my_size; ++i) {
         strcpy(lines[i].name, list[i].name);
         lines[i].score = list[i].score;
-    }
-    strcpy(lines[my_size].name, player.name);
-    lines[my_size].score = player.score;
-    bubbleSort(lines, my_size+1);
-    my_size += 1;
+    } my_size += 1;
+
+    strcpy(lines[my_size-1].name, player.name);
+    lines[my_size-1].score = player.score;
+    bubbleSort(lines, my_size);
+    for (int i = 0; i < my_size; ++i) if (lines[i].name != player.name && my_size != 1) return false;
 
     //for (int i = 0; i < my_size+1; ++i) printf("%s %d\n", lines[i].name, lines[i].score);
 
     FILE *file;
-    if ((file = fopen("score", "w")) == NULL) {
+    if ((file = fopen("score", "a")) == NULL) {
         free(lines);
         return 0;
     }
@@ -153,7 +154,8 @@ bool add_player(struct player list[], int* size, const struct player player) {
             fputc(lines[i].name[j], file);
         } fputc(' ', file);
         fprintf(file, "%d", lines[i].score);
-        if (i != my_size-1) fputc('\n', file);
+        //if (i != my_size-1)
+        fputc('\n', file);
     }
 
     fclose(file);
