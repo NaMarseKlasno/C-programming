@@ -140,7 +140,10 @@ bool add_player(struct player list[], int* size, const struct player player) {
     strcpy(lines[my_size-1].name, player.name);
     lines[my_size-1].score = player.score;
     bubbleSort(lines, my_size);
-    for (int i = 0; i < my_size; ++i) if (lines[i].name != player.name && my_size != 1) return false;
+    for (int i = 0; i < my_size; ++i) if (lines[i].name != player.name && my_size != 1) {
+        free(lines);
+        return false;
+    }
 
     //for (int i = 0; i < my_size+1; ++i) printf("%s %d\n", lines[i].name, lines[i].score);
 
