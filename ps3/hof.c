@@ -5,21 +5,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-/*
-int str_to_num(char *str)
-{
-    int result = 0, same = 1;
 
-    while (('-' == (*str)) || ((*str) == '+')) {
-        if (*str == '-') same *= -1;
-        str++;
-    } while ((*str >= '0') && (*str <= '9')) {
-        result = (result * 10) + ((*str) - '0');
-        str++;
-    }
-    return (result * same);
-}
-*/
 void bubbleSort (struct player qwerty[], int n) {
     int i, j;
 
@@ -97,7 +83,7 @@ int load (struct player list[])
 bool save(const struct player list[], const int size)
 {
     struct player *lines = calloc((unsigned long)size+1, sizeof(struct player));
-    for (int i = 0; i < size+1; ++i) {
+    for (int i = 0; i < size; ++i) {
         strcpy(lines[i].name, list[i].name);
         lines[i].score = list[i].score;
     } bubbleSort(lines, size);
