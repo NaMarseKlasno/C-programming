@@ -145,7 +145,7 @@ bool add_player(struct player list[], int* size, const struct player player) {
         return false;
     }
 
-    //for (int i = 0; i < my_size+1; ++i) printf("%s %d\n", lines[i].name, lines[i].score);
+    // for (int i = 0; i < my_size+1; ++i) printf("%s %d\n", lines[i].name, lines[i].score);
 
     FILE *file;
     if ((file = fopen("score", "a")) == NULL) {
