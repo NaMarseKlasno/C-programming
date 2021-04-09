@@ -5,7 +5,21 @@
 #include <string.h>
 #include <stdbool.h>
 
+/*
+int str_to_num(char *str)
+{
+    int result = 0, same = 1;
 
+    while (('-' == (*str)) || ((*str) == '+')) {
+        if (*str == '-') same *= -1;
+        str++;
+    } while ((*str >= '0') && (*str <= '9')) {
+        result = (result * 10) + ((*str) - '0');
+        str++;
+    }
+    return (result * same);
+}
+*/
 void bubbleSort (struct player qwerty[], int n) {
     int i, j;
 
@@ -82,7 +96,7 @@ int load (struct player list[])
 
 bool save(const struct player list[], const int size)
 {
-    struct player *lines = calloc((unsigned long)size+2, sizeof(struct player));
+    struct player *lines = calloc((unsigned long)size+1, sizeof(struct player));
     for (int i = 0; i < size+1; ++i) {
         strcpy(lines[i].name, list[i].name);
         lines[i].score = list[i].score;
@@ -117,7 +131,7 @@ bool add_player(struct player list[], int* size, const struct player player) {
     int my_size = 0, gay = 0;
     for (int i = 0; list[i].score != '\0'; ++i) my_size++;
 
-    struct player *lines = calloc((unsigned long)my_size+2, sizeof(struct player));
+    struct player *lines = calloc((unsigned long)my_size+1, sizeof(struct player));
     for (int i = 0; i < my_size; ++i) {
         strcpy(lines[i].name, list[i].name);
         lines[i].score = list[i].score;
@@ -132,6 +146,11 @@ bool add_player(struct player list[], int* size, const struct player player) {
     if (gay == 0) {
         free(lines);
         return false;
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        strcpy(list[i].name, lines[i].name);
+        list[i].score = lines[i].score;
     }
     //for (int i = 0; i < my_size+1; ++i) printf("%s %d\n", lines[i].name, lines[i].score);
 
