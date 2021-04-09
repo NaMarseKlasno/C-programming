@@ -128,10 +128,10 @@ bool save(const struct player list[], const int size)
 
 bool add_player(struct player list[], int* size, const struct player player) {
 
-    int my_size = 0;
+    int my_size = 0, gay = 0;
     for (int i = 0; list[i].score != '\0'; ++i) my_size++;
 
-    struct player *lines = calloc((unsigned long)my_size+1, sizeof(struct player));
+    struct player *lines = calloc((unsigned long)my_size, sizeof(struct player));
     for (int i = 0; i < my_size; ++i) {
         strcpy(lines[i].name, list[i].name);
         lines[i].score = list[i].score;
@@ -140,15 +140,17 @@ bool add_player(struct player list[], int* size, const struct player player) {
     strcpy(lines[my_size-1].name, player.name);
     lines[my_size-1].score = player.score;
     bubbleSort(lines, my_size);
-    for (int i = 0; i < my_size; ++i) if (lines[i].name != player.name && my_size != 1) {
+
+    for (int i = 0; i < my_size; ++i)
+        if ( strcmp(lines[i].name, player.name) == 0) gay++; // ohh yea sir, fuck me!!!
+    if (gay == 0) {
         free(lines);
         return false;
     }
-
-    // for (int i = 0; i < my_size+1; ++i) printf("%s %d\n", lines[i].name, lines[i].score);
+    //for (int i = 0; i < my_size+1; ++i) printf("%s %d\n", lines[i].name, lines[i].score);
 
     FILE *file;
-    if ((file = fopen("score", "a")) == NULL) {
+    if ((file = fopen("score", "w")) == NULL) {
         free(lines);
         return 0;
     }
