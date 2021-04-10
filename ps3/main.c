@@ -35,6 +35,7 @@ int main()
 
     render(game);
 
+
     while (true)
     {
         if (is_game_won(game)) return 0;
