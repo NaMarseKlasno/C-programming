@@ -18,7 +18,23 @@ int main()
             .score = 0
     };
 
+    //  ============================================================
+    //                  ОТОБРАЖЕНИЕ ИГРОВОГО ПОЛЯ
+    //  ============================================================
+
     render(game);
+
+    struct player *player1 = calloc( 1, sizeof(player1));
+    strcpy(player1->name, "Plcololo");
+    player1->score = 228;
+
+    struct player *list = calloc(10, sizeof(struct player) );
+    int hof_size = load(list);
+
+    add_player(list, &hof_size, *player1);
+    save(list, hof_size);
+
+    for (int i = 0; i < hof_size; i++) printf("%s %d\n", list[i].name, list[i].score);
 
     //  ============================================================
     //                      ГЛАВНЫЙ ЦИКЛ ИГРЫ
@@ -60,24 +76,8 @@ int main()
                 break;
         }
     }
-    free(player1);
     free(list);
-
-    //  ============================================================
-    //                  ПРОВЕРКА ФУНКЦИОНАЛЬНОСТИ
-    //  ============================================================
-
-    struct player *list = calloc(10, sizeof(struct player) );
-    int hof_size = load(list);
-
-    struct player *player1 = calloc( 1, sizeof(player1));
-    strcpy(player1->name, "Plcololo");
-    player1->score = 228;
-
-    add_player(list, &hof_size, *player1);
-    save(list, hof_size);
-
-    for (int i = 0; i < hof_size; i++) printf("%s %d\n", list[i].name, list[i].score);
+    free(player1);
 
     return 0;
 }
