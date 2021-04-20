@@ -1,0 +1,7 @@
+*.gcda
+*.gcno
+*.gcov
+*.o
+*.out
+* /assets
+/file.bmp
