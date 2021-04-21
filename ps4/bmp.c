@@ -44,3 +44,28 @@ struct pixel* read_data(FILE* stream, const struct bmp_header* header) {
         ++row;
     } return imagePixels;
 }
+
+
+struct bmp_image* read_bmp(FILE* stream) {
+    if (stream == NULL) {
+        printf("Error: This is not a BMP file.\n");
+        return NULL;
+    }
+
+    struct bmp_image* image = calloc(1, sizeof(struct bmp_image));
+    if (image == NULL) return NULL;
+
+    image->header = read_bmp_header(stream);
+    if (image->header == NULL) {
+        printf("Error: Corrupted BMP file.\n");
+        return NULL;
+    }
+    image->data = read_data(stream);
+    if (image->data == NULL) {
+        printf("Error: Corrupted BMP file.\n");
+        return NULL;
+    }
+
+    return image;
+
+}
