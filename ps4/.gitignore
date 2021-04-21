@@ -3,5 +3,5 @@
 *.gcov
 *.o
 *.out
-* /assets
+/assets
 /file.bmp
