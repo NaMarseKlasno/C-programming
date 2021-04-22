@@ -60,7 +60,7 @@ struct bmp_image* read_bmp(FILE* stream) {
         printf("Error: Corrupted BMP file.\n");
         return NULL;
     }
-    image->data = read_data(stream);
+    image->data = read_data(stream, image->header);
     if (image->data == NULL) {
         printf("Error: Corrupted BMP file.\n");
         return NULL;
@@ -68,4 +68,22 @@ struct bmp_image* read_bmp(FILE* stream) {
 
     return image;
 
+}
+
+bool write_bmp(FILE* stream, const struct bmp_image* image) {
+    if (stream == NULL || image == NULL || image->data == NULL) return false;
+
+    fwrite(image->header, sizeof(struct bmp_header), 1, stream);
+
+    uint32_t row = 0;
+
+    while (row < image->header->height)
+    {
+        for (uint32_t j = 0; j < image->header->width; j++)
+            fwrite(&image->data[(row * image->header->width) + j], sizeof(struct pixel), 1, stream);
+        ++row;
+    }
+
+
+    return true;
 }
