@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "bmp.h"
+#include "transformations.h"
 
 int main()
 {
-    FILE * file = fopen("assets/zakat.bmp", "rb");
+    FILE * file = fopen("assets/cj.bmp", "rb");
     if (file == NULL) {
         printf("ERROR\n");
         return 1;
     }
 
-    /**
+    /*
     struct bmp_header* header = calloc(1, sizeof(struct bmp_header));
     if (header == NULL) return 1;
     header = read_bmp_header(file);
@@ -29,14 +30,23 @@ int main()
 
     struct bmp_image* image = calloc(1, sizeof(struct bmp_image));
     if (image == NULL) return 1;
+    struct bmp_image* image_r = calloc(1, sizeof(struct bmp_image));
+    if (image_r == NULL) return 1;
 
     image = read_bmp(file);
 
-    FILE * output = fopen("output.bmp", "wb");
-    printf("result: %d\n", write_bmp(output, image));
+    FILE * output = fopen("assets/output.bmp", "wb");
+    if (output == NULL) {
+        printf("ERROR\n");
+        return 1;
+    }
+
+    image_r = flip_vertically(image);
+    write_bmp(output, image_r);
 
     fclose(file);
     fclose(output);
-    //free(pixels);
+    free(image_r);
+    free(image);
     return 0;
 }

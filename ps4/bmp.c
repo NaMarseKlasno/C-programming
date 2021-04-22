@@ -15,7 +15,7 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         return NULL;
     }
 
-    /**
+    /*
     printf("First chars: %c%c\n", pUint16[0], pUint16[1]);
     printf("Size: %d\n", header->size);
     printf("Num of colors: %d\n", header->num_colors);
@@ -38,9 +38,9 @@ struct pixel* read_data (FILE* stream, const struct bmp_header* header) {
     fseek(stream, sizeof(struct bmp_header), 0);
     while (row < header->height)
     {
-        for (uint32_t j = 0; j < header->width; j++) fread(&imagePixels[(row * header->width) + j], sizeof(struct pixel), 1, stream);
+        for (uint32_t j = 0; j < header->width; j++)
+            fread(&imagePixels[(row * header->width) + j], sizeof(struct pixel), 1, stream);
         fseek(stream, (header->width)%4, SEEK_CUR);
-
         ++row;
     } return imagePixels;
 }
