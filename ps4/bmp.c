@@ -28,7 +28,7 @@ struct bmp_header* read_bmp_header (FILE* stream) {
 }
 
 
-struct pixel* read_data(FILE* stream, const struct bmp_header* header) {
+struct pixel* read_data (FILE* stream, const struct bmp_header* header) {
     if (stream == NULL || header == NULL) return NULL;
 
     struct pixel* imagePixels = calloc(header->height * header->width, sizeof(struct pixel));
@@ -46,7 +46,7 @@ struct pixel* read_data(FILE* stream, const struct bmp_header* header) {
 }
 
 
-struct bmp_image* read_bmp(FILE* stream) {
+struct bmp_image* read_bmp (FILE* stream) {
     if (stream == NULL) {
         printf("Error: This is not a BMP file.\n");
         return NULL;
@@ -67,10 +67,9 @@ struct bmp_image* read_bmp(FILE* stream) {
     }
 
     return image;
-
 }
 
-bool write_bmp(FILE* stream, const struct bmp_image* image) {
+bool write_bmp (FILE* stream, const struct bmp_image* image) {
     if (stream == NULL || image == NULL || image->data == NULL) return false;
 
     fwrite(image->header, sizeof(struct bmp_header), 1, stream);
@@ -84,6 +83,13 @@ bool write_bmp(FILE* stream, const struct bmp_image* image) {
         ++row;
     }
 
-
     return true;
+}
+
+void free_bmp_image (struct bmp_image* image) {
+    if (image == NULL) return;
+    if(image->header!=NULL) free(image->header);
+
+    if(image->data!=NULL) free(image->data);
+    free(image);
 }
