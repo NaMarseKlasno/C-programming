@@ -9,7 +9,10 @@ int main()
     if (file == NULL) return 1;
 
     FILE * output = fopen("assets/output.bmp", "wb");
-    if (output == NULL) return 1;
+    if (output == NULL) {
+        fclose(file);
+        return 1;
+    }
 
 
     /*
