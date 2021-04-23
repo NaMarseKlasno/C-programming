@@ -5,10 +5,12 @@
 
 int main()
 {
-    FILE * file = fopen("assets/prva.bmp", "rb");
-    if (file == NULL) {
-        return 1;
-    }
+    FILE * file = fopen("assets/lenna.bmp", "rb");
+    if (file == NULL) return 1;
+
+    FILE * output = fopen("assets/output.bmp", "wb");
+    if (output == NULL) return 1;
+
 
     /*
     struct bmp_header* header = calloc(1, sizeof(struct bmp_header));
@@ -27,37 +29,22 @@ int main()
 
     // ******  Allocate data for full image
 
-    struct bmp_image* image = calloc(1, sizeof(struct bmp_image));
-    if (image == NULL) {
-        free(image);
-        return 1;
-    }
-    struct bmp_image* image_r = calloc(1, sizeof(struct bmp_image));
-    if (image_r == NULL) {
-        free(image_r);
-        free(image);
-        return 1;
-    }
+    struct bmp_image* image = NULL;
+    struct bmp_image* image_r = NULL;
 
     image = read_bmp(file);
-
-    FILE * output = fopen("assets/output.bmp", "wb");
-    if (output == NULL) {
-        free(image_r);
-        free(image);
-        return 1;
-    }
-
-    image_r = flip_horizontally(image);
+    image_r = flip_vertically(image);
     write_bmp(output, image_r);
 
+    image_r = flip_horizontally(image);
     image_r = rotate_left(image);
     image_r = rotate_right(image);
-    image_r = flip_vertically(image);
+
 
     fclose(file);
     fclose(output);
-    free_bmp_image(image);
-    free_bmp_image(image_r);
+    //free(image_r);
+    //free(image);
+
     return 0;
 }

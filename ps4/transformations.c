@@ -12,12 +12,27 @@ struct bmp_image* flip_horizontally (const struct bmp_image* image)
     if (image == NULL || image->data == NULL) return NULL;
 
     // ****** memory allocation for a new picture
-    struct bmp_image* rotated_image = calloc(1, sizeof(struct bmp_image));
-    if (rotated_image == NULL) return NULL;
+    struct bmp_image* rotated_image = calloc(1, sizeof(struct bmp_image*));
+    if (rotated_image == NULL) {
+        free_bmp_image(rotated_image);
+        return NULL;
+    }
+
     rotated_image->header = image->header;
     struct pixel **arr = calloc(image->header->height, sizeof(struct pixel**));
+    if (arr == NULL) {
+        free(arr);
+        free_bmp_image(rotated_image);
+        return NULL;
+    }
     struct pixel **niga = calloc(image->header->height, sizeof(struct pixel**));
-    if (arr == NULL || niga == NULL) return NULL;
+    if (niga == NULL) {
+        free(arr);
+        free(niga);
+        free_bmp_image(rotated_image);
+        return NULL;
+    }
+
     for (uint32_t i = 0; i < image->header->height; ++i) {
         arr[i] = calloc(image->header->width, sizeof(struct pixel*));
         niga[i] = calloc(image->header->width, sizeof(struct pixel*));
@@ -58,17 +73,22 @@ struct bmp_image* flip_vertically (const struct bmp_image* image)
 
     // ****** memory allocation for a new picture
     struct bmp_image* rotated_image = calloc(1, sizeof(struct bmp_image));
-    if (rotated_image == NULL) return NULL;
+    if (rotated_image == NULL) {
+        free_bmp_image(rotated_image);
+        return NULL;
+    }
     rotated_image->header = image->header;
     struct pixel **arr = calloc(image->header->height, sizeof(struct pixel**));
     if (arr == NULL) {
         free(arr);
+        free_bmp_image(rotated_image);
         return NULL;
     }
     struct pixel **niga = calloc(image->header->height, sizeof(struct pixel**));
     if (niga == NULL) {
         free(niga);
         free(arr);
+        free_bmp_image(rotated_image);
         return NULL;
     }
     for (uint32_t i = 0; i < image->header->height; ++i) {
@@ -107,7 +127,7 @@ struct bmp_image* rotate_right(const struct bmp_image* image) {
     // ****** memory allocation for a new picture
     struct bmp_image* rotated_image = calloc(1, sizeof(struct bmp_image));
     if (rotated_image == NULL) {
-        free(rotated_image);
+        free_bmp_image(rotated_image);
         return NULL;
     }
 
@@ -121,12 +141,14 @@ struct bmp_image* rotate_right(const struct bmp_image* image) {
     struct pixel **arr = calloc(image->header->height, sizeof(struct pixel**));
     if (arr == NULL) {
         free(arr);
+        free_bmp_image(rotated_image);
         return NULL;
     }
     struct pixel **niga = calloc(image->header->width, sizeof(struct pixel**));
     if (niga == NULL) {
         free(arr);
         free(niga);
+        free_bmp_image(rotated_image);
         return NULL;
     }
     for (uint32_t i = 0; i < image->header->height; ++i) {
