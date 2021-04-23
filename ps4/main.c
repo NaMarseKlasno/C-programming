@@ -5,7 +5,7 @@
 
 int main()
 {
-    FILE * file = fopen("assets/lenna.bmp", "rb");
+    FILE * file = fopen("assets/cj.bmp", "rb");
     if (file == NULL) return 1;
 
     FILE * output = fopen("assets/output.bmp", "wb");
@@ -36,13 +36,13 @@ int main()
     struct bmp_image* image_r = NULL;
 
     image = read_bmp(file);
-    image_r = flip_vertically(image);
+//    image_r = rotate_right(image);
+
+    image_r = rotate_left(image);
     write_bmp(output, image_r);
 
+    image_r = flip_vertically(image);
     image_r = flip_horizontally(image);
-    image_r = rotate_left(image);
-    image_r = rotate_right(image);
-
 
     fclose(file);
     fclose(output);
