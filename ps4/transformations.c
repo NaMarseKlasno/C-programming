@@ -194,32 +194,6 @@ struct bmp_image* rotate_right(const struct bmp_image* image) {
         for (uint32_t j = 0; j < image->header->height; ++j)
             niga[i][j] = arr[j][ix];
 
-    // ****** help_array
-    struct pixel **help_array = calloc(image->header->height, sizeof(struct pixel**));
-    if (help_array == NULL) {
-        free_bmp_image(rotated_image);
-        return NULL;
-    }
-    for (uint32_t i = 0; i < image->header->height; ++i) {
-        help_array[i] = calloc(image->header->width, sizeof(struct pixel*));
-        if (niga[i] == NULL) return NULL;
-        //help_array[i][j] = arr[i][j];
-    }
-    for (uint32_t i = 0; i < image->header->height; ++i)
-        for (uint32_t j = 0; j < image->header->width; ++j)
-            help_array[i][j] = arr[i][j];
-
-    // ****** transform image there
-    for (uint32_t i = 0; i < image->header->height; ++i)
-        for (uint32_t j = 0, jx = image->header->width-1; j < image->header->width; ++j, --jx)
-            arr[i][j] = niga[i][jx];
-
-    // ****** transform image there #2
-    for (uint32_t i = 0, ix = image->header->height-1; i < image->header->height; ++i, --ix)
-        for (uint32_t j = 0, jx = image->header->width-1; j < image->header->width; ++j, --jx)
-            arr[i][j] = help_array[ix][jx];
-
-
     rotated_image->data = two_to_one(niga, rotated_image->header->height, rotated_image->header->width);
 
     for (uint32_t i = 0; i < image->header->height; ++i) {
@@ -269,25 +243,14 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
     rotated_image -> header ->image_size=image_size;
     rotated_image -> header -> size = image_size + rotated_image -> header ->offset;
 
-    //printf("h:%d, w:%d\n", image->header->height, image->header->width);
-    //rotated_image->header = image->header;
-    //printf("h:%d, w:%d\n", image->header->height, image->header->width);
-
-    //uint32_t width = image->header->height;
-    //uint32_t height = image->header->width;
-
-    //rotated_image->header->width = width;
-    //rotated_image->header->height = height;
-
-    //printf("h:%d, w:%d\n", rotated_image->header->height, rotated_image->header->width);
-
     struct pixel **arr = calloc(image->header->height, sizeof(struct pixel**));
     if (arr == NULL) {
         free_bmp_image(rotated_image);
         return NULL;
     }
     struct pixel **niga = calloc(image->header->width, sizeof(struct pixel**));
-    if (niga == NULL) {
+    struct pixel **help_array = calloc(image->header->width, sizeof(struct pixel**));
+    if (niga == NULL || help_array == NULL) {
         free(arr);
         free_bmp_image(rotated_image);
         return NULL;
@@ -299,14 +262,26 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
     }
     for (uint32_t i = 0; i < image->header->width; ++i) {
         niga[i] = calloc(image->header->height, sizeof(struct pixel*));
-        if (niga[i] == NULL) return NULL;
+        help_array[i] = calloc(image->header->height, sizeof(struct pixel*));
+        if (niga[i] == NULL || help_array[i] == NULL) return NULL;
     }
 
     arr = one_to_two(image->data, image->header);
     // ****** copy arr to niga
-    for (uint32_t i = 0, ix = image->header->width-1; i < image->header->width; ++i, --ix)
-        for (uint32_t j = 0; j < image->header->height; ++j)
+    for (uint32_t i = 0, ix = image->header->width-1; i < image->header->width; ++i, --ix) {
+        for (uint32_t j = 0; j < image->header->height; ++j) {
             niga[i][j] = arr[j][ix];
+            help_array[i][j] = arr[j][ix];
+        }
+    }
+    //uint32_t height2 = rotated_image->header->height, width2 = rotated_image->header->width;
+    // ****** transformations image
+    for (uint32_t i = 0, ix = height-1; i < height; ++i, --ix) {
+        for (uint32_t j = 0, jx = width-1; j < width; ++j, --jx) {
+            niga[i][j] = help_array[ix][jx];
+        }
+    }
+
 
     rotated_image->data = two_to_one(niga, rotated_image->header->height, rotated_image->header->width);
 
