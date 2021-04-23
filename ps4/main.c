@@ -5,9 +5,8 @@
 
 int main()
 {
-    FILE * file = fopen("assets/cj.bmp", "rb");
+    FILE * file = fopen("assets/prva.bmp", "rb");
     if (file == NULL) {
-        printf("ERROR\n");
         return 1;
     }
 
@@ -29,24 +28,36 @@ int main()
     // ******  Allocate data for full image
 
     struct bmp_image* image = calloc(1, sizeof(struct bmp_image));
-    if (image == NULL) return 1;
+    if (image == NULL) {
+        free(image);
+        return 1;
+    }
     struct bmp_image* image_r = calloc(1, sizeof(struct bmp_image));
-    if (image_r == NULL) return 1;
+    if (image_r == NULL) {
+        free(image_r);
+        free(image);
+        return 1;
+    }
 
     image = read_bmp(file);
 
     FILE * output = fopen("assets/output.bmp", "wb");
     if (output == NULL) {
-        printf("ERROR\n");
+        free(image_r);
+        free(image);
         return 1;
     }
 
-    image_r = flip_vertically(image);
+    image_r = flip_horizontally(image);
     write_bmp(output, image_r);
+
+    image_r = rotate_left(image);
+    image_r = rotate_right(image);
+    image_r = flip_vertically(image);
 
     fclose(file);
     fclose(output);
-    free(image_r);
-    free(image);
+    free_bmp_image(image);
+    free_bmp_image(image_r);
     return 0;
 }

@@ -58,11 +58,13 @@ struct bmp_image* read_bmp (FILE* stream) {
     image->header = read_bmp_header(stream);
     if (image->header == NULL) {
         printf("Error: Corrupted BMP file.\n");
+        free(image);
         return NULL;
     }
     image->data = read_data(stream, image->header);
     if (image->data == NULL) {
         printf("Error: Corrupted BMP file.\n");
+        free(image);
         return NULL;
     }
 
