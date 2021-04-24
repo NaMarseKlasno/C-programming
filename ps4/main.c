@@ -5,7 +5,7 @@
 
 int main()
 {
-    FILE * file = fopen("assets/prva.bmp", "rb");
+    FILE * file = fopen("assets/cj.bmp", "rb");
     if (file == NULL) return 1;
 
     FILE * output = fopen("assets/output.bmp", "wb");
@@ -36,10 +36,14 @@ int main()
     struct bmp_image* image_r = NULL;
 
     image = read_bmp(file);
-    image_r = rotate_right(image);
+
+    uint32_t x = 0, y = 0, h = 10, w = 11;
+    image_r = crop(image, y, x, h, w);
+    if (image_r == NULL) printf("returned NULL!\n");
 
     write_bmp(output, image_r);
 
+    image_r = rotate_right(image);
     image_r = rotate_left(image);
     image_r = flip_vertically(image);
     image_r = flip_horizontally(image);
