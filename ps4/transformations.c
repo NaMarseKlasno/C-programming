@@ -15,7 +15,25 @@ struct bmp_image* flip_horizontally (const struct bmp_image* image)
     struct bmp_image* rotated_image = calloc(1, sizeof(struct bmp_image));
     if (rotated_image == NULL) return NULL;
 
-    rotated_image->header = image->header;
+    rotated_image->header = malloc(sizeof(struct bmp_header));
+    rotated_image->header->type = image->header->type;
+    rotated_image->header->size = image->header->size;
+    rotated_image->header->reserved1= image->header->reserved1;
+    rotated_image->header->reserved2 = image->header->reserved2;
+    rotated_image->header->offset = image->header->offset;
+    rotated_image->header->dib_size = image->header->dib_size;
+    rotated_image->header->width = image->header->width;
+    rotated_image->header-> height= image->header->height;
+    rotated_image->header->planes = image->header->planes;
+    rotated_image->header-> bpp= image->header->bpp;
+    rotated_image->header->compression = image->header->compression;
+    rotated_image->header->image_size = image->header->image_size;
+    rotated_image->header-> x_ppm= image->header->x_ppm;
+    rotated_image->header->y_ppm = image->header->y_ppm;
+    rotated_image->header->num_colors = image->header->num_colors;
+    rotated_image->header->important_colors = image->header->important_colors;
+
+    //rotated_image->header = image->header;
     struct pixel **arr = calloc(image->header->height, sizeof(struct pixel**));
     if (arr == NULL) {
         free_bmp_image(rotated_image);
@@ -60,7 +78,8 @@ struct bmp_image* flip_horizontally (const struct bmp_image* image)
 
     free_arrays(arr, image->header->height);
     free_arrays(niga, image->header->height);
-
+    arr = NULL;
+    niga = NULL;
     return rotated_image;
 }
 
@@ -74,7 +93,25 @@ struct bmp_image* flip_vertically (const struct bmp_image* image)
     struct bmp_image* rotated_image = calloc(1, sizeof(struct bmp_image));
     if (rotated_image == NULL) return NULL;
 
-    rotated_image->header = image->header;
+    rotated_image->header = malloc(sizeof(struct bmp_header));
+    rotated_image->header->type = image->header->type;
+    rotated_image->header->size = image->header->size;
+    rotated_image->header->reserved1= image->header->reserved1;
+    rotated_image->header->reserved2 = image->header->reserved2;
+    rotated_image->header->offset = image->header->offset;
+    rotated_image->header->dib_size = image->header->dib_size;
+    rotated_image->header->width = image->header->width;
+    rotated_image->header-> height= image->header->height;
+    rotated_image->header->planes = image->header->planes;
+    rotated_image->header-> bpp= image->header->bpp;
+    rotated_image->header->compression = image->header->compression;
+    rotated_image->header->image_size = image->header->image_size;
+    rotated_image->header-> x_ppm= image->header->x_ppm;
+    rotated_image->header->y_ppm = image->header->y_ppm;
+    rotated_image->header->num_colors = image->header->num_colors;
+    rotated_image->header->important_colors = image->header->important_colors;
+
+    //rotated_image->header = image->header;
     struct pixel **arr = calloc(image->header->height, sizeof(struct pixel**));
     if (arr == NULL) {
         free_bmp_image(rotated_image);
@@ -337,10 +374,13 @@ struct pixel** one_to_two (const struct pixel* data, const struct bmp_header* he
         }
     }
 
-    for (uint32_t row = 0; row < header->height; ++row)
-        for (uint32_t column = 0; column < header->width; column++)
-            image[row][column] = data[(row * header->width) + column];
-
+    for (uint32_t row = 0; row < header->height; ++row) {
+        for (uint32_t column = 0; column < header->width; column++) {
+            image[row][column].blue = data[(row * header->width) + column].blue;
+            image[row][column].red = data[(row * header->width) + column].red;
+            image[row][column].green = data[(row * header->width) + column].green;
+        }
+    }
     return image;
 }
 
@@ -350,9 +390,13 @@ struct pixel* two_to_one (struct pixel **image, const uint32_t height, const uin
     struct pixel* imagePixels = calloc(height * width, sizeof(struct pixel*));
     if (imagePixels == NULL) return NULL;
 
-    for (uint32_t row = 0; row < height; ++row)
-        for (uint32_t column = 0; column < width; column++)
-            imagePixels[(row * width) + column] = image[row][column];
+    for (uint32_t row = 0; row < height; ++row) {
+        for (uint32_t column = 0; column < width; column++) {
+            imagePixels[(row * width) + column].green = image[row][column].green;
+            imagePixels[(row * width) + column].red = image[row][column].red;
+            imagePixels[(row * width) + column].blue = image[row][column].blue;
+        }
+    }
 
     return imagePixels;
 }
@@ -406,17 +450,8 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
         free_arrays(cat, height);
         return NULL;
     }
-    picture->header = malloc(sizeof(struct bmp_header));
-    picture->data = malloc(sizeof(struct pixel));
-    if (picture->data == NULL || picture->header == NULL) {
-        free_bmp_image(picture);
-        free_arrays(array, image->header->height);
-        free_arrays(cat, height);
-        return NULL;
-    }
-
-    //uint32_t new_width = width;
-    //if (width % 2 != 0) new_width++;
+    picture->header = calloc(1, sizeof(struct bmp_header));
+    picture->data = calloc(1, sizeof(struct pixel));
 
     uint32_t bpp = image->header->bpp/8;
     uint32_t pad = (bpp*(uint32_t)width)%4 == 0 ? 0 : 4 - (bpp*(uint32_t)width)%4;
@@ -432,7 +467,7 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
     picture->header->image_size = (pad + (uint32_t)width*bpp)*(uint32_t)height;
     picture->header->x_ppm = image->header->x_ppm;
     picture->header->y_ppm = image->header->y_ppm;
-    picture->header->num_colors = image -> header->num_colors;
+    picture->header->num_colors = image->header->num_colors;
     picture->header->important_colors = image->header->important_colors;
     picture->header->size = picture->header->image_size + picture->header->offset;
     picture->header->width = width;

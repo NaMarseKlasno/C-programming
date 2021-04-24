@@ -31,27 +31,29 @@ int main()
     */
 
     // ******  Allocate data for full image
+    uint32_t x = 0, y = 0, h = 10, w = 12;
 
-    struct bmp_image* image = NULL;
-    struct bmp_image* image_r = NULL;
+    struct bmp_image* image = read_bmp(file);
 
-    image = read_bmp(file);
-
-    uint32_t x = 0, y = 0, h = 10, w = 11;
-    image_r = crop(image, y, x, h, w);
+    struct bmp_image* image_r = crop(image, y, x, h, w);
+    struct bmp_image* image2 = rotate_right(image);
+    struct bmp_image* image3 = rotate_left(image);
+    struct bmp_image* image4 = flip_vertically(image);
+    struct bmp_image* image5 = flip_horizontally(image);
 
     write_bmp(output, image_r);
 
-    image_r = rotate_right(image);
-    image_r = rotate_left(image);
-    image_r = flip_vertically(image);
-    image_r = flip_horizontally(image);
+    free_bmp_image(image);
+    free_bmp_image(image2);
+    free_bmp_image(image3);
+    free_bmp_image(image4);
+    free_bmp_image(image5);
+    free_bmp_image(image_r);
 
     fclose(file);
     fclose(output);
 
-    //free(image_r);
-    //free(image);
+
 
     return 0;
 }

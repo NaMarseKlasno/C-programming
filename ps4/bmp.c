@@ -95,7 +95,7 @@ bool write_bmp (FILE* stream, const struct bmp_image* image) {
 
 void free_bmp_image (struct bmp_image* image) {
     if (image == NULL) return;
-    if(image->header!=NULL) free(image->header);
-    if(image->data!=NULL) free(image->data);
+    free(image->header);
+    free(image->data);
     free(image);
 }
