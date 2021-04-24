@@ -39,7 +39,6 @@ int main()
 
     uint32_t x = 0, y = 0, h = 10, w = 11;
     image_r = crop(image, y, x, h, w);
-    if (image_r == NULL) printf("returned NULL!\n");
 
     write_bmp(output, image_r);
 
@@ -50,6 +49,7 @@ int main()
 
     fclose(file);
     fclose(output);
+
     //free(image_r);
     //free(image);
 

@@ -5,7 +5,9 @@
 
 struct bmp_header* read_bmp_header (FILE* stream) {
     if (stream == NULL) return NULL;
+
     struct bmp_header *header = calloc(1, sizeof(struct bmp_header));
+    if (header == NULL) return NULL;
 
     fread(header, 54, 1, stream);
 
@@ -32,6 +34,7 @@ struct pixel* read_data (FILE* stream, const struct bmp_header* header) {
     if (stream == NULL || header == NULL) return NULL;
 
     struct pixel* imagePixels = calloc(header->height * header->width, sizeof(struct pixel));
+    if (imagePixels == NULL) return NULL;
 
     uint32_t row = 0;
 
@@ -53,21 +56,19 @@ struct bmp_image* read_bmp (FILE* stream) {
     }
 
     struct bmp_image* image = calloc(1, sizeof(struct bmp_image));
-    if (image == NULL) {
-        free(image);
-        return NULL;
-    }
+    if (image == NULL) return NULL;
+
 
     image->header = read_bmp_header(stream);
     if (image->header == NULL) {
         printf("Error: Corrupted BMP file.\n");
-        free(image);
+        free_bmp_image(image);
         return NULL;
     }
     image->data = read_data(stream, image->header);
     if (image->data == NULL) {
         printf("Error: Corrupted BMP file.\n");
-        free(image);
+        free_bmp_image(image);
         return NULL;
     }
 

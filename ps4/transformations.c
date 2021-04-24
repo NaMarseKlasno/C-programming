@@ -9,7 +9,7 @@ void free_arrays (struct pixel ** array, const uint32_t h);
 struct bmp_image* flip_horizontally (const struct bmp_image* image)
 {
     // ****** null check
-    if (image == NULL || image->data == NULL) return NULL;
+    if (image == NULL || image->data == NULL || image->header == NULL) return NULL;
 
     // ****** memory allocation for a new picture
     struct bmp_image* rotated_image = calloc(1, sizeof(struct bmp_image));
@@ -40,6 +40,12 @@ struct bmp_image* flip_horizontally (const struct bmp_image* image)
     }
 
     arr = one_to_two(image->data, image->header);
+    if (arr == NULL) {
+        free_arrays(arr, image->header->height);
+        free_arrays(niga, image->header->height);
+        free_bmp_image(rotated_image);
+        return NULL;
+    }
     // ****** copy arr to niga
     for (uint32_t i = 0; i < image->header->height; ++i)
         for (uint32_t j = 0; j < image->header->width; ++j)
@@ -92,6 +98,12 @@ struct bmp_image* flip_vertically (const struct bmp_image* image)
     }
 
     arr = one_to_two(image->data, image->header);
+    if (arr == NULL) {
+        free_arrays(arr, image->header->height);
+        free_arrays(niga, image->header->height);
+        free_bmp_image(rotated_image);
+        return NULL;
+    }
     // ****** copy arr to niga
     for (uint32_t i = 0; i < image->header->height; ++i)
         for (uint32_t j = 0; j < image->header->width; ++j)
@@ -179,6 +191,12 @@ struct bmp_image* rotate_right(const struct bmp_image* image) {
     }
 
     arr = one_to_two(image->data, image->header);
+    if (arr == NULL) {
+        free_arrays(arr, image->header->height);
+        free_arrays(niga, image->header->height);
+        free_bmp_image(rotated_image);
+        return NULL;
+    }
     // ****** copy arr to niga
     for (uint32_t i = 0, ix = image->header->width-1; i < image->header->width; ++i, --ix)
         for (uint32_t j = 0; j < image->header->height; ++j)
@@ -266,6 +284,13 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
     }
 
     arr = one_to_two(image->data, image->header);
+    if (arr == NULL) {
+        free_arrays(niga, image->header->width);
+        free_arrays(help_array, image->header->width);
+        free_arrays(arr, image->header->height);
+        free_bmp_image(rotated_image);
+        return NULL;
+    }
     // ****** copy arr to niga
     for (uint32_t i = 0, ix = image->header->width-1; i < image->header->width; ++i, --ix) {
         for (uint32_t j = 0; j < image->header->height; ++j) {
@@ -347,6 +372,9 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
         }
     }
     array = one_to_two(image->data, image->header);
+    if (array == NULL) {
+        free_arrays(array, image->header->height);
+    }
 
     // cat
     struct pixel **cat = calloc(height, sizeof(struct pixel **));
@@ -378,8 +406,8 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
         free_arrays(cat, height);
         return NULL;
     }
-    picture->header = malloc(sizeof(struct bmp_header ));
-    picture->data = malloc(sizeof(struct pixel ));
+    picture->header = malloc(sizeof(struct bmp_header));
+    picture->data = malloc(sizeof(struct pixel));
     if (picture->data == NULL || picture->header == NULL) {
         free_bmp_image(picture);
         free_arrays(array, image->header->height);
