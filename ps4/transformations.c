@@ -181,7 +181,11 @@ struct bmp_image* rotate_right(const struct bmp_image* image) {
 
     for (uint32_t i = 0; i < image->header->height; ++i) {
         arr[i] = calloc(image->header->width, sizeof(struct pixel*));
-        if (arr[i] == NULL) return NULL;
+        if (arr[i] == NULL) {
+            free(arr);
+            free(niga);
+            return NULL;
+        }
     }
     for (uint32_t i = 0; i < image->header->width; ++i) {
         niga[i] = calloc(image->header->height, sizeof(struct pixel*));
@@ -258,7 +262,12 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
 
     for (uint32_t i = 0; i < image->header->height; ++i) {
         arr[i] = calloc(image->header->width, sizeof(struct pixel*));
-        if (arr[i] == NULL) return NULL;
+        if (arr[i] == NULL) {
+            free(niga);
+            free(help_array);
+            free(arr);
+            return NULL;
+        }
     }
     for (uint32_t i = 0; i < image->header->width; ++i) {
         niga[i] = calloc(image->header->height, sizeof(struct pixel*));
@@ -337,4 +346,41 @@ struct pixel* two_to_one (struct pixel **image, const uint32_t height, const uin
 
     return imagePixels;
 }
+/*
+struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, const uint32_t start_x, const uint32_t height, const uint32_t width) {
+    if (image->data == NULL || image->header == NULL || image == NULL) return NULL;
+    if (start_x + width > image->header->width || start_y + height > image->header->height) return NULL;
+
+    struct pixel **array = calloc(image->header->height, sizeof(struct pixel **));
+    if (array == NULL) return NULL;
+    for (uint32_t i = 0; i < image->header->height; ++i) {
+        array[i] = calloc(image->header->width, sizeof(struct pixel *));
+        if (array[i] == NULL) return NULL;
+    }
+    array = one_to_two(image->data, image->header);
+
+    // struct of res picture
+    struct bmp_image *picture;
+    picture->header = malloc(sizeof(struct bmp_header ));
+    picture->data = malloc(sizeof(struct pixel ));
+    if (picture->data == NULL || picture->header == NULL) return NULL;
+
+    // cat
+    struct pixel **cat = calloc(height, sizeof(struct pixel **));
+    if (cat == NULL) return NULL;
+    for (uint32_t i = 0; i < image->header->height; ++i) {
+        cat[i] = calloc(width, sizeof(struct pixel *));
+        if (cat[i] == NULL) return NULL;
+    }
+
+    // main code
+    for (uint32_t i = start_y, ix = 0; i < height; ++i, ++ix) {
+        for (uint32_t j = start_x, jx = 0; j < width; ++j, ++jx) {
+            cat[ix][jx] = array[i][j];
+        }
+    }
+    picture->data = two_to_one(cat, height, width);
+    return NULL;
+}
+*/
 
