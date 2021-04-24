@@ -6,7 +6,7 @@
 
 int main()
 {
-    FILE * file = fopen("assets/cj.bmp", "rb");
+    FILE * file = fopen("assets/lenna.bmp", "rb");
     if (file == NULL) return 1;
 
     FILE * output = fopen("assets/output.bmp", "wb");
@@ -33,7 +33,7 @@ int main()
 
     // ******  Allocate data for full image
     uint32_t x = 0, y = 0, h = 10, w = 12;
-    float n = 8.0;
+    float n = 1.5;
 
     struct bmp_image* image = read_bmp(file);
 

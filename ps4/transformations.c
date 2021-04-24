@@ -550,9 +550,9 @@ struct bmp_image* scale(const struct bmp_image* image, float factor){
     // ***** main code
     for (uint32_t i = 0; i < new_height; ++i) {
         for (uint32_t j = 0; j < new_width; ++j) {
-            uint32_t ix = round( (float)(i * image->header->width) / (float)new_width );
-            uint32_t jx = round( (float)(j * image->header->width) / (float)new_width );
-            printf("ix: %d, jx: %d\n", ix, jx);
+            uint32_t ix = (i * image->header->width) / new_width;
+            uint32_t jx = (j * image->header->width) / new_width;
+            //printf("ix: %d, jx: %d\n", ix, jx);
             picture_arr[i][j] = array[ix][jx];
         }
     }
