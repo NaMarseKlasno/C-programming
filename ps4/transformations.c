@@ -341,16 +341,26 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
     if (array == NULL) return NULL;
     for (uint32_t i = 0; i < image->header->height; ++i) {
         array[i] = calloc(image->header->width, sizeof(struct pixel *));
-        if (array[i] == NULL) return NULL;
+        if (array[i] == NULL) {
+            free_arrays(array, image->header->height);
+            return NULL;
+        }
     }
     array = one_to_two(image->data, image->header);
 
     // cat
     struct pixel **cat = calloc(height, sizeof(struct pixel **));
-    if (cat == NULL) return NULL;
+    if (cat == NULL) {
+        free_arrays(array, image->header->height);
+        return NULL;
+    }
     for (uint32_t i = 0; i < height; ++i) {
         cat[i] = calloc(width, sizeof(struct pixel *));
-        if (cat[i] == NULL) return NULL;
+        if (cat[i] == NULL) {
+            free_arrays(cat, height);
+            free_arrays(array, image->header->height);
+            return NULL;
+        }
     }
 
     // main code
@@ -402,6 +412,8 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
 
     picture->data = two_to_one(cat, height, width);
 
+    free_arrays(array, image->header->height);
+    free_arrays(cat, height);
     return picture;
 }
 
