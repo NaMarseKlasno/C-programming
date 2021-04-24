@@ -492,6 +492,8 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
 
 struct bmp_image* scale(const struct bmp_image* image, float factor){
     if (image->data == NULL || image->header == NULL || image == NULL) return NULL;
+    if (factor <= 0) return NULL;
+
 
     // ****** allocate memory for the new picture
     struct bmp_image* picture = calloc(1, sizeof(struct bmp_image));
@@ -548,8 +550,9 @@ struct bmp_image* scale(const struct bmp_image* image, float factor){
     // ***** main code
     for (uint32_t i = 0; i < new_height; ++i) {
         for (uint32_t j = 0; j < new_width; ++j) {
-            uint32_t ix = (i * image->header->width) / new_width;
-            uint32_t jx = (j * image->header->width) / new_width;
+            uint32_t ix = round( (float)(i * image->header->width) / (float)new_width );
+            uint32_t jx = round( (float)(j * image->header->width) / (float)new_width );
+            printf("ix: %d, jx: %d\n", ix, jx);
             picture_arr[i][j] = array[ix][jx];
         }
     }
