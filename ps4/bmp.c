@@ -9,7 +9,15 @@ struct bmp_header* read_bmp_header (FILE* stream) {
     struct bmp_header *header = calloc(1, sizeof(struct bmp_header));
     if (header == NULL) return NULL;
 
-    fread(header, 54, 1, stream);
+    if (fread(header, 54, 1, stream) != 1) {
+        free(header);
+        return NULL;
+    }
+    if (header->height <= 0 || header->width <= 0) {
+        free(header);
+        return NULL;
+    }
+
 
     char * pUint16 = (char*)&header->type;
     if (pUint16[0] != 'B' && pUint16[1] != 'M') {
@@ -17,14 +25,6 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         return NULL;
     }
 
-    /*
-    printf("First chars: %c%c\n", pUint16[0], pUint16[1]);
-    printf("Size: %d\n", header->size);
-    printf("Num of colors: %d\n", header->num_colors);
-    printf("Image size: %d\n", header->image_size);
-    printf("X_ppm: %d\n", header->x_ppm);
-    printf("Y_ppm: %d\n", header->y_ppm);
-    */
 
     return header;
 }
@@ -50,18 +50,14 @@ struct pixel* read_data (FILE* stream, const struct bmp_header* header) {
 
 
 struct bmp_image* read_bmp (FILE* stream) {
-    if (stream == NULL) {
-        printf("Error: This is not a BMP file.\n");
-        return NULL;
-    }
+    if (stream == NULL) return NULL;
 
     struct bmp_image* image = calloc(1, sizeof(struct bmp_image));
     if (image == NULL) return NULL;
 
-
     image->header = read_bmp_header(stream);
     if (image->header == NULL) {
-        printf("Error: Corrupted BMP file.\n");
+        printf("Error: This is not a BMP file.\n");
         free_bmp_image(image);
         return NULL;
     }
@@ -95,7 +91,7 @@ bool write_bmp (FILE* stream, const struct bmp_image* image) {
 
 void free_bmp_image (struct bmp_image* image) {
     if (image == NULL) return;
-    free(image->header);
-    free(image->data);
+    if (image->header != NULL) free(image->header);
+    if (image->data != NULL) free(image->data);
     free(image);
 }

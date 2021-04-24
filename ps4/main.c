@@ -37,14 +37,14 @@ int main()
 
     struct bmp_image* image = read_bmp(file);
 
-    struct bmp_image* image_r = crop(image, y, x, h, w);
+    struct bmp_image* image_r = crop(NULL, y, x, h, w);
     struct bmp_image* image2 = rotate_right(image);
     struct bmp_image* image3 = rotate_left(image);
     struct bmp_image* image4 = flip_vertically(image);
     struct bmp_image* image5 = flip_horizontally(image);
     struct bmp_image* image6 = scale(image, n);
 
-    write_bmp(output, image6);
+    write_bmp(output, image_r);
 
     free_bmp_image(image);
     free_bmp_image(image2);
