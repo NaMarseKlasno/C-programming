@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "bmp.h"
 #include "transformations.h"
+#include <math.h>
 
 int main()
 {
@@ -13,7 +14,7 @@ int main()
         fclose(file);
         return 1;
     }
-
+    //printf("%f\n", round(0.86));
 
     /*
     struct bmp_header* header = calloc(1, sizeof(struct bmp_header));
@@ -32,6 +33,7 @@ int main()
 
     // ******  Allocate data for full image
     uint32_t x = 0, y = 0, h = 10, w = 12;
+    float n = 8.0;
 
     struct bmp_image* image = read_bmp(file);
 
@@ -40,20 +42,20 @@ int main()
     struct bmp_image* image3 = rotate_left(image);
     struct bmp_image* image4 = flip_vertically(image);
     struct bmp_image* image5 = flip_horizontally(image);
+    struct bmp_image* image6 = scale(image, n);
 
-    write_bmp(output, image_r);
+    write_bmp(output, image6);
 
     free_bmp_image(image);
     free_bmp_image(image2);
     free_bmp_image(image3);
     free_bmp_image(image4);
     free_bmp_image(image5);
+    free_bmp_image(image6);
     free_bmp_image(image_r);
 
     fclose(file);
     fclose(output);
-
-
 
     return 0;
 }

@@ -1,5 +1,6 @@
 #include "bmp.h"
 #include <stdlib.h>
+#include <math.h>
 
 
 struct pixel** one_to_two (const struct pixel* data, const struct bmp_header* header);
@@ -461,8 +462,8 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
     picture->header = calloc(1, sizeof(struct bmp_header));
     picture->data = calloc(1, sizeof(struct pixel));
 
-    uint32_t bpp = image->header->bpp/8;
-    uint32_t pad = (bpp*(uint32_t)width)%4 == 0 ? 0 : 4 - (bpp*(uint32_t)width)%4;
+    uint32_t bpp = image->header->bpp / 8;
+    uint32_t pad = (bpp * (uint32_t)width) % 4 == 0 ? 0 : 4 - (bpp*(uint32_t)width) % 4;
 
     picture->header->type = image->header->type;
     picture->header->reserved1 = image->header->reserved1;
@@ -485,6 +486,79 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
 
     free_arrays(array, image->header->height);
     free_arrays(cat, height);
+    return picture;
+}
+
+
+struct bmp_image* scale(const struct bmp_image* image, float factor){
+    if (image->data == NULL || image->header == NULL || image == NULL) return NULL;
+
+    // ****** allocate memory for the new picture
+    struct bmp_image* picture = calloc(1, sizeof(struct bmp_image));
+    if (picture == NULL) return NULL;
+
+    // ****** header for picture
+    picture->header = calloc(1, sizeof(struct bmp_header));
+    uint32_t new_height = (uint32_t) round((float) image->header->height * factor);
+    uint32_t new_width = (uint32_t) round((float) image->header->width * factor);
+    uint32_t bpp = image -> header->bpp / 8;
+    uint32_t pr = (bpp * new_width) % 4 == 0 ? 0 : 4 - (bpp * new_width) % 4;
+
+    picture->header->type = image->header->type;
+    picture->header->size = image->header->size;
+    picture->header->reserved1= image->header->reserved1;
+    picture->header->reserved2 =image->header->reserved2;
+    picture->header->offset = image->header->offset;
+    picture->header->dib_size = image->header->dib_size;
+    picture->header->width = new_width;
+    picture->header->height = new_height;
+    picture->header->planes = image->header->planes;
+    picture->header->bpp= image->header->bpp;
+    picture->header->compression = image->header->compression;
+    picture->header->image_size = image->header->image_size;
+    picture->header->x_ppm= image->header->x_ppm;
+    picture->header->y_ppm = image->header->y_ppm;
+    picture->header->num_colors = image->header->num_colors;
+    picture->header->important_colors = image->header->important_colors;
+
+    picture->header->image_size = (pr + new_width * bpp) * new_height;
+    picture->header->size = picture->header->image_size + picture->header->offset;
+
+    // ***** data for picture
+    struct pixel **array = one_to_two(image->data, image->header);
+    if (array == NULL) {
+        free_bmp_image(picture);
+        return NULL;
+    }
+
+    struct pixel **picture_arr = calloc(new_height, sizeof(struct pixel **));
+    if (picture_arr == NULL) {
+        free_bmp_image(picture);
+        return NULL;
+    }
+    for (int i = 0; i < new_height; ++i) {
+        picture_arr[i] = calloc(new_width, sizeof(struct pixel *));
+        if (picture_arr[i] == NULL) {
+            free_arrays(picture_arr, new_height);
+            free_bmp_image(picture);
+            return NULL;
+        }
+    }
+
+    // ***** main code
+    for (uint32_t i = 0; i < new_height; ++i) {
+        for (uint32_t j = 0; j < new_width; ++j) {
+            uint32_t ix = (i * image->header->width) / new_width;
+            uint32_t jx = (j * image->header->width) / new_width;
+            picture_arr[i][j] = array[ix][jx];
+        }
+    }
+
+    picture->data = two_to_one(picture_arr, new_height, new_width);
+
+    free_arrays(picture_arr, new_height);
+    free_arrays(array, image->header->height);
+
     return picture;
 }
 
