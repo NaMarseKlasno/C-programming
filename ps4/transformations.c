@@ -231,9 +231,8 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
 
     // ****** memory allocation for a new picture
     struct bmp_image* rotated_image = calloc(1, sizeof(struct bmp_image));
-    if (rotated_image == NULL) {
-        return NULL;
-    }
+    if (rotated_image == NULL) return NULL;
+
     rotated_image->header = calloc(1, sizeof(struct bmp_header));
     uint32_t width = image->header->height;
     uint32_t height = image->header->width;
@@ -266,14 +265,13 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
     struct pixel **niga = calloc(image->header->width, sizeof(struct pixel**));
     if (niga == NULL) {
         free_bmp_image(rotated_image);
-        free(niga);
+        free_arrays(niga, image->header->width);
         return NULL;
     }
     struct pixel **help_array = calloc(image->header->width, sizeof(struct pixel**));
     if (help_array == NULL) {
         free_bmp_image(rotated_image);
-        free(niga);
-        free(help_array);
+        free_arrays(niga, image->header->width);
         return NULL;
     }
 
@@ -309,7 +307,6 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
             help_array[i][j] = arr[j][ix];
         }
     }
-    //uint32_t height2 = rotated_image->header->height, width2 = rotated_image->header->width;
     // ****** transformations image
     for (uint32_t i = 0, ix = height-1; i < height; ++i, --ix) {
         for (uint32_t j = 0, jx = width-1; j < width; ++j, --jx) {
@@ -319,12 +316,10 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
 
     rotated_image->data = two_to_one(niga, rotated_image->header->height, rotated_image->header->width);
 
-    for (uint32_t i = 0; i < image->header->height; ++i) {
-        free(arr[i]);
-    } free(arr);
-    for (uint32_t i = 0; i < image->header->width; ++i) {
-        free(niga[i]);
-    } free(niga);
+    // ***** free memory
+    free_arrays(arr, image->header->height);
+    free_arrays(niga, image->header->width);
+    free_arrays(help_array, image->header->width);
 
     return rotated_image;
 }

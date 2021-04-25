@@ -44,7 +44,7 @@ int main()
     struct bmp_image* image5 = flip_horizontally(image);
     struct bmp_image* image6 = scale(image, n);
 
-    write_bmp(output, image_r);
+    write_bmp(output, image2);
 
     free_bmp_image(image);
     free_bmp_image(image2);
