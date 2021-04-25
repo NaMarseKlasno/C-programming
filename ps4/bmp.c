@@ -29,7 +29,7 @@ struct bmp_header* read_bmp_header (FILE* stream) {
 
     uint32_t im_size = ((header->width * bpp) + pr) * header->height;
 
-    if (header->image_size != im_size || header->size != (image_size + header->offset)){
+    if (header->image_size != im_size || header->size != (im_size + header->offset)){
         free(header);
         return NULL;
     }
