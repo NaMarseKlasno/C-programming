@@ -10,5 +10,5 @@
 *bmp.dSYM/Contents/Info.plist
 *bmp.dSYM/Contents/Resources/DWARF/bmp
 *a.out.dSYM/Contents/Info.plist
-*.DS_Store
+.DS_Store
 /assets

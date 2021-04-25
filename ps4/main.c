@@ -6,10 +6,6 @@
 
 int main()
 {
-    int test = (7 * 3) % 2 == 0?10 : 11;
-    printf("%d\n", test);
-    getchar();
-
     // (bpp * width) % 4 == 0?0 : 4 - (bpp*width)%4;
 
     FILE * file = fopen("assets/prva.bmp", "rb");
