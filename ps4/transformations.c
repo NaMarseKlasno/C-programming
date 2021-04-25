@@ -325,50 +325,6 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
 }
 
 
-
-struct pixel** one_to_two (const struct pixel* data, const struct bmp_header* header) {
-    // ****** null check
-    if (data == NULL || header == NULL) return NULL;
-
-    // ****** memory allocation
-    struct pixel** image = calloc(header->height, sizeof(struct pixel**));
-    if (image == NULL) return NULL;
-
-    for (uint32_t i = 0; i < header->height; ++i) {
-        image[i] = calloc(header->width, sizeof(struct pixel*));
-        if (image[i] == NULL) {
-            free_arrays(image, header->height);
-            return NULL;
-        }
-    }
-
-    for (uint32_t row = 0; row < header->height; ++row) {
-        for (uint32_t column = 0; column < header->width; column++) {
-            image[row][column].blue = data[(row * header->width) + column].blue;
-            image[row][column].red = data[(row * header->width) + column].red;
-            image[row][column].green = data[(row * header->width) + column].green;
-        }
-    }
-    return image;
-}
-
-struct pixel* two_to_one (struct pixel **image, const uint32_t height, const uint32_t width) {
-    if (image == NULL) return NULL;
-
-    struct pixel* imagePixels = calloc(height * width, sizeof(struct pixel*));
-    if (imagePixels == NULL) return NULL;
-
-    for (uint32_t row = 0; row < height; ++row) {
-        for (uint32_t column = 0; column < width; column++) {
-            imagePixels[(row * width) + column].green = image[row][column].green;
-            imagePixels[(row * width) + column].red = image[row][column].red;
-            imagePixels[(row * width) + column].blue = image[row][column].blue;
-        }
-    }
-
-    return imagePixels;
-}
-
 struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, const uint32_t start_x, const uint32_t height, const uint32_t width) {
     if (image == NULL) return NULL;
     if (image->data == NULL || image->header == NULL) return NULL;
@@ -519,8 +475,129 @@ struct bmp_image* scale(const struct bmp_image* image, float factor){
     return picture;
 }
 
+struct bmp_image* extract(const struct bmp_image* image, const char* colors_to_keep) {
+
+    // ***** check null
+    if (image == NULL) return NULL;
+    if (image->data == NULL || image->header == NULL) return NULL;
+    if (colors_to_keep == NULL) return NULL;
+
+    // ***** create new picture
+    struct bmp_image* picture = calloc(1, sizeof(struct bmp_image));
+    if (picture == NULL) return NULL;
+
+    // ****** copy .header for a new picture struct
+    picture->header = calloc(1, sizeof(struct bmp_header));
+    picture->header->type = image->header->type;
+    picture->header->size = image->header->size;
+    picture->header->reserved1= image->header->reserved1;
+    picture->header->reserved2 = image->header->reserved2;
+    picture->header->offset = image->header->offset;
+    picture->header->dib_size = image->header->dib_size;
+    picture->header->width = image->header->width;
+    picture->header->height= image->header->height;
+    picture->header->planes = image->header->planes;
+    picture->header->bpp= image->header->bpp;
+    picture->header->compression = image->header->compression;
+    picture->header->image_size = image->header->image_size;
+    picture->header->x_ppm= image->header->x_ppm;
+    picture->header->y_ppm = image->header->y_ppm;
+    picture->header->num_colors = image->header->num_colors;
+    picture->header->important_colors = image->header->important_colors;
+
+    // ****** make .data for a new picture struct
+    struct pixel **array = one_to_two(image->data, image->header);
+    if (array == NULL) {
+        free_bmp_image(picture);
+        return NULL;
+    }
+    struct pixel **altered_image = calloc(image->header->height, sizeof(struct pixel**));
+    if (altered_image == NULL) {
+        free_bmp_image(picture);
+        free_arrays(array, image->header->height);
+        return NULL;
+    }
+    for (uint32_t i = 0; i < image->header->height; ++i) {
+        altered_image[i] = calloc(image->header->width, sizeof(struct pixel*));
+        if (altered_image[i] == NULL) {
+            free_bmp_image(picture);
+            free_arrays(altered_image, image->header->height);
+            return NULL;
+        }
+    }
+
+    //short color = 0; // 0 - NULL, 1 - red, 2 - green, 3 - blue
+    bool r = false, g = false, b = false;
+
+    for (int i = 0; colors_to_keep[i] != '\0'; ++i) {
+        if (colors_to_keep[i] == 'r') r = true;
+        if (colors_to_keep[i] == 'g') g = true;
+        if (colors_to_keep[i] == 'b') b = true;
+    }
+    
+    // ***** major changes
+    for (uint32_t i = 0; i < image->header->height; ++i) {
+        for (uint32_t j = 0; j < image->header->width; ++j) {
+            if (r) altered_image[i][j].red = array[i][j].red;
+            if (g) altered_image[i][j].green = array[i][j].green;
+            if (b) altered_image[i][j].blue = array[i][j].blue;
+        }
+    }
+
+    picture->data = two_to_one(altered_image, image->header->height, image->header->width);
+
+    free_arrays(array, image->header->height);
+    free_arrays(altered_image, image->header->height);
+
+    return picture;
+}
+
 
 void free_arrays (struct pixel ** array, const uint32_t h) {
     for (uint32_t i = 0; i < h; ++i) free(array[i]);
     free(array);
+}
+
+
+struct pixel** one_to_two (const struct pixel* data, const struct bmp_header* header) {
+    // ****** null check
+    if (data == NULL || header == NULL) return NULL;
+
+    // ****** memory allocation
+    struct pixel** image = calloc(header->height, sizeof(struct pixel**));
+    if (image == NULL) return NULL;
+
+    for (uint32_t i = 0; i < header->height; ++i) {
+        image[i] = calloc(header->width, sizeof(struct pixel*));
+        if (image[i] == NULL) {
+            free_arrays(image, header->height);
+            return NULL;
+        }
+    }
+
+    for (uint32_t row = 0; row < header->height; ++row) {
+        for (uint32_t column = 0; column < header->width; column++) {
+            image[row][column].blue = data[(row * header->width) + column].blue;
+            image[row][column].red = data[(row * header->width) + column].red;
+            image[row][column].green = data[(row * header->width) + column].green;
+        }
+    }
+    return image;
+}
+
+struct pixel* two_to_one (struct pixel **image, const uint32_t height, const uint32_t width) {
+    if (image == NULL) return NULL;
+
+    struct pixel* imagePixels = calloc(height * width, sizeof(struct pixel*));
+    if (imagePixels == NULL) return NULL;
+
+    for (uint32_t row = 0; row < height; ++row) {
+        for (uint32_t column = 0; column < width; column++) {
+            imagePixels[(row * width) + column].green = image[row][column].green;
+            imagePixels[(row * width) + column].red = image[row][column].red;
+            imagePixels[(row * width) + column].blue = image[row][column].blue;
+        }
+    }
+
+    return imagePixels;
 }

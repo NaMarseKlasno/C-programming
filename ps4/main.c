@@ -43,8 +43,9 @@ int main()
     struct bmp_image* image4 = flip_vertically(image);
     struct bmp_image* image5 = flip_horizontally(image);
     struct bmp_image* image6 = scale(image, n);
+    struct bmp_image* image7 = extract(image, "gbr");
 
-    write_bmp(output, image2);
+    write_bmp(output, image7);
 
     free_bmp_image(image);
     free_bmp_image(image2);
@@ -52,6 +53,7 @@ int main()
     free_bmp_image(image4);
     free_bmp_image(image5);
     free_bmp_image(image6);
+    free_bmp_image(image7);
     free_bmp_image(image_r);
 
     fclose(file);
