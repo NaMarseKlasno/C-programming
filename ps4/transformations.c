@@ -415,6 +415,14 @@ struct bmp_image* scale(const struct bmp_image* image, float factor){
     uint32_t new_width = (uint32_t) round((float) image->header->width * factor);
     uint32_t bpp = image -> header->bpp / 8;
     uint32_t pr = (bpp * new_width) % 4 == 0 ? 0 : 4 - (bpp * new_width) % 4;
+    uint32_t old_height = image->header->height, old_width = image->header->width;
+    uint32_t p1 = old_height*old_width, p2 = new_height*new_width;
+
+    // ***** check null
+    if ((p1 * factor) != p2 && (p2 * factor) != p1) {
+        free_bmp_image(picture);
+        return NULL;
+    }
 
     picture->header->type = image->header->type;
     picture->header->size = image->header->size;
@@ -462,7 +470,7 @@ struct bmp_image* scale(const struct bmp_image* image, float factor){
         for (uint32_t j = 0; j < new_width; ++j) {
             uint32_t ix = (i * image->header->width) / new_width;
             uint32_t jx = (j * image->header->width) / new_width;
-            //printf("ix: %d, jx: %d\n", ix, jx);
+
             picture_arr[i][j] = array[ix][jx];
         }
     }

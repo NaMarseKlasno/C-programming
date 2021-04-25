@@ -8,7 +8,7 @@ int main()
 {
     // (bpp * width) % 4 == 0?0 : 4 - (bpp*width)%4;
 
-    FILE * file = fopen("assets/prva.bmp", "rb");
+    FILE * file = fopen("assets/lenna.bmp", "rb");
     if (file == NULL) return 1;
 
     FILE * output = fopen("assets/output.bmp", "wb");
@@ -18,8 +18,8 @@ int main()
     }
 
     // ******  Allocate data for full image
-    uint32_t x = 0, y = 0, h = 10, w = 12;
-    float n = 2.5;
+    uint32_t x = 0, y = 0, h = 10, w = 20;
+    float n = 2.0;
 
     struct bmp_image* image = read_bmp(file);
 

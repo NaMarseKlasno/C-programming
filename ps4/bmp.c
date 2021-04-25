@@ -24,6 +24,7 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         return NULL;
     }
 
+    /*
     uint32_t bpp = header->bpp / (uint32_t)8, pr = 0;
     if ((bpp * header->width) % 4 == 0) pr = 4 - (bpp * header->width) % 4;
 
@@ -33,6 +34,7 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         free(header);
         return NULL;
     }
+    */
 
     return header;
 }
