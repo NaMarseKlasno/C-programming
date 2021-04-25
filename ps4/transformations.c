@@ -482,6 +482,16 @@ struct bmp_image* extract(const struct bmp_image* image, const char* colors_to_k
     if (image->data == NULL || image->header == NULL) return NULL;
     if (colors_to_keep == NULL) return NULL;
 
+    bool r = false, g = false, b = false;
+
+    for (int i = 0; colors_to_keep[i] != '\0'; ++i)
+    {
+        if (colors_to_keep[i] != 'r' && colors_to_keep[i] != 'g' && colors_to_keep[i] != 'b') return NULL;
+        else if (colors_to_keep[i] == 'r') r = true;
+        else if (colors_to_keep[i] == 'g') g = true;
+        else if (colors_to_keep[i] == 'b') b = true;
+    }
+
     // ***** create new picture
     struct bmp_image* picture = calloc(1, sizeof(struct bmp_image));
     if (picture == NULL) return NULL;
@@ -526,15 +536,6 @@ struct bmp_image* extract(const struct bmp_image* image, const char* colors_to_k
         }
     }
 
-    //short color = 0; // 0 - NULL, 1 - red, 2 - green, 3 - blue
-    bool r = false, g = false, b = false;
-
-    for (int i = 0; colors_to_keep[i] != '\0'; ++i) {
-        if (colors_to_keep[i] == 'r') r = true;
-        if (colors_to_keep[i] == 'g') g = true;
-        if (colors_to_keep[i] == 'b') b = true;
-    }
-    
     // ***** major changes
     for (uint32_t i = 0; i < image->header->height; ++i) {
         for (uint32_t j = 0; j < image->header->width; ++j) {

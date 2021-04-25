@@ -18,13 +18,21 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         return NULL;
     }
 
-
     char * pUint16 = (char*)&header->type;
     if (pUint16[0] != 'B' && pUint16[1] != 'M') {
         free(header);
         return NULL;
     }
 
+    uint32_t bpp = header->bpp / (uint32_t)8, pr = 0;
+    if ((bpp * header->width) % 4 == 0) pr = 4 - (bpp * header->width) % 4;
+
+    uint32_t im_size = ((header->width * bpp) + pr) * header->height;
+
+    if (header->image_size != im_size || header->size != (image_size + header->offset)){
+        free(header);
+        return NULL;
+    }
 
     return header;
 }

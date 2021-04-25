@@ -4,4 +4,11 @@
 *.o
 *.out
 *.bmp
+*bmp
+*bmp.h.gch
+*transformations.h.gch
+*bmp.dSYM/Contents/Info.plist
+*bmp.dSYM/Contents/Resources/DWARF/bmp
+*a.out.dSYM/Contents/Info.plist
+*.DS_Store
 /assets
