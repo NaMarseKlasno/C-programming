@@ -9,7 +9,7 @@ struct bmp_header* read_bmp_header (FILE* stream) {
     struct bmp_header *header = calloc(1, sizeof(struct bmp_header));
     if (header == NULL) return NULL;
 
-    if (fread(header, 54, 1, stream) != 1) {
+    if (fread(header, sizeof (struct bmp_header), 1, stream) != 1) {
         free(header);
         return NULL;
     }
@@ -24,31 +24,12 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         return NULL;
     }
 
-    /*
-    uint32_t bpp = header->bpp / (uint32_t)8, pr = 0;
-    if ((bpp * header->width) % 4 == 0) pr = 4 - (bpp * header->width) % 4;
+    uint32_t bpp = header->bpp / (uint32_t)8, pr = 4 - (bpp * header->width) % 4;
+    if ((bpp * header->width) % 4 == 0) pr = 0;
 
     uint32_t im_size = ((header->width * bpp) + pr) * header->height;
 
     if (header->image_size != im_size || header->size != (im_size + header->offset)){
-        free(header);
-        return NULL;
-    }
-    */
-    uint32_t bpp = header->bpp / (uint32_t)8;
-    uint32_t pr = (bpp * header->width) % 4 == 0 ? 0 : 4 - (bpp * header->width) % 4;
-    uint32_t image_size = (pr + header->width * bpp) * header->height;
-    uint32_t size = image_size + header->offset;
-
-    if (header->image_size != image_size){
-        free(header);
-        return NULL;
-    }
-    if (header->size != size){
-        free(header);
-        return NULL;
-    }
-    if (header->image_size != image_size){
         free(header);
         return NULL;
     }
@@ -122,3 +103,6 @@ void free_bmp_image (struct bmp_image* image) {
     if (image->data != NULL) free(image->data);
     free(image);
 }
+
+// Qk1OAAAAAAAAADYAAAAoAAAABAAAAAIAAAABABgAAAAAABgAAAAjLgAAIy4AAAAAAAAAAAAAAAAAAP8A/wAA/////wAAAAD/AP8AAAAA
+//  echo "Qk1WAAAAAAAAADYAAAAoAAAAAgAAAAQAAAABABgAAAAAACAAAAAjLgAAIy4AAAAAAAAAAAAA////AAAAAAD/AAAA/wAAAAD/AAAA/wAAAAAA/wAAAAA=" | base64 -d > j1.bmp
