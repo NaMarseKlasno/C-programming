@@ -2,17 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned int ReadLE4(FILE *fp)
-{
-    unsigned char buf[4];
-    uint32_t result = 0;
-    uint32_t i;
-
-    fread(buf, 1, 4, fp);
-    for (i = 3; i >= 0; i--) result = (result << 8) | (uint32_t) buf[i];
-
-    return result;
-}
 
 struct bmp_header* read_bmp_header (FILE* stream) {
     if (stream == NULL) return NULL;
