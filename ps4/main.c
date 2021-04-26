@@ -18,11 +18,10 @@ int main()
     }
 
     // ******  Allocate data for full image
-    uint32_t x = 0, y = 0, h = 50, w = 50;
+    uint32_t x = 1, y = 0, w = 2, h = 1;
     float n = 2.761034;
 
     struct bmp_image* image = read_bmp(file);
-
     struct bmp_image* image_r = crop(image, y, x, h, w);
     struct bmp_image* image2 = rotate_right(image);
     struct bmp_image* image3 = rotate_left(image);
@@ -31,8 +30,8 @@ int main()
     struct bmp_image* image6 = scale(image, n);
     struct bmp_image* image7 = extract(image, "r");
 
-    printf("%d\n", image6->header->size);
-    write_bmp(output, image6);
+    printf("%d\n", image_r->header->image_size);
+    write_bmp(output, image_r);
 
 
     free_bmp_image(image);

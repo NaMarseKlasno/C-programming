@@ -17,27 +17,28 @@ struct bmp_header* read_bmp_header (FILE* stream) {
     if ((header -> type != 0x4d42) || (pUint16[0] != 'B') || (pUint16[1] != 'M')) {
         free(header);
         return NULL;
-    }
-    if (header->height <= 0) {
+    } if (header->height <= 0) {
         free(header);
         return NULL;
-    }
-    if (header->width <= 0) {
+    } if (header->width <= 0) {
         free(header);
         return NULL;
-    }
-
-    uint32_t bpp = header->bpp / 8, pad = 0;
+    } uint32_t bpp = header->bpp / 8, pad = 0;
     if ((bpp * header->width) % 4 != 0) pad = 4 - (bpp * header->width) % 4;
-    if (header->image_size != ((header->width * bpp) + pad) * header->height) {
+
+    header->image_size = ((header->width * bpp) + pad) * header->height;
+    header->size = header->image_size + header->offset;
+
+    if (header->offset != 54) {
         free(header);
         return NULL;
-    } //header->image_size = ((header->width * bpp) + pad) * header->height;
-    if (header->size != header->image_size + header->offset) {
+    } if (header->dib_size != 40) {
         free(header);
         return NULL;
-    }
-    if (header->image_size != ((header->width * bpp) + pad) * header->height) {
+    } if (header->bpp != 24) {
+        free(header);
+        return NULL;
+    } if (header->compression != 0) {
         free(header);
         return NULL;
     }
@@ -125,4 +126,4 @@ void free_bmp_image (struct bmp_image* image) {
 }
 
 // Qk1OAAAAAAAAADYAAAAoAAAABAAAAAIAAAABABgAAAAAABgAAAAjLgAAIy4AAAAAAAAAAAAAAAAAAP8A/wAA/////wAAAAD/AP8AAAAA
-//  echo Qk1OAAAAAAAAADYAAAAoAAAAAwAAAAIAAAABABgAAAAAABgAAAAjLgAAIy4AAAAAAAAAAAAA/////wAAAAAAAAAA/wD/AP8A/wD/AAAA" | base64 -d > j1.bmp
+//echo "Qk1OAAAAAAAAADYAAAAoAAAAAwAAAAIAAAABABgAAAAAABgAAAAjLgAAIy4AAAAAAAAAAAAA/////wAAAAAAAAAA/wD/AP8A/wD/AAAA" | base64 -d > j1.bmp

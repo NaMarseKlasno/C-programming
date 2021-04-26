@@ -186,7 +186,7 @@ struct bmp_image* rotate_right(const struct bmp_image* image) {
     if ((bpp * width) % 4 != 0)
         rotated_image->header->image_size = ((4 - (bpp * width) % 4) + width * bpp) * rotated_image->header->height;
     else
-        rotated_image->header->image_size = 0;
+        rotated_image->header->image_size = width * bpp * rotated_image->header->height;
     rotated_image->header->size = rotated_image->header->image_size + rotated_image->header->offset;
 
     struct pixel **niga = calloc(image->header->width, sizeof(struct pixel**));
@@ -360,8 +360,8 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
     }
 
     // main code
-    for (uint32_t i = start_y, ix = 0; i < start_y+height; ++i, ++ix) {
-        for (uint32_t j = start_x, jx = 0; j < start_x+width; ++j, ++jx) {
+    for (uint32_t i = start_x, ix = 0; i < start_x+height; ++i, ++ix) {
+        for (uint32_t j = start_y, jx = 0; j < start_y+width; ++j, ++jx) {
             cat[ix][jx] = array[i][j];
         }
     }
@@ -374,10 +374,9 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
         return NULL;
     }
     picture->header = calloc(1, sizeof(struct bmp_header));
-    //picture->data = calloc(1, sizeof(struct pixel));
 
-    uint32_t bpp = image->header->bpp / 8;
-    uint32_t pad = (bpp * (uint32_t)width) % 4 == 0 ? 0 : 4 - (bpp*(uint32_t)width) % 4;
+    uint32_t bpp = image->header->bpp / 8, pr = 0;
+    if ((bpp * width) % 4 != 0) pr = 4 - (bpp*width) % 4;
 
     picture->header->type = image->header->type;
     picture->header->reserved1 = image->header->reserved1;
@@ -387,7 +386,7 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
     picture->header->planes = image->header->planes;
     picture->header->bpp = image->header->bpp;
     picture->header->compression = image->header->compression;
-    picture->header->image_size = (pad + (uint32_t)width * bpp) * (uint32_t)height;
+    picture->header->image_size = (((width * bpp) + pr) * height)+54;
     picture->header->x_ppm = image->header->x_ppm;
     picture->header->y_ppm = image->header->y_ppm;
     picture->header->num_colors = image->header->num_colors;
