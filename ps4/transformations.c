@@ -360,8 +360,8 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
     }
 
     // main code
-    for (uint32_t i = start_x, ix = 0; i < start_x+height; ++i, ++ix) {
-        for (uint32_t j = start_y, jx = 0; j < start_y+width; ++j, ++jx) {
+    for (uint32_t i = start_y, ix = 0; i < start_y+height; ++i, ++ix) {
+        for (uint32_t j = start_x, jx = 0; j < start_x+width; ++j, ++jx) {
             cat[ix][jx] = array[i][j];
         }
     }
