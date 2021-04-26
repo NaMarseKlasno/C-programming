@@ -22,7 +22,8 @@ int main()
     float n = 1.593538;
 
     struct bmp_image* image = read_bmp(file);
-    //if (image == NULL) printf("img == NULL\n");
+    if (image == NULL) printf("img == NULL\n");
+    else printf("no\n");
 
     struct bmp_image* image_r = crop(image, y, x, h, w);
     struct bmp_image* image2 = rotate_right(image);

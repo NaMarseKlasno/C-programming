@@ -2,6 +2,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+unsigned int ReadLE4(FILE *fp)
+{
+    unsigned char buf[4];
+    uint32_t result = 0;
+    uint32_t i;
+
+    fread(buf, 1, 4, fp);
+    for (i = 3; i >= 0; i--) result = (result << 8) | (uint32_t) buf[i];
+
+    return result;
+}
 
 struct bmp_header* read_bmp_header (FILE* stream) {
     if (stream == NULL) return NULL;
@@ -9,7 +20,12 @@ struct bmp_header* read_bmp_header (FILE* stream) {
     struct bmp_header *header = calloc(1, sizeof(struct bmp_header));
     if (header == NULL) return NULL;
 
-    if (fread(header, sizeof (struct bmp_header), 1, stream) != 1) {
+    if (fread(header, sizeof(struct bmp_header), 1, stream) != 1) {
+        free(header);
+        return NULL;
+    }
+    char * pUint16 = (char*)&header->type;
+    if (pUint16[0] != 'B' || pUint16[1] != 'M') {
         free(header);
         return NULL;
     }
@@ -18,12 +34,15 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         return NULL;
     }
 
-    char * pUint16 = (char*)&header->type;
-    if (pUint16[0] != 'B' && pUint16[1] != 'M') {
-        free(header);
-        return NULL;
-    }
+    uint32_t bpp = header->bpp / 8, pad = 0;
+    if ((bpp * header->width) % 4 != 0) pad = 4 - (bpp * header->width) % 4;
 
+    header->image_size = ((header->width * bpp) + pad) * header->height;
+    header->size = header->image_size + header->offset;
+
+
+
+    /*
     uint32_t bpp = header->bpp / (uint32_t)8, pr = 4 - (bpp * header->width) % 4;
     if ((bpp * header->width) % 4 == 0) pr = 0;
 
@@ -33,6 +52,8 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         free(header);
         return NULL;
     }
+    */
+
 
     return header;
 }

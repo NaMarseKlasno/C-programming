@@ -182,12 +182,11 @@ struct bmp_image* rotate_right(const struct bmp_image* image) {
     rotated_image->header->num_colors = image->header->num_colors;
     rotated_image->header->important_colors = image->header->important_colors;
 
-    uint32_t bpp = rotated_image->header->bpp / (uint32_t) 8;
-    uint32_t pr = (bpp * width) % 4 == 0 ? 0 : 4 - (bpp * width) % 4;
-    uint32_t image_size = (pr + width * bpp) * rotated_image->header->height;
+    uint32_t bpp = rotated_image->header->bpp / 8, pr = 0;
+    if ((bpp * width) % 4 == 0) pr = 4 - (bpp * width) % 4;
 
-    rotated_image->header->image_size = image_size;
-    rotated_image->header->size = image_size + rotated_image->header->offset;
+    rotated_image->header->image_size = (pr + width * bpp) * rotated_image->header->height;;
+    rotated_image->header->size = rotated_image->header->image_size + rotated_image->header->offset;
 
     struct pixel **niga = calloc(image->header->width, sizeof(struct pixel**));
     if (niga == NULL) {
@@ -236,8 +235,6 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
     rotated_image->header = calloc(1, sizeof(struct bmp_header));
     uint32_t width = image->header->height;
     uint32_t height = image->header->width;
-    uint32_t bpp = image->header->bpp / (uint32_t)8;
-    uint32_t image_size = ( ((bpp * width) % 4 == 0 ? 0 : 4 - (bpp * width) % 4) + width * bpp) * height;
 
     rotated_image->header->type = image->header->type;
     rotated_image->header->size = image->header->size;
@@ -259,8 +256,12 @@ struct bmp_image* rotate_left(const struct bmp_image* image) {
     rotated_image->header->width = width;
     rotated_image->header->height = height;
 
-    rotated_image->header->image_size = image_size;
-    rotated_image->header->size = image_size + rotated_image->header->offset;
+    uint32_t bpp = image->header->bpp / (uint32_t)8;
+    if ((bpp * width) % 4 != 0) {
+        rotated_image->header->image_size = ((4 - (bpp * width) % 4) + width * bpp) * height;
+    } else rotated_image->header->image_size = width * bpp * height;
+
+    rotated_image->header->size = rotated_image->header->image_size + rotated_image->header->offset;
 
     struct pixel **niga = calloc(image->header->width, sizeof(struct pixel**));
     if (niga == NULL) {
@@ -413,9 +414,6 @@ struct bmp_image* scale(const struct bmp_image* image, float factor){
     picture->header = calloc(1, sizeof(struct bmp_header));
     uint32_t new_height = (uint32_t) round((float) image->header->height * factor);
     uint32_t new_width = (uint32_t) round((float) image->header->width * factor);
-    uint32_t bpp = image -> header->bpp / 8;
-    uint32_t pr = (bpp * new_width) % 4 == 0 ? 0 : 4 - (bpp * new_width) % 4;
-
 
     /*
     uint32_t old_height = image->header->height, old_width = image->header->width;
@@ -444,7 +442,11 @@ struct bmp_image* scale(const struct bmp_image* image, float factor){
     picture->header->num_colors = image->header->num_colors;
     picture->header->important_colors = image->header->important_colors;
 
-    picture->header->image_size = (pr + new_width * bpp) * new_height;
+    uint32_t bpp = image->header->bpp / 8;
+    if ((bpp * new_width) % 4 != 0) {
+        picture->header->image_size = ((4 - (bpp * new_width) % 4) + new_width * bpp) * new_height;
+    } else picture->header->image_size = 0;
+
     picture->header->size = picture->header->image_size + picture->header->offset;
 
     // ***** data for picture
