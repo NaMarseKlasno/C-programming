@@ -35,6 +35,23 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         return NULL;
     }
     */
+    uint32_t bpp = header->bpp / (uint32_t)8;
+    uint32_t pr = (bpp * header->width) % 4 == 0 ? 0 : 4 - (bpp * header->width) % 4;
+    uint32_t image_size = (pr + header->width * bpp) * header->height;
+    uint32_t size = image_size + header->offset;
+
+    if (header->image_size != image_size){
+        free(header);
+        return NULL;
+    }
+    if (header->size != size){
+        free(header);
+        return NULL;
+    }
+    if (header->image_size != image_size){
+        free(header);
+        return NULL;
+    }
 
     return header;
 }
