@@ -14,22 +14,33 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         return NULL;
     }
     char * pUint16 = (char*)&header->type;
-    if (pUint16[0] != 'B' || pUint16[1] != 'M') {
+    if ((header -> type != 0x4d42) || (pUint16[0] != 'B') || (pUint16[1] != 'M')) {
         free(header);
         return NULL;
     }
-    if (header->height <= 0 || header->width <= 0) {
+    if (header->height <= 0) {
+        free(header);
+        return NULL;
+    }
+    if (header->width <= 0) {
         free(header);
         return NULL;
     }
 
     uint32_t bpp = header->bpp / 8, pad = 0;
     if ((bpp * header->width) % 4 != 0) pad = 4 - (bpp * header->width) % 4;
-
-    header->image_size = ((header->width * bpp) + pad) * header->height;
-    header->size = header->image_size + header->offset;
-
-
+    if (header->image_size != ((header->width * bpp) + pad) * header->height) {
+        free(header);
+        return NULL;
+    } //header->image_size = ((header->width * bpp) + pad) * header->height;
+    if (header->size != header->image_size + header->offset) {
+        free(header);
+        return NULL;
+    }
+    if (header->image_size != ((header->width * bpp) + pad) * header->height) {
+        free(header);
+        return NULL;
+    }
 
     /*
     uint32_t bpp = header->bpp / (uint32_t)8, pr = 4 - (bpp * header->width) % 4;
@@ -42,7 +53,6 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         return NULL;
     }
     */
-
 
     return header;
 }
@@ -115,4 +125,4 @@ void free_bmp_image (struct bmp_image* image) {
 }
 
 // Qk1OAAAAAAAAADYAAAAoAAAABAAAAAIAAAABABgAAAAAABgAAAAjLgAAIy4AAAAAAAAAAAAAAAAAAP8A/wAA/////wAAAAD/AP8AAAAA
-//  echo "Qk1WAAAAAAAAADYAAAAoAAAAAgAAAAQAAAABABgAAAAAACAAAAAjLgAAIy4AAAAAAAAAAAAA////AAAAAAD/AAAA/wAAAAD/AAAA/wAAAAAA/wAAAAA=" | base64 -d > j1.bmp
+//  echo Qk1OAAAAAAAAADYAAAAoAAAAAwAAAAIAAAABABgAAAAAABgAAAAjLgAAIy4AAAAAAAAAAAAA/////wAAAAAAAAAA/wD/AP8A/wD/AAAA" | base64 -d > j1.bmp
