@@ -31,7 +31,7 @@ int main()
     struct bmp_image* image7 = extract(image, "r");
 
     printf("%d\n", image_r->header->image_size);
-    write_bmp(output, image_ r);
+    write_bmp(output, image_r);
 
 
     free_bmp_image(image);

@@ -6,6 +6,30 @@
 struct bmp_header* read_bmp_header (FILE* stream) {
     if (stream == NULL) return NULL;
 
+    fseek(stream, 0, SEEK_END);
+    long file_len = ftell(stream);
+    if(file_len <= 0) {
+        return NULL;
+    }
+    fseek(stream, 0, SEEK_SET);
+    char *stream_as_string = (char *)malloc(file_len * sizeof(char));
+    fread(stream_as_string, file_len, 1, stream);
+    int i = 0;
+    bool file_bmp = false;
+    do{
+        if(stream_as_string[i] == 66 && stream_as_string[i + 1] == 77){
+            file_bmp = true;
+            fseek(stream, i, SEEK_SET);
+            break;
+        }
+        i += 1;
+    }while(i < file_len);
+    free(stream_as_string);
+    if(file_bmp == false){
+        return NULL;
+    }
+
+
     struct bmp_header *header = calloc(1, sizeof(struct bmp_header));
     if (header == NULL) return NULL;
 
