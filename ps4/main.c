@@ -31,7 +31,7 @@ int main()
     struct bmp_image* image7 = extract(image, "r");
 
     //printf("%d\n", image_r->header->image_size);
-    printf("%d %d %d\n", image_r->data->red, image_r->data->green, image_r->data->blue);
+    //printf("%d %d %d\n", image_r->data->red, image_r->data->green, image_r->data->blue);
     write_bmp(output, image_r);
 
 
