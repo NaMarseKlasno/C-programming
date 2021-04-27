@@ -7,28 +7,9 @@ struct bmp_header* read_bmp_header (FILE* stream) {
     if (stream == NULL) return NULL;
 
     fseek(stream, 0, SEEK_END);
-    long file_len = ftell(stream);
-    if(file_len <= 0) {
-        return NULL;
-    }
+    long int size = ftell(stream);
+    if (size <= 0) return NULL;
     fseek(stream, 0, SEEK_SET);
-    char *stream_as_string = (char *)malloc(file_len * sizeof(char));
-    fread(stream_as_string, file_len, 1, stream);
-    int i = 0;
-    bool file_bmp = false;
-    do{
-        if(stream_as_string[i] == 66 && stream_as_string[i + 1] == 77){
-            file_bmp = true;
-            fseek(stream, i, SEEK_SET);
-            break;
-        }
-        i += 1;
-    }while(i < file_len);
-    free(stream_as_string);
-    if(file_bmp == false){
-        return NULL;
-    }
-
 
     struct bmp_header *header = calloc(1, sizeof(struct bmp_header));
     if (header == NULL) return NULL;
@@ -37,23 +18,15 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         free(header);
         return NULL;
     }
+
     char * pUint16 = (char*)&header->type;
     if ((header -> type != 0x4d42) || (pUint16[0] != 'B') || (pUint16[1] != 'M')) {
         free(header);
         return NULL;
-    } if (header->height <= 0) {
+    } if ((header->height <= 0) || (header->width <= 0)) {
         free(header);
         return NULL;
-    } if (header->width <= 0) {
-        free(header);
-        return NULL;
-    } uint32_t bpp = header->bpp / 8, pad = 0;
-    if ((bpp * header->width) % 4 != 0) pad = 4 - (bpp * header->width) % 4;
-
-    header->image_size = ((header->width * bpp) + pad) * header->height;
-    header->size = header->image_size + header->offset;
-
-    if (header->offset != 54) {
+    } if (header->offset != sizeof(struct bmp_header)) {
         free(header);
         return NULL;
     } if (header->dib_size != 40) {
@@ -66,19 +39,6 @@ struct bmp_header* read_bmp_header (FILE* stream) {
         free(header);
         return NULL;
     }
-
-    /*
-    uint32_t bpp = header->bpp / (uint32_t)8, pr = 4 - (bpp * header->width) % 4;
-    if ((bpp * header->width) % 4 == 0) pr = 0;
-
-    uint32_t im_size = ((header->width * bpp) + pr) * header->height;
-
-    if (header->image_size != im_size || header->size != (im_size + header->offset)){
-        free(header);
-        return NULL;
-    }
-    */
-
     return header;
 }
 
@@ -110,13 +70,13 @@ struct bmp_image* read_bmp (FILE* stream) {
 
     image->header = read_bmp_header(stream);
     if (image->header == NULL) {
-        printf("Error: This is not a BMP file.\n");
+        fprintf(stderr, "Error: This is not a BMP file.\n");
         free_bmp_image(image);
         return NULL;
     }
     image->data = read_data(stream, image->header);
     if (image->data == NULL) {
-        printf("Error: Corrupted BMP file.\n");
+        fprintf(stderr, "Error: Corrupted BMP file.\n");
         free_bmp_image(image);
         return NULL;
     }

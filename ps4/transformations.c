@@ -386,7 +386,7 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
     picture->header->planes = image->header->planes;
     picture->header->bpp = image->header->bpp;
     picture->header->compression = image->header->compression;
-    picture->header->image_size = (((width * bpp) + pr) * height)+54;
+    picture->header->image_size = (((width * bpp) + pr) * height);
     picture->header->x_ppm = image->header->x_ppm;
     picture->header->y_ppm = image->header->y_ppm;
     picture->header->num_colors = image->header->num_colors;
