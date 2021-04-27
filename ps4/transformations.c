@@ -420,6 +420,9 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
 
     free_arrays(array, image->header->height);
     free_arrays(cat, height);
+    picture = rotate_right(picture);
+    picture = rotate_right(picture);
+    picture = flip_horizontally(picture);
     return picture;
 }
 

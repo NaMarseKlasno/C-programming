@@ -8,7 +8,7 @@ int main()
 {
     // (bpp * width) % 4 == 0?0 : 4 - (bpp*width)%4;
 
-    FILE * file = fopen("assets/j3.bmp", "rb");
+    FILE * file = fopen("assets/lenna.bmp", "rb");
     if (file == NULL) return 1;
 
     FILE * output = fopen("assets/output.bmp", "wb");
@@ -18,7 +18,7 @@ int main()
     }
 
     // ******  Allocate data for full image
-    uint32_t y = 0, x = 0, h = 1, w = 4;
+    uint32_t y = 0, x = 0, h = 160, w = 256;
     float n = 2.761034;
 
     struct bmp_image* image = read_bmp(file);
@@ -49,11 +49,3 @@ int main()
 
     return 0;
 }
-
-/**
- * Qk1mAAAAAAAAADYAAAAoAAAABAAAAAQAAAABABgAAAAAADAAAAAjLgAAIy4AAAAAAAAAAAAA/////wD/AP8AAAD//wD/AP8AAAD/AP//AP8AAAD/AP///wAAAAD/AP///wAAAAAA
- * "Qk06AAAAAAAAADYAAAAoAAAAAQAAAAEAAAABABgAAAAAAAQAAAAjLgAAIy4AAAAAAAAAAAAAAP//"
-
-echo "Qk06AAAAAAAAADYAAAAoAAAAAQAAAAEAAAABABgAAAAAAAQAAAAjLgAAIy4AAAAAAAAAAAAAAP//" | base64 -d > j2.bmp
-
-*/
