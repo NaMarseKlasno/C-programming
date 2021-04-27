@@ -337,11 +337,32 @@ struct bmp_image* crop(const struct bmp_image* image, const uint32_t start_y, co
     if (start_y < 0 || start_y > image -> header -> height) return NULL;
     if (width <= 0 || start_x + width > image -> header -> width) return NULL;
     if (height <= 0 || start_y + height > image -> header -> height) return NULL;
-
+    /*
     struct pixel **array = one_to_two(image->data, image->header);
     if (array == NULL) {
         free_arrays(array, image->header->height);
         return NULL;
+    }
+    */
+
+    // ****** memory allocation
+    struct pixel** array = calloc(image->header->height, sizeof(struct pixel**));
+    if (array == NULL) return NULL;
+
+    for (uint32_t i = 0; i < image->header->height; ++i) {
+        array[i] = calloc(image->header->width, sizeof(struct pixel*));
+        if (array[i] == NULL) {
+            free_arrays(array, image->header->height);
+            return NULL;
+        }
+    }
+
+    for (uint32_t row = 0, row2 = image->header->height-1; row < image->header->height; ++row, --row2) {
+        for (uint32_t column = 0; column < image->header->width; column++) {
+            array[row2][column].blue = image->data[(row * image->header->width) + column].blue;
+            array[row2][column].red = image->data[(row * image->header->width) + column].red;
+            array[row2][column].green = image->data[(row * image->header->width) + column].green;
+        }
     }
 
     // cat

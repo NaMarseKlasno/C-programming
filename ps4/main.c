@@ -8,7 +8,7 @@ int main()
 {
     // (bpp * width) % 4 == 0?0 : 4 - (bpp*width)%4;
 
-    FILE * file = fopen("assets/lenna.bmp", "rb");
+    FILE * file = fopen("assets/j3.bmp", "rb");
     if (file == NULL) return 1;
 
     FILE * output = fopen("assets/output.bmp", "wb");
@@ -18,7 +18,7 @@ int main()
     }
 
     // ******  Allocate data for full image
-    uint32_t x = 1, y = 0, w = 3, h = 1;
+    uint32_t y = 0, x = 0, h = 1, w = 4;
     float n = 2.761034;
 
     struct bmp_image* image = read_bmp(file);
@@ -30,7 +30,8 @@ int main()
     struct bmp_image* image6 = scale(image, n);
     struct bmp_image* image7 = extract(image, "r");
 
-    printf("%d\n", image_r->header->image_size);
+    //printf("%d\n", image_r->header->image_size);
+    printf("%d %d %d\n", image_r->data->red, image_r->data->green, image_r->data->blue);
     write_bmp(output, image_r);
 
 
@@ -48,3 +49,11 @@ int main()
 
     return 0;
 }
+
+/**
+ * Qk1mAAAAAAAAADYAAAAoAAAABAAAAAQAAAABABgAAAAAADAAAAAjLgAAIy4AAAAAAAAAAAAA/////wD/AP8AAAD//wD/AP8AAAD/AP//AP8AAAD/AP///wAAAAD/AP///wAAAAAA
+ * "Qk06AAAAAAAAADYAAAAoAAAAAQAAAAEAAAABABgAAAAAAAQAAAAjLgAAIy4AAAAAAAAAAAAAAP//"
+
+echo "Qk06AAAAAAAAADYAAAAoAAAAAQAAAAEAAAABABgAAAAAAAQAAAAjLgAAIy4AAAAAAAAAAAAAAP//" | base64 -d > j2.bmp
+
+*/
