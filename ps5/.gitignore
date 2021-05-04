@@ -1,0 +1,8 @@
+*.gcda
+*.gcno
+*.gcov
+*.o
+*.out
+*a.out
+.DS_Store
+
