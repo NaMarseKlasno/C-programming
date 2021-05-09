@@ -1,19 +1,21 @@
 #include "container.h"
+#include "additional.h"
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 
 
-void destroy_entry (struct container* cont);
-void destroy_next_cont (struct container* next);
-
 struct container* create_container (struct container* first, enum container_type type, void* entry) {
-    if (entry == NULL) return remove_container(NULL, NULL);
+    if (entry == NULL) return NULL;  //return remove_container(NULL, NULL);
 
     struct container* cont = calloc(1, sizeof(struct container));
     cont->type = type;
     cont->next = NULL;
 
-    destroy_entry(cont);
+    if (cont->type == ROOM) cont->room = entry;
+    else if (cont->type == ITEM) cont->item = entry;
+    else if (cont->type == COMMAND) cont->command = entry;
+    else if (cont->type == TEXT)  cont->text = entry;
 
     if (first == NULL) return cont;
     if (type != first->type){
@@ -30,23 +32,28 @@ struct container* create_container (struct container* first, enum container_type
 
 struct container* destroy_containers (struct container* first) {
     if (first == NULL) return NULL;
-    else if (first->next != NULL) destroy_next_cont(first->next);
 
-    destroy_entry(first);
+    if (first->next != NULL) destroy_next_conts(first->next);
+
+    if (first->type == ROOM) destroy_room(first->room);
+    else if (first->type == COMMAND) destroy_command(first->command);
+    else if (first->type == ITEM) destroy_item(first->item);
+    else if (first->type == TEXT) free(first->text);
+
     free(first);
-    first = NULL;
+    //first = NULL;
 
     return NULL;
 }
 
 void* get_from_container_by_name(struct container *first, const char *name) {
     if (name == NULL || first == NULL) return NULL;
-    char * i_name = NULL;
+    char* i_name = NULL;
     struct container *cont = first;
 
     for (;!(cont == NULL);)
     {
-        if (cont->type == ROOM) = i_name = cont->room->name;
+        if (cont->type == ROOM) i_name = cont->room->name;
         else if (cont->type == ITEM) i_name = cont->item->name;
         else if (cont->type == COMMAND) i_name =  cont->command->name;
         //else if (cont->type == TEXT) i_name = cont->text;
@@ -54,7 +61,7 @@ void* get_from_container_by_name(struct container *first, const char *name) {
             cont = cont->next;
             continue;
         }
-        if (strcmp(name, item_name) == 0) return cont;
+        if (strcmp(name, i_name) == 0) return cont;
         else cont = cont->next;
     }
 
@@ -70,14 +77,14 @@ struct container* remove_container(struct container *first, void *entry) {
     char * name1 = NULL;
     char * name2 = NULL;
 
-    for (;!(first == NULL);)
+    for (;!(box2 == NULL);)
     {
-        if (strcmp(name1, name2) == 0 && name1 != NULL)
+        if (check_string(name1, name2) == 0 && name1 != NULL)
         {
             box2->next = box1->next;
             free(box2);
-            //destroy_entry(entry);
             if (box1 == NULL) return NULL;
+            return box1;
         }
 
         if (box1->type == ROOM) name1 = box1->room->name;
@@ -85,10 +92,10 @@ struct container* remove_container(struct container *first, void *entry) {
         else if (box1->type == COMMAND) name1 =  box1->command->name;
         else if (box1->type == TEXT) name1 = box1->text;
 
-        if (first->type == ROOM) name2 = (struct room *)entry->room->name;
-        else if (first->type == ITEM) name2 = (struct item *)entry->item->name;
-        else if (first->type == COMMAND) name2 =  (struct command *)entry->command->name;
-        else if (first->type == TEXT) name2 = (char *)entry;
+        if (box1->type == ROOM) name2 = ((struct room*)entry)->name;
+        else if (box1->type == ITEM) name2 = ((struct item *)entry)->name;
+        else if (box1->type == COMMAND) name2 =  ((struct command *)entry)->name;
+        else if (box1->type == TEXT) name2 = (char *)entry;
 
         box1 = box2;
         box1 = box1->next;
@@ -98,19 +105,4 @@ struct container* remove_container(struct container *first, void *entry) {
 }
 
 
-void destroy_entry (struct container* cont) {
-    if (cont->type == ROOM) destroy_room(cont->room);
-    else if (cont->type == ITEM) destroy_item(cont->item);
-    else if (cont->type == COMMAND) destroy_command(cont->command);
-    else if (cont->type == TEXT) free(cont->text);
-}
 
-
-void destroy_next_cont (struct container* next) {
-    if (next == NULL) return;
-    if (next->next != NULL)
-        destroy_next_cont(next->next);
-    destroy_entry(next);
-    free(next);
-    next = NULL;
-}
