@@ -45,6 +45,9 @@ int main (void)
 
    execute_command(NULL, NULL);
 
+   struct parser* pars = create_parser();
+   destroy_parser(pars);
+
    // ***** clean all shit
    destroy_room(n_room);
    destroy_room(room1);
