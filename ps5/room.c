@@ -1,5 +1,4 @@
 #include "room.h"
-#include "additional.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -114,8 +113,8 @@ int check_string (char *str_one, char *str_two) {
         tmp = str_two[i];
         c1 = check_symbol(str_one[i]);
         c2 = check_symbol(str_two[i]);
-        if (c1 < c2)    tmp += swp;
-        if (c1 > c2)    tmp -= swp;
+        if (c1 < c2) tmp += (char)swp;
+        if (c1 > c2) tmp -= (char)swp;
         if (str_one[i] != tmp) eq = 0;
     }
 

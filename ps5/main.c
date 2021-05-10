@@ -9,7 +9,6 @@
 
 int main (void)
 {
-
     char *data = "DATA";
     char *data2 = "DATA2";
     char *desk = "\nNachadzas sa v chyzi svarneho suhaja. Na vychode sa nachadzaju dvere veduce z chyze von.\nMozne vychody z miesnosti:\n    vychod\nVidíš:\n    kluc\n    popisany papier\n";
