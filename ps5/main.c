@@ -5,21 +5,11 @@
 #include "room.h"
 #include "game.h"
 #include "container.h"
-#include "additional.h"
 
 
 int main (void)
 {
 
-    char *s1 = "hEllO";
-    char *s2 = "Hello";
-
-    if ( check_string(s1, s2) == 0)
-        printf("yes\n");
-    else
-        printf("NO\n");
-
-    getchar();
     char *data = "DATA";
     char *data2 = "DATA2";
     char *desk = "\nNachadzas sa v chyzi svarneho suhaja. Na vychode sa nachadzaju dvere veduce z chyze von.\nMozne vychody z miesnosti:\n    vychod\nVidíš:\n    kluc\n    popisany papier\n";

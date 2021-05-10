@@ -3,8 +3,8 @@ OUTPUT = adventure
 BUILD_DIR := ./build
 
 all: $(OUTPUT)
-$(OUTPUT): backpack.c backpack.h command.c command.h container.c container.h game.c game.h item.c item.h parser.c parser.h room.c room.h world.c world.h additional.c additional.h main.c
-	$(CC) $(CFLAGS) backpack.c command.c container.c game.c item.c parser.c room.c world.c additional.c main.c -o $(BUILD_DIR)/$(OUTPUT)
+$(OUTPUT): backpack.c backpack.h command.c command.h container.c container.h game.c game.h item.c item.h parser.c parser.h room.c room.h world.c world.h main.c
+	$(CC) $(CFLAGS) backpack.c command.c container.c game.c item.c parser.c room.c world.c main.c -o $(BUILD_DIR)/$(OUTPUT)
 
 backpack.o: backpack.c backpack.h
 	gcc $(CFLAGS) -c backpack.c -o $(BUILD_DIR)/backpack.o
@@ -30,9 +30,6 @@ room.o: room.c room.h
 world.o: world.c world.h
 	gcc $(CFLAGS) -c world.c -o $(BUILD_DIR)/world.o
 
-additional.o: additional.c additional.h
-	gcc $(CFLAGS) -c additional.c -o $(BUILD_DIR)/additional.o
-
 main.o: main.c
 	gcc $(CFLAGS) -c main.c -o $(BUILD_DIR)/main.o
 
@@ -49,5 +46,4 @@ clean_all:
 	rm -rf $(BUILD_DIR)/parser.o *.0
 	rm -rf $(BUILD_DIR)/room.o *.0
 	rm -rf $(BUILD_DIR)/world.o *.0
-	rm -rf $(BUILD_DIR)/additional.o *.0
 	rm -rf $(BUILD_DIR)/main.o *.0
