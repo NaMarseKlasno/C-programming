@@ -8,7 +8,7 @@ void set_res_commands (struct command* commands[], struct parser *res_pars);
 int check_string3 (char *str_one, char *str_two);
 
 
-struct parser* create_parser() {
+struct parser* create_parser () {
 
     struct command* commands[17];
     // ***** add basic commands to pars
@@ -29,7 +29,7 @@ struct parser* create_parser() {
     return res_pars;
 }
 
-struct parser* destroy_parser(struct parser* parser) {
+struct parser* destroy_parser (struct parser* parser) {
     if (parser == NULL) return NULL;
 
     destroy_containers(parser->commands);
@@ -39,7 +39,7 @@ struct parser* destroy_parser(struct parser* parser) {
     return NULL;
 }
 
-struct command* parse_input(struct parser* parser, char* input) {
+struct command* parse_input (struct parser* parser, char* input) {
     if (parser == NULL || input == NULL) return NULL;
     unsigned long len = strlen(input); char* i_name = NULL; char str[len+1];
 

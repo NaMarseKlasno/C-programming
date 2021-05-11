@@ -5,6 +5,7 @@
 #include "room.h"
 #include "game.h"
 #include "container.h"
+#include "world.h"
 
 
 int main (void)
@@ -50,25 +51,34 @@ int main (void)
 
     execute_command(NULL, NULL);
 
-    struct parser* parser = create_parser();
-/*
- * Inside of the function create and add commands to the list of existing commands
- *
- */
 
-    // parse input in the game loop
+    // ***** PARSER  --------------------------------------------------------------------
+    struct parser* parser = create_parser();
+
     char* input = "     VERZIA   ";
     struct command* cmd = parse_input(parser, input);
-    // cmd now should have reference to the command "VERZIA"
 
-// if input is unknown, parsing will return NULL
     char* unknown_input = "   CO JE V MIESTNOSTI?  ";
     cmd = parse_input(parser, unknown_input);
-    // cmd = NULL;
 
     destroy_command(cmd);
-// destroy parser at the end of game
     parser = destroy_parser(parser);
+    // ***** PARSER  --------------------------------------------------------------------
+
+
+    // ***** WORLD  --------------------------------------------------------------------
+    struct container* world = create_world();
+
+    struct room* start_room = get_room(world, "start");
+
+    struct room* station = get_room(world, "station");
+    show_room(station);
+    show_room(start_room);
+
+    world = destroy_world(world);
+    // ***** WORLD  --------------------------------------------------------------------
+
+
 
     // ***** clean all shit
     destroy_room(n_room);
