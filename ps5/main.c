@@ -50,8 +50,24 @@ int main (void)
 
     execute_command(NULL, NULL);
 
-    struct parser* pars = create_parser();
-    destroy_parser(pars);
+    struct parser* parser = create_parser();
+/*
+ * Inside of the function create and add commands to the list of existing commands
+ *
+ */
+
+    // parse input in the game loop
+    char* input = "     VERZIA   ";
+    struct command* cmd = parse_input(parser, input);
+    // cmd now should have reference to the command "VERZIA"
+
+// if input is unknown, parsing will return NULL
+    char* unknown_input = "   CO JE V MIESTNOSTI?  ";
+    cmd = parse_input(parser, unknown_input);
+    // cmd = NULL;
+
+// destroy parser at the end of game
+    parser = destroy_parser(parser);
 
     // ***** clean all shit
     destroy_room(n_room);
