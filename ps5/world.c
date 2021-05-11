@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "item.h"
 
-void set_rooms (struct room* array[]);
-void set_items (struct room* rooms[]);
+void add_rooms (struct room* array[]);
+void add_items (struct room* rooms[]);
 void put_rooms (struct room* rooms[], struct container* cont);
 
 
@@ -11,8 +11,8 @@ struct container* create_world() {
     struct room* rooms[16];
 
     // ***** set rooms and items to rooms
-    set_rooms(rooms);
-    set_items(rooms);
+    add_rooms(rooms);
+    add_items(rooms);
 
     struct container* cont = create_container(NULL, ROOM, rooms[0]);
     if (cont) return NULL;
@@ -45,7 +45,7 @@ struct room* get_room(struct container* world, char* name) {
     return mama_mia;
 }
 
-void set_rooms (struct room* array[])
+void add_rooms (struct room* array[])
 {
     array[0] = create_room("room1", "The vagina is a self-cleaning organ. It does not need to be washed with soap, as this can upset the microflora balance and promote infection");
     array[1] = create_room("room2", "The vagina is a self-cleaning organ. It does not need to be washed with soap, as this can upset the microflora balance and promote infection");
@@ -80,14 +80,14 @@ void set_rooms (struct room* array[])
     set_exits_from_room(array[14], array[15], NULL, NULL, NULL);
 }
 
-void set_items (struct room* rooms[])
+void add_items (struct room* rooms[])
 {
-    add_item_to_room(rooms[0], create_item("DONH","pchoul",1));
-    add_item_to_room(rooms[1], create_item("DONH","pchoul",1));
-    add_item_to_room(rooms[2], create_item("DONH","pchoul",1));
-    add_item_to_room(rooms[3], create_item("DONH","pchoul",1));
-    add_item_to_room(rooms[4], create_item("DONH","pchoul",1));
-    add_item_to_room(rooms[5], create_item("DONH","pchoul",1));
+    add_item_to_room(rooms[0], create_item("DONH1","pchoul",1));
+    add_item_to_room(rooms[1], create_item("DONH2","pchoul",1));
+    add_item_to_room(rooms[2], create_item("DONH3","pchoul",1));
+    add_item_to_room(rooms[3], create_item("DONH4","pchoul",1));
+    add_item_to_room(rooms[4], create_item("DONH5","pchoul",1));
+    add_item_to_room(rooms[5], create_item("DONH6","pchoul",1));
 }
 
 void put_rooms (struct room* rooms[], struct container* cont)

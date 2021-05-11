@@ -3,8 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 
-void set_commands (struct command* commands[]);
-void set_res_commands (struct command* commands[], struct parser *res_pars);
+void create_commands (struct command* commands[]);
+void add_commands (struct command* commands[], struct parser *res_pars);
 int check_string3 (char *str_one, char *str_two);
 
 
@@ -12,19 +12,15 @@ struct parser* create_parser () {
 
     struct command* commands[17];
     // ***** add basic commands to pars
-    set_commands(commands);
+    create_commands(commands);
 
     struct parser *res_pars = calloc(1, sizeof(struct parser));
 
     // ***** add basic commands to res_pars
-    set_res_commands(commands, res_pars);
+    add_commands(commands, res_pars);
 
     // ***** add history to res_pars && release memory
-    res_pars->history = create_container(NULL, COMMAND,  commands[9]);
-    if (res_pars->history == NULL){
-        destroy_parser(res_pars);
-        return NULL;
-    }
+    res_pars->history = create_container(NULL, COMMAND,  create_command("start", "lets go", "(Start)", 0));
 
     return res_pars;
 }
@@ -65,7 +61,7 @@ struct command* parse_input (struct parser* parser, char* input) {
 }
 
 
-void set_commands (struct command* commands[])
+void create_commands (struct command* commands[])
 {
     commands[0] = create_command("KONIEC", "Príkaz ukončí rozohratú hru. Nastaví príslušný stav hry.", "(QUIT)|(EXIT)", 2);
     commands[1] = create_command("SEVER", "Presun do miestnosti nachádzajúcej sa na sever od aktuálnej. Zmení referenciu aktuálnej miestnosti.", "(S)", 1);
@@ -86,41 +82,25 @@ void set_commands (struct command* commands[])
     commands[16] = create_command("ULOZ", "Príkaz uloží stav rozohratej hry na disk. Voliteľným parametrom je cesta k súboru.", "(SAVE)", 1);
 }
 
-void set_res_commands (struct command* commands[], struct parser *res_pars)
+void add_commands (struct command* commands[], struct parser *res_pars)
 {
-    res_pars->commands->command = commands[0];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[1];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[2];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[3];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[4];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[5];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[6];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[7];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[8];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[9];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[10];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[11];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[12];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[13];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[14];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[15];
-    res_pars->commands = res_pars->commands->next;
-    res_pars->commands->command = commands[16];
+    res_pars->commands = create_container(NULL, COMMAND, commands[0]);
+    create_container(res_pars->commands, COMMAND, commands[1]);
+    create_container(res_pars->commands, COMMAND, commands[2]);
+    create_container(res_pars->commands, COMMAND, commands[3]);
+    create_container(res_pars->commands, COMMAND, commands[4]);
+    create_container(res_pars->commands, COMMAND, commands[5]);
+    create_container(res_pars->commands, COMMAND, commands[6]);
+    create_container(res_pars->commands, COMMAND, commands[7]);
+    create_container(res_pars->commands, COMMAND, commands[8]);
+    create_container(res_pars->commands, COMMAND, commands[9]);
+    create_container(res_pars->commands, COMMAND, commands[10]);
+    create_container(res_pars->commands, COMMAND, commands[11]);
+    create_container(res_pars->commands, COMMAND, commands[12]);
+    create_container(res_pars->commands, COMMAND, commands[13]);
+    create_container(res_pars->commands, COMMAND, commands[14]);
+    create_container(res_pars->commands, COMMAND, commands[15]);
+    create_container(res_pars->commands, COMMAND, commands[16]);
 }
 
 int check_string3 (char *str_one, char *str_two) {

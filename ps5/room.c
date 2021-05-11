@@ -13,11 +13,11 @@ struct room* create_room(char *name, char *description) {
     struct room* chamber = calloc(1, sizeof(struct room));
     if (chamber == NULL) return NULL;
 
-    char *NAME = calloc(strlen(name) + 1, 1);
+    char *NAME = calloc(strlen(name) + 1, sizeof(char));
     strcpy(NAME, name);
     chamber->name = NAME;
 
-    char *DESC = calloc(strlen(description) + 1, 1);
+    char *DESC = calloc(strlen(description) + 1, sizeof(char));
     strcpy(DESC, description);
     chamber->description = DESC;
 
