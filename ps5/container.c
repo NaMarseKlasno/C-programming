@@ -80,7 +80,7 @@ void* get_from_container_by_name(struct container *first, const char *name) {
 }
 
 struct container* remove_container(struct container *first, void *entry) {
-    if (first == NULL || entry == NULL) return NULL;
+    if (first == NULL) return NULL;
 
     struct container *box1 = first;
     struct container *box2 = first;
