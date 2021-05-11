@@ -64,23 +64,22 @@ void* get_from_container_by_name(struct container *first, const char *name) {
         if (cont->type == ROOM) i_name = cont->room->name;
         else if (cont->type == ITEM) i_name = cont->item->name;
         else if (cont->type == COMMAND) i_name =  cont->command->name;
-        //else if (cont->type == TEXT) i_name = cont->text;
-        else {
+        else if (i_name == NULL){
             cont = cont->next;
             continue;
-        }
-
-        if (check_string2(str_2, i_name) == 0) {
+        } else {
+            cont = cont->next;
+            continue;
+        } if (check_string2(str_2, i_name) == 0) {
             return cont;
-        }
-        else cont = cont->next;
+        } else cont = cont->next;
     }
 
     return NULL;
 }
 
 struct container* remove_container(struct container *first, void *entry) {
-    if (first == NULL) return NULL;
+    if (first == NULL || entry == NULL) return first;
 
     struct container *box1 = first;
     struct container *box2 = first;

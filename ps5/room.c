@@ -8,7 +8,7 @@ int check_string (char *str_one, char *str_two);
 
 
 struct room* create_room(char *name, char *description) {
-    if (name == NULL || description == NULL || strlen(name) == 0 || strlen(description) == 0) return NULL;
+    if (name == NULL || description == NULL || strlen(name) == 0) return NULL;
 
     struct room* chamber = calloc(1, sizeof(struct room));
     if (chamber == NULL) return NULL;
