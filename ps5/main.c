@@ -66,6 +66,7 @@ int main (void)
     cmd = parse_input(parser, unknown_input);
     // cmd = NULL;
 
+    destroy_command(cmd);
 // destroy parser at the end of game
     parser = destroy_parser(parser);
 
