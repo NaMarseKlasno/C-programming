@@ -3,13 +3,14 @@
 #include <ctype.h>
 #include <string.h>
 #include <string.h>
+#include <stdio.h>
 
 void destroy_next_conts (struct container* next);
 int check_string2 (char *str_one, char *str_two);
 
 
 struct container* create_container (struct container* first, enum container_type type, void* entry) {
-    if (entry == NULL) return NULL;  //return remove_container(NULL, NULL);
+    if (entry == NULL) return NULL;
 
     struct container* cont = calloc(1, sizeof(struct container));
     cont->type = type;
@@ -51,8 +52,12 @@ struct container* destroy_containers (struct container* first) {
 
 void* get_from_container_by_name(struct container *first, const char *name) {
     if (name == NULL || first == NULL) return NULL;
-    char* i_name = NULL;
+    char* i_name = NULL; unsigned long len = strlen(name); char str[len+1];
     struct container *cont = first;
+
+    for (unsigned long i = 0; i < len; ++i) str[i] = name[i];
+    str[len] = '\0';
+    char *str_2 = str;
 
     for (;!(cont == NULL);)
     {
@@ -64,7 +69,10 @@ void* get_from_container_by_name(struct container *first, const char *name) {
             cont = cont->next;
             continue;
         }
-        if (strcmp(name, i_name) == 0) return cont;
+
+        if (check_string2(str_2, i_name) == 0) {
+            return cont;
+        }
         else cont = cont->next;
     }
 
