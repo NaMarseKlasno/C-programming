@@ -31,10 +31,9 @@ struct container* destroy_world(struct container* world) {
 struct container* add_room_to_world(struct container* world, struct room* room) {
     if (room == NULL) return NULL;
 
-    struct container* cont = create_container(world, ROOM, room);
-
-    if (world == NULL) return cont;
-    else if (get_from_container_by_name(world, room->name) != NULL) return NULL;
+    if (world != NULL) {
+        if (get_from_container_by_name(world, room->name) != NULL) return NULL;
+    } struct container* cont = create_container(world, ROOM, room);
 
     return cont;
 }

@@ -36,23 +36,22 @@ struct container* create_container (struct container* first, enum container_type
 
 struct container* destroy_containers (struct container* first) {
     if (first == NULL) return NULL;
+    struct container* doo = first;
+    struct container* posle = doo->next;
 
-    if (first->next != NULL) destroy_next_conts(first->next);
-
-    if (first->type == ROOM) destroy_room(first->room);
-    else if (first->type == COMMAND) destroy_command(first->command);
-    else if (first->type == ITEM) destroy_item(first->item);
-    else if (first->type == TEXT) free(first->text);
-
-    free(first);
-    //first = NULL;
+    for (;!(doo->next == NULL);)
+    {
+        posle = doo->next;
+        free(doo);
+        doo = posle;
+    } free(doo);
 
     return NULL;
 }
 
 void* get_from_container_by_name(struct container *first, const char *name) {
     if (name == NULL || first == NULL) return NULL;
-    char* i_name = NULL; unsigned long len = strlen(name); char str[len+1];
+    char* text = NULL; unsigned long len = strlen(name); char str[len+1];
     struct container *cont = first;
 
     for (unsigned long i = 0; i < len; ++i) str[i] = name[i];
@@ -61,16 +60,18 @@ void* get_from_container_by_name(struct container *first, const char *name) {
 
     for (;cont != NULL;)
     {
-        if (cont->type == ROOM) i_name = cont->room->name;
-        else if (cont->type == ITEM) i_name = cont->item->name;
-        else if (cont->type == COMMAND) i_name =  cont->command->name;
-        else if (i_name == NULL){
+        if (cont->type == ROOM) text = cont->room->name;
+        else if (cont->type == ITEM) text = cont->item->name;
+        else if (cont->type == COMMAND) text =  cont->command->name;
+        else if (cont->type == COMMAND) text =  cont->command->name;
+        else if (cont->type == TEXT) text =  cont->text;
+        else if (text == NULL){
             cont = cont->next;
             continue;
         } else {
             cont = cont->next;
             continue;
-        } if (check_string2(str_2, i_name) == 0) {
+        } if (check_string2(str_2, text) == 0) {
             return cont;
         } else cont = cont->next;
     }

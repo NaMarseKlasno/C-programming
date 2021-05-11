@@ -8,18 +8,24 @@ int check_string (char *str_one, char *str_two);
 
 
 struct room* create_room(char *name, char *description) {
-    if (name == NULL || description == NULL || strlen(name) == 0) return NULL;
+    if (name == NULL || description == NULL || strlen(name) == 0 || strlen(description) == 0) return NULL;
 
     struct room* chamber = calloc(1, sizeof(struct room));
     if (chamber == NULL) return NULL;
 
-    chamber->description = description;
-    chamber->name = name;
-    chamber->east = NULL;
+    char *NAME = calloc(strlen(name) + 1, 1);
+    strcpy(NAME, name);
+    chamber->name = NAME;
+
+    char *DESC = calloc(strlen(description) + 1, 1);
+    strcpy(DESC, description);
+    chamber->description = DESC;
+
     chamber->items = NULL;
-    chamber->north = NULL;
     chamber->south = NULL;
+    chamber->north = NULL;
     chamber->west = NULL;
+    chamber->east = NULL;
 
     return chamber;
 }
@@ -94,7 +100,8 @@ void delete_item_from_room(struct room* room, struct item* item) {
 
     for (;ITEM != NULL;)
     {
-        if (ITEM->item == item) ITEM->item = NULL;
+        if (check_string(ITEM->item->name, item->name) == 0)
+            ITEM->item = NULL;
         ITEM = ITEM->next;
     }
 

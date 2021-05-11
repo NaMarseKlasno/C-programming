@@ -10,20 +10,17 @@ struct command* create_command(char* name, char* description, char* pattern, siz
     if (comm == NULL) return NULL;
 
     comm->name = calloc(strlen(name)+1, sizeof(char));
-    for (int i = 0; i < strlen(name)+1; ++i) {
-        comm->name[i] = name[i];
-    }
+    strcpy(comm->name, name);
+
     comm->description = calloc(strlen(description)+1, sizeof(char));
-    for (int i = 0; i < strlen(description)+1; ++i) {
-        comm->description[i] = description[i];
+    strcpy(comm->description, description);
+
+    if (nmatch) comm->nmatch = nmatch;
+    if (pattern != NULL) {
+        regex_t regex;
+        regcomp(&regex, pattern, 0);
+        comm->preg = regex;
     }
-
-    comm->nmatch = nmatch;
-
-    regex_t regex;
-    regcomp(&regex, pattern, 0);
-    comm->preg = regex;
-
     return comm;
 }
 

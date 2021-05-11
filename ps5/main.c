@@ -76,6 +76,7 @@ int main (void)
     show_room(station);
     show_room(start_room);
 
+
     world = destroy_world(world);
     // ***** WORLD  --------------------------------------------------------------------
 
