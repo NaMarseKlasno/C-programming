@@ -59,7 +59,7 @@ void* get_from_container_by_name(struct container *first, const char *name) {
     str[len] = '\0';
     char *str_2 = str;
 
-    for (;!(cont == NULL);)
+    for (;cont != NULL;)
     {
         if (cont->type == ROOM) i_name = cont->room->name;
         else if (cont->type == ITEM) i_name = cont->item->name;

@@ -8,7 +8,7 @@ int check_string (char *str_one, char *str_two);
 
 
 struct room* create_room(char *name, char *description) {
-    if (name == NULL || description == NULL) return NULL;
+    if (name == NULL || description == NULL || strlen(name) == 0 || strlen(description) == 0) return NULL;
 
     struct room* chamber = calloc(1, sizeof(struct room));
     if (chamber == NULL) return NULL;
@@ -43,22 +43,27 @@ void show_room(const struct room* room) {
 
 struct room* destroy_room(struct room* room) {
     if (room == NULL) return NULL;
+
     free(room->description);
     free(room->name);
 
-    destroy_item(room->items->item);
+    destroy_room(room->east);
+    destroy_room(room->west);
+    destroy_room(room->south);
+    destroy_room(room->north);
 
-    if (room->east != NULL) destroy_room(room->east);
-    if (room->west != NULL) destroy_room(room->west);
-    if (room->south != NULL) destroy_room(room->south);
-    if (room->north != NULL) destroy_room(room->north);
+    destroy_containers(room->items);
+    free(room);
 
     return NULL;
 }
 
 void add_item_to_room(struct room* room, struct item* item) {
     if (room == NULL || item == NULL) return;
-    room->items->item = item;
+
+    if (room->items == NULL) {
+        room->items = create_container(room->items, ITEM, item);
+    }
 }
 
 struct item* get_item_from_room(const struct room* room, const char* name) {

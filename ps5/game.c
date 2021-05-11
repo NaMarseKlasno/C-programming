@@ -23,16 +23,10 @@ struct game* destroy_game(struct game* game) {
     if (game == NULL) return NULL;
 
     destroy_containers(game->world);
-    free(game->world);
-
     destroy_parser(game->parser);
-    free(game->parser);
-
     destroy_backpack(game->backpack);
-    free(game->backpack);
-
     destroy_room(game->current_room);
-    free(game->current_room);
+    free(game);
 
     return NULL;
 }
