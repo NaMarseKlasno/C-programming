@@ -19,9 +19,10 @@ struct command* create_command(char* name, char* description, char* pattern, siz
     }
 
     comm->nmatch = nmatch;
-    comm->groups = &pattern;
 
-
+    regex_t regex;
+    regcomp(&regex, pattern, 0);
+    comm->preg = regex;
 
     return comm;
 }

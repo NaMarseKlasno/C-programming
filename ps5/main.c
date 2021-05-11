@@ -70,7 +70,8 @@ int main (void)
     struct container* world = create_world();
 
     struct room* start_room = get_room(world, "start");
-
+    struct container* roo = add_room_to_world(world, NULL);
+    destroy_containers(roo);
     struct room* station = get_room(world, "station");
     show_room(station);
     show_room(start_room);
