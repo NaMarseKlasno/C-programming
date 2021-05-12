@@ -10,6 +10,18 @@
 
 int main (void)
 {
+    struct game* game1 = create_game();
+    struct room* north = create_room("Bakery", "The delightful smell of meat pies fills the air, making you hungry. The baker flashes a grin, as he slides a box marked 'Not Human Organs' under a table with his foot.");
+    struct room* south = create_room("West X Street", "West X Street is the rich section of town. So rich, they paved the streets with gold. This probably was not a good idea. The thief guild opened up the next day.");
+    set_exits_from_room(north, NULL, south, NULL, NULL);
+    set_exits_from_room(south, north, NULL, NULL, NULL);
+    game1->current_room = north;
+    struct command* command = parse_input(game1->parser, "JUH");
+    printf("%s", command->name);
+    execute_command(game1, command);
+
+    printf("%s\n", game1->current_room->name);
+
     char *data = "DATA";
     char *data2 = "DATA2";
     char *deskf = "face";

@@ -50,4 +50,42 @@ void play_game(struct game* game) {
 
 void execute_command(struct game* game, struct command* command) {
     if (game == NULL || command == NULL) return;
+
+    if (command == (get_from_container_by_name(game->parser->commands, "ZAPAD")))
+    {
+        if (game->current_room->west != NULL) {
+            game->current_room = game->current_room->west;
+            game->parser->history = create_container(game->parser->history, TEXT, "ZAPAD");
+            show_room(game->current_room);
+        }
+        return;
+    }
+    if (command == (get_from_container_by_name(game->parser->commands, "SEVER")))
+    {
+        if (game->current_room->north != NULL) {
+            game->current_room = game->current_room->north;//ceking@
+            game->parser->history = create_container(game->parser->history, TEXT, "SEVER");
+            show_room(game->current_room);
+        }
+        return;
+    }
+    if (command == (get_from_container_by_name(game->parser->commands, "JUH")))
+    {
+        if (game->current_room->south != NULL) {
+            game->current_room = game->current_room->south;//ceking
+            game->parser->history = create_container(game->parser->history, TEXT, "JUH");
+            show_room(game->current_room);
+        }
+        return;
+    }
+    if (command == (get_from_container_by_name(game->parser->commands, "VYCHOD")))
+    {
+        if (game->current_room->east != NULL) {
+            game->current_room = game->current_room->east;
+            game->parser->history = create_container(game->parser->history, TEXT, "VYCHOD");
+            show_room(game->current_room);
+
+        }
+        return;
+    }
 }

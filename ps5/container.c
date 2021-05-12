@@ -144,10 +144,8 @@ struct container* remove_container(struct container *first, void *entry) {
                 }
             }
         }
-        else {
-            additional = cont;
-            cont = cont->next;
-        }
+        additional = cont;
+        cont = cont->next;
     }
 
     return first;
