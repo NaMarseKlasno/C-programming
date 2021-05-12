@@ -63,14 +63,15 @@ int main (void)
 
     char* input = "       VERZIA                  ";
     struct command* cmd = parse_input(parser, input);
+    if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
 
     char* unknown_input = "                                   CO JE V MIESTNOSTI?                ";
     cmd = parse_input(parser, unknown_input);
+    if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
 
     //destroy_command(cmd);
     parser = destroy_parser(parser);
     // ***** PARSER  --------------------------------------------------------------------
-
 
 
     // ***** WORLD  --------------------------------------------------------------------
@@ -90,15 +91,24 @@ int main (void)
     //show_room(find_room);
     if (find_room == NULL) printf("find room == NULL\n");
 
-
     world = destroy_world(world);
     // ***** WORLD  --------------------------------------------------------------------
 
 
+    // ***** ITEM   --------------------------------------------------------------------
+    struct item* key = create_item("ZLATY KLUC",
+                                   "Zlaty kluc pravdepodobne od zlatej zamky. Su na nom viditelne vyryte pismena AB",
+                                   MOVABLE | USABLE );
+    printf("item name: %s,\ndesc item: %s\n", key->name, key->description);
+
+    key = destroy_item(key);
+    // ***** ITEM   --------------------------------------------------------------------
+
+
     // ***** clean all shit
-
-
     struct container * new_first = remove_container(cont, data2);
+    printf("ksdvjsk\n");
+
     if (new_first == NULL) printf("yes\n");
     destroy_containers(cont);
 
