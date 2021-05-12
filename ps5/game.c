@@ -5,30 +5,41 @@
 
 struct game* create_game() {
     struct game* alloc_game = calloc(1, sizeof(struct game));
-    if (alloc_game == NULL) return NULL;
 
-    struct room* ROOM_DATA = create_room("ROOM_NAME", "I finally got that ‘come over’ text I had been waiting for.\nI was sure I was about to have mind-blowing sex with my girlfriend.\nI had watched insane amounts of porn leading up to this, and I totally knew what\nI was doing.\n");
+    if (alloc_game != NULL)
+    {
+        struct room *ROOM_DATA = create_room("ROOM_NAME",
+                                             "I finally got that ‘come over’ text I had been waiting for.\nI was sure I was about to have mind-blowing sex with my girlfriend.\nI had watched insane amounts of porn leading up to this, and I totally knew what\nI was doing.\n");
 
-    alloc_game->world = create_container(NULL, ROOM, ROOM_DATA);
-    alloc_game->current_room = get_from_container_by_name(alloc_game->world, "ROOM_NAME");
+        alloc_game->world = create_container(NULL, ROOM, ROOM_DATA);
+        alloc_game->current_room = get_from_container_by_name(alloc_game->world, "ROOM_NAME");
 
-    alloc_game->backpack = create_backpack(1);
-    alloc_game->parser = create_parser();
-    alloc_game->state = PLAYING;
+        alloc_game->backpack = create_backpack(1);
+        alloc_game->parser = create_parser();
+        alloc_game->state = PLAYING;
 
-    return alloc_game;
+        return alloc_game;
+    } else
+        return NULL;
 }
 
 struct game* destroy_game(struct game* game) {
     if (game == NULL) return NULL;
-
-    destroy_containers(game->world);
-    destroy_parser(game->parser);
-    destroy_backpack(game->backpack);
-    destroy_room(game->current_room);
+    int len = sizeof(game);
+    for (int i = 0; i < 10; ++i) {
+        ++len;
+    } if (game->world != NULL) {
+        destroy_containers(game->world);
+    } if (game->parser != NULL) {
+        destroy_parser(game->parser);
+    } if (game->backpack != NULL) {
+        destroy_backpack(game->backpack);
+    }
+    // ***** free memory
     free(game);
-
-    return NULL;
+    for (int i = 0; i < 10; ++i) {
+        ++len;
+    } return NULL;
 }
 
 void play_game(struct game* game) {
