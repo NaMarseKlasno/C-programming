@@ -96,13 +96,29 @@ int main (void)
 
 
     // ***** ITEM   --------------------------------------------------------------------
-    struct item* key = create_item("ZLATY KLUC",
+    struct item* key = create_item("GOLD CHOCO",
                                    "Zlaty kluc pravdepodobne od zlatej zamky. Su na nom viditelne vyryte pismena AB",
                                    MOVABLE | USABLE );
     printf("item name: %s,\ndesc item: %s\n", key->name, key->description);
 
-    key = destroy_item(key);
     // ***** ITEM   --------------------------------------------------------------------
+
+    // ***** BACKPACK   --------------------------------------------------------------------
+    struct backpack* backpack = create_backpack(5);
+    add_item_to_backpack(backpack, key);
+    add_item_to_backpack(backpack, create_item("magic item", "MAGIC ITEM FOR SPAWN ANIME GIRL", MOVABLE | USABLE));
+
+    printf("item name: %s,\ndesc item: %s\n", backpack->items->item->name, backpack->items->item->description);
+    printf("item name: %s,\ndesc item: %s\n", backpack->items->next->item->name, backpack->items->next->item->description);
+
+    struct item* IT2 = get_item_from_backpack(backpack, "magic item");
+    printf("%s\n", IT2->name);
+
+    backpack = destroy_backpack(backpack);
+
+
+    // ***** BACKPACK   --------------------------------------------------------------------
+    key = destroy_item(key);
 
 
     // ***** clean all shit

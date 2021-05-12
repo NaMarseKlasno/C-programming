@@ -93,7 +93,6 @@ struct container* remove_container(struct container *first, void *entry) {
         if (check_string2(name1, name2) == 0 && name1 != NULL)
         {
             box2->next = box1->next;
-            free(box2);
             if (box1 == NULL) return NULL;
             return box1;
         }
