@@ -82,53 +82,72 @@ void* get_from_container_by_name(struct container *first, const char *name) {
 struct container* remove_container(struct container *first, void *entry) {
     if (first == NULL || entry == NULL) return first;
 
-    struct container *cont = first;
-    char* text = NULL; char* str = NULL;
-    int R = 0, I = 0, C = 0, T = 0;
+    struct container *cont = first, *additional = NULL;
 
     for (;!(cont == NULL);)
     {
         if (cont->type == ROOM) {
-            text = ((struct room*)entry)->name;
-            str = cont->room->name;
-            R =1;
+            if (cont->room == entry)
+            {
+                if (additional != NULL){
+                    additional->next = cont->next;
+                    free(cont);
+                    return first;
+                } else {
+                    first = first->next;
+                    free(cont);
+                    return first;
+                }
+
+            }
         }
         else if (cont->type == ITEM) {
-            text = ((struct item *)entry)->name;
-            str= cont->item->name;
-            I =1;
+            if (cont->item == entry)
+            {
+                if (additional != NULL){
+                    additional->next = cont->next;
+                    free(cont);
+                    return first;
+                } else {
+                    first = first->next;
+                    free(cont);
+                    return first;
+                }
+            }
         }
         else if (cont->type == COMMAND) {
-            text =  ((struct command *)entry)->name;
-            str = cont->command->name;
-            C = 1;
+            if (cont->command == entry)
+            {
+                if (additional != NULL){
+                    additional->next = cont->next;
+                    free(cont);
+                    return first;
+                } else {
+                    first = first->next;
+                    free(cont);
+                    return first;
+                }
+            }
         }
         else if (cont->type == TEXT) {
-            text = (char *)entry;
-            str = cont->text;
-            T = 1;
-        }
-        else if (text == NULL){
-            cont = cont->next;
-            continue;
-        } else {
-            cont = cont->next;
-            continue;
-        }
-
-        if (check_string2(str, text) == 0)
-        {
-            if (R == 1) free(cont->room);
-            if (C == 1) free(cont->command);
-            if (I == 1) free(cont->item);
-            if (T == 1 )free(cont->text);
-            for (;cont->next != NULL;) {
-                cont = cont->next;
+            if (cont->text == entry)
+            {
+                if (additional == NULL) {
+                    first = first->next;
+                    free(cont);
+                    return first;
+                }
+                else if (additional != NULL){
+                    additional->next = cont->next;
+                    free(cont);
+                    return first;
+                }
             }
-            return first;
         }
-        else
+        else {
+            additional = cont;
             cont = cont->next;
+        }
     }
 
     return first;
