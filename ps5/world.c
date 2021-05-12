@@ -1,5 +1,6 @@
 #include "world.h"
 #include <stdlib.h>
+#include <string.h>
 #include "item.h"
 
 void add_rooms (struct room* array[]);
@@ -15,7 +16,6 @@ struct container* create_world() {
     add_items(rooms);
 
     struct container* cont = create_container(NULL, ROOM, rooms[0]);
-    if (cont) return NULL;
 
     // ***** put rooms to container
     put_rooms(rooms, cont);
@@ -29,7 +29,7 @@ struct container* destroy_world(struct container* world) {
 }
 
 struct container* add_room_to_world(struct container* world, struct room* room) {
-    if (room == NULL) return NULL;
+    if (room == NULL) return world;
 
     if (world != NULL) {
         if (get_from_container_by_name(world, room->name) != NULL) return NULL;
@@ -39,7 +39,7 @@ struct container* add_room_to_world(struct container* world, struct room* room) 
 }
 
 struct room* get_room(struct container* world, char* name) {
-    if (world == NULL || name == NULL) return NULL;
+    if (world == NULL || name == NULL || world->room == NULL || strlen(name) == 0) return NULL;
     struct room* mama_mia = get_from_container_by_name(world, name);
 
     return mama_mia;
@@ -54,7 +54,7 @@ void add_rooms (struct room* array[])
     set_exits_from_room(array[1], array[2], NULL, NULL, NULL);
     array[3] = create_room("room4", "The vagina is a self-cleaning organ. It does not need to be washed with soap, as this can upset the microflora balance and promote infection");
     set_exits_from_room(array[2], array[3], NULL, NULL, NULL);
-    array[4] = create_room("room5", "The vagina is a self-cleaning organ. It does not need to be washed with soap, as this can upset the microflora balance and promote infection");
+    array[4] = create_room("room5", "The 5 vagina is a self-cleaning organ. It does not need to be washed with soap, as this can upset the microflora balance and promote infection");
     set_exits_from_room(array[3], array[4], NULL, NULL, NULL);
     array[5] = create_room("room6", "The vagina is a self-cleaning organ. It does not need to be washed with soap, as this can upset the microflora balance and promote infection");
     set_exits_from_room(array[4], array[5], NULL, NULL, NULL);

@@ -96,15 +96,9 @@ struct item* get_item_from_room(const struct room* room, const char* name) {
 void delete_item_from_room(struct room* room, struct item* item) {
     if (room == NULL || item == NULL) return;
 
-    struct container *ITEM = room->items;
-
-    for (;ITEM != NULL;)
-    {
-        if (check_string(ITEM->item->name, item->name) == 0)
-            ITEM->item = NULL;
-        ITEM = ITEM->next;
-    }
-
+    struct container* ITEMS;
+    ITEMS = remove_container(room->items, item);
+    room->items = ITEMS;
 }
 
 int check_string (char *str_one, char *str_two) {

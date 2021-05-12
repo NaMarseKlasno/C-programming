@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdio.h>
 
 void create_commands (struct command* commands[]);
 void add_commands (struct command* commands[], struct parser *res_pars);
@@ -37,22 +38,67 @@ struct parser* destroy_parser (struct parser* parser) {
 
 struct command* parse_input (struct parser* parser, char* input) {
     if (parser == NULL || input == NULL) return NULL;
-    unsigned long len = strlen(input); char* i_name = NULL; char str[len+1];
+    unsigned long len = strlen(input), new_len = 0; char* received_name = NULL;
 
-    for (unsigned long i = 0; i < len; ++i) str[i] = input[i];
-    str[len] = '\0';
+    if (input[0] == ' ') {
+        for (unsigned long j = 0; j < len; ++j) {
+            if (input[j] == ' ') {
+                ++new_len;
+                if (input[j+1] != ' ') break;
+            }
+        }
+    }
+    if (input[len-1] == ' ') {
+        for (unsigned long j = len-1; j > 0; --j) {
+            if (input[j] == ' ') {
+                ++new_len;
+                if (input[j-1] != ' ') break;
+            }
+        }
+    }
+    new_len = len - new_len;
+    char cut_str[new_len+1];
+
+    if ((input[0] == ' ' && input[len-1] == ' ') || (input[0] == ' ' && input[len-1] != ' ') )
+    {
+        for (unsigned long j = 0; j < len; ++j) {
+            if (input[j] == ' ') {
+                if (input[j+1] != ' ') {
+                    for (unsigned long k = 0, m = j+1; k < new_len; ++k, ++m) cut_str[k] = input[m];
+                    break;
+                }
+            }
+        } cut_str[new_len] = '\0';
+    }
+    if (input[0] != ' ' && input[len-1] == ' ')
+    {
+        for (int j = 0; j < new_len; ++j) {
+            cut_str[j] = input[j];
+        } cut_str[new_len] = '\0';
+    }
+
+    char str[new_len+1];
+    for (unsigned long i = 0; i < len; ++i) {
+        if (new_len == len)
+            str[i] = input[i];
+        else
+            str[i] = cut_str[i];
+    }
+    str[new_len] = '\0';
     char *str_2 = str;
+
+    //printf("str_2: [%s] ............................................................................\n", str_2);
 
     for (;parser->commands != NULL;)
     {
-        if (parser->commands->type == COMMAND) i_name =  parser->commands->command->name;
-        else if (i_name == NULL){
+        if (parser->commands->type == COMMAND) received_name =  parser->commands->command->name;
+        else if (received_name == NULL){
             parser->commands = parser->commands->next;
             continue;
         } else {
             parser->commands = parser->commands->next;
             continue;
-        } if (check_string3(str_2, i_name) == 0) {
+        } if (check_string3(str_2, received_name) == 0) {
             return parser->commands->command;
         } else parser->commands = parser->commands->next;
     }

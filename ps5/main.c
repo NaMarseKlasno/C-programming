@@ -46,6 +46,12 @@ int main (void)
     struct item* predmet = get_item_from_room(fake_room->room, NULL);
     delete_item_from_room(fake_room->room, predmet);
 
+    destroy_room(n_room);
+    destroy_room(room1);
+    destroy_room(room2);
+    destroy_room(room3);
+
+    // ***** COMMAND  ------------------------------------------------------------------
     struct command* help = create_command("POMOC", "Zobrazi zoznam vsetkych prikazov", "(POMOC)", 1);
     help = destroy_command(help);
 
@@ -55,41 +61,45 @@ int main (void)
     // ***** PARSER  --------------------------------------------------------------------
     struct parser* parser = create_parser();
 
-    char* input = "     VERZIA   ";
+    char* input = "       VERZIA                  ";
     struct command* cmd = parse_input(parser, input);
 
-    char* unknown_input = "   CO JE V MIESTNOSTI?  ";
+    char* unknown_input = "                                   CO JE V MIESTNOSTI?                ";
     cmd = parse_input(parser, unknown_input);
 
-    destroy_command(cmd);
+    //destroy_command(cmd);
     parser = destroy_parser(parser);
     // ***** PARSER  --------------------------------------------------------------------
 
 
+
     // ***** WORLD  --------------------------------------------------------------------
     struct container* world = create_world();
+    if (world == NULL) printf("word == NULL\n");
 
-    struct room* start_room = get_room(world, "start");
-    struct container* roo = add_room_to_world(world, NULL);
-    destroy_containers(roo);
-    struct room* station = get_room(world, "station");
-    show_room(station);
-    show_room(start_room);
+    struct room* room_5 = get_room(world, "room5");
+    if (room_5 == NULL) printf("room_5 == NULL\n");
+
+
+    struct room* same_room = create_room("same_name", "desc!!");
+
+
+    world = add_room_to_world(world, same_room);
+
+    struct room* find_room = get_room(world, "same_name");
+    //show_room(find_room);
+    if (find_room == NULL) printf("find room == NULL\n");
 
 
     world = destroy_world(world);
     // ***** WORLD  --------------------------------------------------------------------
 
 
-
     // ***** clean all shit
-    destroy_room(n_room);
-    destroy_room(room1);
-    destroy_room(room2);
-    destroy_room(room3);
+
 
     struct container * new_first = remove_container(cont, data2);
-    show_room(new_first->room);
+    if (new_first == NULL) printf("yes\n");
     destroy_containers(cont);
 
     // create game first with all the members of the game structure
