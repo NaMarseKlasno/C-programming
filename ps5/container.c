@@ -82,33 +82,42 @@ void* get_from_container_by_name(struct container *first, const char *name) {
 struct container* remove_container(struct container *first, void *entry) {
     if (first == NULL || entry == NULL) return first;
 
-    struct container *box1 = first;
-    struct container *box2 = first;
+    struct container *cont = first;
+    char* text = NULL; char* str = NULL;
 
-    char * name1 = NULL;
-    char * name2 = NULL;
-
-    for (;!(box2 == NULL);)
+    for (;!(cont == NULL);)
     {
-        if (check_string2(name1, name2) == 0 && name1 != NULL)
-        {
-            box2->next = box1->next;
-            if (box1 == NULL) return NULL;
-            return box1;
+        if (cont->type == ROOM) {
+            text = ((struct room*)entry)->name;
+            str = cont->room->name;
+        }
+        else if (cont->type == ITEM) {
+            text = ((struct item *)entry)->name;
+            str= cont->item->name;
+        }
+        else if (cont->type == COMMAND) {
+            text =  ((struct command *)entry)->name;
+            str = cont->command->name;
+        }
+        else if (cont->type == TEXT) {
+            text = (char *)entry;
+            str = cont->text;
+        }
+        else if (text == NULL){
+            cont = cont->next;
+            continue;
+        } else {
+            cont = cont->next;
+            continue;
         }
 
-        if (box1->type == ROOM) name1 = box1->room->name;
-        else if (box1->type == ITEM) name1 = box1->item->name;
-        else if (box1->type == COMMAND) name1 =  box1->command->name;
-        else if (box1->type == TEXT) name1 = box1->text;
-
-        if (box1->type == ROOM) name2 = ((struct room*)entry)->name;
-        else if (box1->type == ITEM) name2 = ((struct item *)entry)->name;
-        else if (box1->type == COMMAND) name2 =  ((struct command *)entry)->name;
-        else if (box1->type == TEXT) name2 = (char *)entry;
-
-        box1 = box2;
-        box1 = box1->next;
+        if (check_string2(str, text) == 0)
+        {
+            for (;cont->next != NULL;) cont = cont->next;
+            return first;
+        }
+        else
+            cont = cont->next;
     }
 
     return first;
