@@ -123,8 +123,17 @@ int main (void)
     printf("item name: %s,\ndesc item: %s\n", backpack->items->item->name, backpack->items->item->description);
     printf("item name: %s,\ndesc item: %s\n", backpack->items->next->item->name, backpack->items->next->item->description);
 
-    struct item* IT2 = get_item_from_backpack(backpack, "magic item");
-    printf("%s\n", IT2->name);
+    //struct item* IT2 = get_item_from_backpack(backpack, "magic item");
+    //printf("%s\n", IT2->name);
+
+    printf("size: %d\n", backpack->size);
+
+    delete_item_from_backpack(backpack, key);
+
+    printf("size: %d\n", backpack->size);
+    printf("%s\n", backpack->items->item->name);
+    //printf("%s\n", backpack->items->next->item->name);
+
 
     backpack = destroy_backpack(backpack);
 
