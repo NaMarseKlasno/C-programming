@@ -57,27 +57,24 @@ void execute_command(struct game* game, struct command* command) {
             game->parser->history = create_container(game->parser->history, TEXT, "ZAPAD");
             show_room(game->current_room);
         }
-        return;
     }
-    if (command == (get_from_container_by_name(game->parser->commands, "SEVER")))
+    else if (command == (get_from_container_by_name(game->parser->commands, "SEVER")))
     {
         if (game->current_room->north != NULL) {
             game->current_room = game->current_room->north;//ceking@
             game->parser->history = create_container(game->parser->history, TEXT, "SEVER");
             show_room(game->current_room);
         }
-        return;
     }
-    if (command == (get_from_container_by_name(game->parser->commands, "JUH")))
+    else if (command == (get_from_container_by_name(game->parser->commands, "JUH")))
     {
         if (game->current_room->south != NULL) {
             game->current_room = game->current_room->south;//ceking
             game->parser->history = create_container(game->parser->history, TEXT, "JUH");
             show_room(game->current_room);
         }
-        return;
     }
-    if (command == (get_from_container_by_name(game->parser->commands, "VYCHOD")))
+    else if (command == (get_from_container_by_name(game->parser->commands, "VYCHOD")))
     {
         if (game->current_room->east != NULL) {
             game->current_room = game->current_room->east;
@@ -85,6 +82,14 @@ void execute_command(struct game* game, struct command* command) {
             show_room(game->current_room);
 
         }
+    }
+    else if (command == (get_from_container_by_name(game->parser->commands, "KONIEC")))
+    {
+        game->state = GAMEOVER;
         return;
+    }
+    else if (command == (get_from_container_by_name(game->parser->commands, "RESTART")))
+    {
+        game->state = RESTART;
     }
 }

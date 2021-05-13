@@ -164,7 +164,6 @@ void destroy_next_conts (struct container* next) {
     else if (next->type == TEXT) free(next->text);
 
     free(next);
-    //next = NULL;
 }
 
 int check_string2 (char *str_one, char *str_two) {
