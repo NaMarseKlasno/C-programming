@@ -77,13 +77,13 @@ int main (void)
 
     char* input = "VERZIA";
     struct command* cmd = parse_input(parser, input);
-    //if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
+    if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
 
     char* unknown_input = "VERZIA";
     cmd = parse_input(parser, unknown_input);
-    //if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
+    if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
 
-    //destroy_command(cmd);
+    destroy_command(cmd);
     parser = destroy_parser(parser);
     // ***** PARSER  --------------------------------------------------------------------
 
