@@ -29,7 +29,7 @@ struct container* destroy_world(struct container* world) {
 }
 
 struct container* add_room_to_world(struct container* world, struct room* room) {
-    if (room == NULL) return world;
+    if (room == NULL) return NULL;
 
     if (world != NULL) {
         if (get_from_container_by_name(world, room->name) != NULL) return NULL;

@@ -34,19 +34,23 @@ struct container* create_container (struct container* first, enum container_type
     return cont;
 }
 
-struct container* destroy_containers (struct container* first) {
-    if (first == NULL) return NULL;
-    struct container* doo = first;
-    struct container* posle = doo->next;
-
-    for (;!(doo->next == NULL);)
+struct container* destroy_containers (struct container* first)
+{
+    if (first != NULL)
     {
-        posle = doo->next;
-        free(doo);
-        doo = posle;
-    } free(doo);
+        struct container* FIRST = first;
 
-    return NULL;
+        for (;!(FIRST->next == NULL);)
+        {
+            struct container* SECOND = FIRST->next;
+            free(FIRST);
+            FIRST = SECOND;
+        } free(FIRST);
+
+        return NULL;
+    } else {
+        return NULL;
+    }
 }
 
 void* get_from_container_by_name(struct container *first, const char *name) {
@@ -62,7 +66,6 @@ void* get_from_container_by_name(struct container *first, const char *name) {
     {
         if (cont->type == ROOM) text = cont->room->name;
         else if (cont->type == ITEM) text = cont->item->name;
-        else if (cont->type == COMMAND) text =  cont->command->name;
         else if (cont->type == COMMAND) text =  cont->command->name;
         else if (cont->type == TEXT) text =  cont->text;
         else if (text == NULL){
