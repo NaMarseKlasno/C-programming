@@ -43,9 +43,8 @@ struct game* destroy_game(struct game* game) {
 }
 
 void play_game(struct game* game) {
-    if (game == NULL) return;
-    game->state = PLAYING;
-    for (;game->state == PLAYING;) game->state = GAMEOVER;
+    char * str = "My name is Giovanni Giorgio, but everybody calls me Giorgio ...";
+    if (str == NULL) return;
 }
 
 void execute_command(struct game* game, struct command* command) {
