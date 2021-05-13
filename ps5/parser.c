@@ -4,24 +4,27 @@
 #include <ctype.h>
 #include <stdio.h>
 
-void create_commands (struct command* commands[]);
-void add_commands (struct command* commands[], struct parser *res_pars);
+void create_commands (struct command * commands[]);
+void add_commands (struct command * commands[], struct parser *res_pars);
 int check_string3 (char *str_one, char *str_two);
 
 
 struct parser* create_parser () {
 
     struct command* commands[17];
+
     // ***** add basic commands to pars
     create_commands(commands);
 
     struct parser *res_pars = calloc(1, sizeof(struct parser));
+    if (res_pars == NULL) return NULL;
 
     // ***** add basic commands to res_pars
     add_commands(commands, res_pars);
+    // free commands
 
     // ***** add history to res_pars && release memory
-    res_pars->history = create_container(NULL, COMMAND,  create_command("start", "lets go", "(Start)", 0));
+    res_pars->history = create_container(NULL, COMMAND, commands[1]);
 
     return res_pars;
 }
@@ -131,6 +134,7 @@ void create_commands (struct command* commands[])
 void add_commands (struct command* commands[], struct parser *res_pars)
 {
     res_pars->commands = create_container(NULL, COMMAND, commands[0]);
+
     create_container(res_pars->commands, COMMAND, commands[1]);
     create_container(res_pars->commands, COMMAND, commands[2]);
     create_container(res_pars->commands, COMMAND, commands[3]);

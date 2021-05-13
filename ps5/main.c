@@ -10,6 +10,7 @@
 
 int main (void)
 {
+
     struct game* game1 = create_game();
     struct room* north = create_room("Bakery", "The delightful smell of meat pies fills the air, making you hungry. The baker flashes a grin, as he slides a box marked 'Not Human Organs' under a table with his foot.");
     struct room* south = create_room("West X Street", "West X Street is the rich section of town. So rich, they paved the streets with gold. This probably was not a good idea. The thief guild opened up the next day.");
@@ -70,20 +71,22 @@ int main (void)
     execute_command(NULL, NULL);
 
 
+
     // ***** PARSER  --------------------------------------------------------------------
     struct parser* parser = create_parser();
 
-    char* input = "       VERZIA                  ";
+    char* input = "VERZIA";
     struct command* cmd = parse_input(parser, input);
-    if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
+    //if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
 
-    char* unknown_input = "                                   CO JE V MIESTNOSTI?                ";
+    char* unknown_input = "VERZIA";
     cmd = parse_input(parser, unknown_input);
-    if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
+    //if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
 
     //destroy_command(cmd);
     parser = destroy_parser(parser);
     // ***** PARSER  --------------------------------------------------------------------
+
 
 
     // ***** WORLD  --------------------------------------------------------------------
@@ -123,8 +126,8 @@ int main (void)
     printf("item name: %s,\ndesc item: %s\n", backpack->items->item->name, backpack->items->item->description);
     printf("item name: %s,\ndesc item: %s\n", backpack->items->next->item->name, backpack->items->next->item->description);
 
-    //struct item* IT2 = get_item_from_backpack(backpack, "magic item");
-    //printf("%s\n", IT2->name);
+    struct item* IT2 = get_item_from_backpack(backpack, "magic item");
+    printf("%s\n", IT2->name);
 
     printf("size: %d\n", backpack->size);
 
