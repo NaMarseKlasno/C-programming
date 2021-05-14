@@ -87,7 +87,10 @@ void* get_from_container_by_name(struct container *first, const char *name) {
             cont = cont->next;
             continue;
         } if (check_string2((char*)name, text) == 0) {
-            return cont;
+            if (cont->type == ROOM) return cont->room;
+            else if (cont->type == ITEM) return cont->item;
+            else if (cont->type == COMMAND) return cont->command;
+            else if (cont->type == TEXT) return cont->text;
         } else cont = cont->next;
     }
 

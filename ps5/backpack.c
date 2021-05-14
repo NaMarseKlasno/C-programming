@@ -44,8 +44,7 @@ struct item* get_item_from_backpack(const struct backpack* backpack, char* name)
     struct item* ITEM = NULL;
     struct container* cont = backpack->items;
 
-    cont = get_from_container_by_name(cont, name);
-    ITEM = cont->item;
+    ITEM = get_from_container_by_name(cont, name);
 
     return ITEM;
 }

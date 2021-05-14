@@ -17,7 +17,6 @@ struct game* create_game() {
         alloc_game->world = create_container(NULL, ROOM, ROOM_DATA);
 
         alloc_game->current_room = get_from_container_by_name(alloc_game->world, "ROOM_NAME");
-
         alloc_game->backpack = create_backpack(1);
         alloc_game->parser = create_parser();
         alloc_game->state = PLAYING;

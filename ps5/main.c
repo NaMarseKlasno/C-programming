@@ -10,7 +10,6 @@
 
 int main (void)
 {
-
     struct game* game1 = create_game();
     struct room* north = create_room("Bakery", "The delightful smell of meat pies fills the air, making you hungry. The baker flashes a grin, as he slides a box marked 'Not Human Organs' under a table with his foot.");
     struct room* south = create_room("West X Street", "West X Street is the rich section of town. So rich, they paved the streets with gold. This probably was not a good idea. The thief guild opened up the next day.");
@@ -118,12 +117,19 @@ int main (void)
     create_container(cont2, ROOM, rr3);
 
 
-    struct container* find_rr = get_from_container_by_name(cont2, "n3333eviem");
-    show_room(find_rr->room);
-    printf("\n%s\n", find_rr->room->items->item->name);
+    struct room* find_rr = get_from_container_by_name(cont2, "n3333eviem");
+    show_room(find_rr);
+    printf("\n%s\n", find_rr->items->item->name);
 
-    if (get_item_from_room(find_rr->room, "fnsjcsd") == NULL) printf("fnidjv\n");
-    delete_item_from_room(find_rr->room, dildo);
+    if (get_item_from_room(find_rr, "fnsjcsd") == NULL) printf("fnidjv\n");
+    delete_item_from_room(find_rr, dildo);
+    if (get_item_from_room(find_rr, "XL") == NULL) printf("DILDO is not in room\n");
+
+
+    //destroy_containers(cont2);
+    //free(dildo->name);
+    //free(dildo->description);
+    //free(dildo);
     // ***** get_from_container_by_name   --------------------------------------------------------------------
 
     // ***** clean all shit
