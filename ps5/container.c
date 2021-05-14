@@ -9,6 +9,24 @@ void destroy_next_conts (struct container* next);
 int check_string2 (char *str_one, char *str_two);
 
 
+/**                         <RACCOON>
+ *
+ *                                    .                : :
+ *                  _..----..__   __..:'.-'''-.-''    .  :
+ *                .'      ,    '''    '    :   .'    /  '
+ *               ',                  ( -=o):(o=-)   .  :
+ *              :     ,               ''.  ;  .'  __:  :
+ *              :          :      ,      '.0.''.-'.))  :  __..--
+ *              :           :                ._.-'__| ':''.
+ *               .           :   ,   ..  :.-' __.' /   ;    .
+ *              .'       ,   :    _.'  '. '.''    /   /  '
+ *            .:. .'.        :--:'_..--'''.))  .  ' -'    __.--'
+ *          .''::'   '-.  .-''.  '.   .             __.--'
+ *          :...:     __\  '.  '..))     '    __.--'
+ *          ::'':.--''   '.)))          __.--'
+ */
+
+
 struct container* create_container (struct container* first, enum container_type type, void* entry) {
     if (entry == NULL) return NULL;
 

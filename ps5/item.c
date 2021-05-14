@@ -2,6 +2,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**                         <RACCOON>
+ *
+ *                                    .                : :
+ *                  _..----..__   __..:'.-'''-.-''    .  :
+ *                .'      ,    '''    '    :   .'    /  '
+ *               ',                  ( -=o):(o=-)   .  :
+ *              :     ,               ''.  ;  .'  __:  :
+ *              :          :      ,      '.0.''.-'.))  :  __..--
+ *              :           :                ._.-'__| ':''.
+ *               .           :   ,   ..  :.-' __.' /   ;    .
+ *              .'       ,   :    _.'  '. '.''    /   /  '
+ *            .:. .'.        :--:'_..--'''.))  .  ' -'    __.--'
+ *          .''::'   '-.  .-''.  '.   .             __.--'
+ *          :...:     __\  '.  '..))     '    __.--'
+ *          ::'':.--''   '.)))          __.--'
+ */
 
 struct item* create_item(char* name, char* description, unsigned int properties) {
     if (name == NULL || description == NULL || name[0] == '\0' || description[0] == '\0') return NULL;

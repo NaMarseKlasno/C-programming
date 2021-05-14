@@ -10,6 +10,24 @@
 
 int main (void)
 {
+
+  /**                         <RACCOON>
+   *
+   *                                    .                : :
+   *                  _..----..__   __..:'.-'''-.-''    .  :
+   *                .'      ,    '''    '    :   .'    /  '
+   *               ',                  ( -=o):(o=-)   .  :
+   *              :     ,               ''.  ;  .'  __:  :
+   *              :          :      ,      '.0.''.-'.))  :  __..--
+   *              :           :                ._.-'__| ':''.
+   *               .           :   ,   ..  :.-' __.' /   ;    .
+   *              .'       ,   :    _.'  '. '.''    /   /  '
+   *            .:. .'.        :--:'_..--'''.))  .  ' -'    __.--'
+   *          .''::'   '-.  .-''.  '.   .             __.--'
+   *          :...:     __\  '.  '..))     '    __.--'
+   *          ::'':.--''   '.)))          __.--'
+   */
+
     struct game* game1 = create_game();
     struct room* north = create_room("Bakery", "The delightful smell of meat pies fills the air, making you hungry. The baker flashes a grin, as he slides a box marked 'Not Human Organs' under a table with his foot.");
     struct room* south = create_room("West X Street", "West X Street is the rich section of town. So rich, they paved the streets with gold. This probably was not a good idea. The thief guild opened up the next day.");

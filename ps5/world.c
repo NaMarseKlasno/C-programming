@@ -7,6 +7,22 @@ void add_rooms (struct room* array[]);
 void add_items (struct room* rooms[]);
 void put_rooms (struct room* rooms[], struct container* cont);
 
+/**                         <RACCOON>
+ *
+ *                                    .                : :
+ *                  _..----..__   __..:'.-'''-.-''    .  :
+ *                .'      ,    '''    '    :   .'    /  '
+ *               ',                  ( -=o):(o=-)   .  :
+ *              :     ,               ''.  ;  .'  __:  :
+ *              :          :      ,      '.0.''.-'.))  :  __..--
+ *              :           :                ._.-'__| ':''.
+ *               .           :   ,   ..  :.-' __.' /   ;    .
+ *              .'       ,   :    _.'  '. '.''    /   /  '
+ *            .:. .'.        :--:'_..--'''.))  .  ' -'    __.--'
+ *          .''::'   '-.  .-''.  '.   .             __.--'
+ *          :...:     __\  '.  '..))     '    __.--'
+ *          ::'':.--''   '.)))          __.--'
+ */
 
 struct container* create_world() {
     struct room* rooms[16];
