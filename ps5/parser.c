@@ -4,29 +4,40 @@
 #include <ctype.h>
 #include <stdio.h>
 
-void create_commands (struct command * commands[]);
-void add_commands (struct command * commands[], struct parser *res_pars);
+//void create_commands (struct command* commands[17]);
+//void add_commands (struct command* commands, struct parser *res_pars[17]);
 int check_string3 (char *str_one, char *str_two);
 
 
 struct parser* create_parser () {
 
-    struct command* commands[17];
+    struct parser *pars = calloc(1, sizeof(struct parser));
+    if (pars == NULL) return NULL;
 
     // ***** add basic commands to pars
-    create_commands(commands);
+    pars->commands = create_container(NULL, COMMAND, create_command("KONIEC", "Príkaz ukončí rozohratú hru. Nastaví príslušný stav hry.", "(QUIT)|(EXIT)", 2));
 
-    struct parser *res_pars = calloc(1, sizeof(struct parser));
-    if (res_pars == NULL) return NULL;
-
-    // ***** add basic commands to res_pars
-    add_commands(commands, res_pars);
-    // free commands
+    create_container(pars->commands, COMMAND, create_command("SEVER", "Presun do miestnosti nachádzajúcej sa na sever od aktuálnej. Zmení referenciu aktuálnej miestnosti.", "(S)", 1));
+    create_container(pars->commands, COMMAND, create_command("JUH", "Presun do miestnosti nachádzajúcej sa na juh od aktuálnej. Zmení referenciu aktuálnej miestnosti.", "(J)", 1));
+    create_container(pars->commands, COMMAND, create_command("VYCHOD", "Presun do miestnosti nachádzajúcej sa na východ od aktuálnej. Zmení referenciu aktuálnej miestnosti.", "(V)", 1));
+    create_container(pars->commands, COMMAND, create_command("ZAPAD", "Presun do miestnosti nachádzajúcej sa na západ od aktuálnej. Zmení referenciu aktuálnej miestnosti.", "(Z)", 1));
+    create_container(pars->commands, COMMAND, create_command("ROZHLIADNI SA", "Príkaz vypíše aktuálne informácie o miestnosti, v ktorej sa hráč práve nachádza.", "", 0));
+    create_container(pars->commands, COMMAND, create_command("PRIKAZY", "Príkaz vypíše na obrazovku zoznam všetkých príkazov, ktoré hra poskytuje.", "(HELP)|(POMOC)", 2));
+    create_container(pars->commands, COMMAND, create_command("VERZIA", "Príkaz zobrazí číslo verzie hry, ľubovoľný sprievodný text a meno a priezvisko autora s kontaktom (e-mailová adresa, webová stránka).", "", 0));
+    create_container(pars->commands, COMMAND, create_command("RESTART", "Znovu spustí hru od začiatku. Zmení stav hry na požadovaný.", "", 0));
+    create_container(pars->commands, COMMAND, create_command("O HRE", "Príkaz zobrazí krátky text, ktorý poslúži ako úvod do príbehu. Ako dobrý začiatok sa javí známy text: Kde bolo tam bolo, …", "(ABOUT)", 1));
+    create_container(pars->commands, COMMAND, create_command("VEZMI", "Vloží predmet z miestnosti do batohu. Príkaz má jeden povinný parameter, ktorým je názov predmetu. Ak predmet nebude zadaný, program vypíše na obrazovku vhodnú hlášku (napr. Neviem, čo chceš vziať.).", "", 0));
+    create_container(pars->commands, COMMAND, create_command("POLOZ", "Položí predmet z batohu do miestnosti. Príkaz má jeden povinný parameter, ktorým je názov predmetu. Ak predmet nebude zadaný, program vypíše na obrazovku vhodnú hlášku (napr. Neviem, čo chceš položiť.)", "", 0));
+    create_container(pars->commands, COMMAND, create_command("INVENTAR", "Zobrazí obsah hráčovho batohu.", "(I)", 1));
+    create_container(pars->commands, COMMAND, create_command("POUZI", "Použije predmet z batohu alebo miestnosti. Príkaz má jeden povinný parameter, ktorým je názov predmetu. Ak predmet nebude zadaný, program vypíše na obrazovku vhodnú hlášku (napr. Neviem, čo chceš použiť.).", "", 0));
+    create_container(pars->commands, COMMAND, create_command("PRESKUMAJ", "Vypíše opis predmetu, ktorý sa musí nachádzať v miestnosti alebo batohu. Príkaz má jeden povinný parameter, ktorým je názov predmetu. Ak predmet nebude zadaný alebo sa nenájde v batohu alebo v miestnosti, program vypíše na obrazovku vhodnú hlášku (napr. Neviem, čo chceš preskúmať.).", "", 0));
+    create_container(pars->commands, COMMAND, create_command("NAHRAJ", "Príkaz zabezpečí nahratie uloženej pozície hry z disku. Voliteľným parametrom je cesta k súboru.", "(LOAD)", 1));
+    create_container(pars->commands, COMMAND, create_command("ULOZ", "Príkaz uloží stav rozohratej hry na disk. Voliteľným parametrom je cesta k súboru.", "(SAVE)", 1));
 
     // ***** add history to res_pars && release memory
-    res_pars->history = create_container(NULL, COMMAND, commands[1]);
+    pars->history = create_container(NULL, COMMAND,  create_command("start", "lets go", "(Start)", 0));
 
-    return res_pars;
+    return pars;
 }
 
 struct parser* destroy_parser (struct parser* parser) {
@@ -108,9 +119,9 @@ struct command* parse_input (struct parser* parser, char* input) {
 
     return NULL;
 }
+/*
 
-
-void create_commands (struct command* commands[])
+void create_commands (struct command* commands[17])
 {
     commands[0] = create_command("KONIEC", "Príkaz ukončí rozohratú hru. Nastaví príslušný stav hry.", "(QUIT)|(EXIT)", 2);
     commands[1] = create_command("SEVER", "Presun do miestnosti nachádzajúcej sa na sever od aktuálnej. Zmení referenciu aktuálnej miestnosti.", "(S)", 1);
@@ -131,28 +142,28 @@ void create_commands (struct command* commands[])
     commands[16] = create_command("ULOZ", "Príkaz uloží stav rozohratej hry na disk. Voliteľným parametrom je cesta k súboru.", "(SAVE)", 1);
 }
 
-void add_commands (struct command* commands[], struct parser *res_pars)
+void add_commands (struct command* commands, struct parser *res_pars)
 {
-    res_pars->commands = create_container(NULL, COMMAND, commands[0]);
+    res_pars->commands = create_container(NULL, COMMAND, &commands[0]);
 
-    create_container(res_pars->commands, COMMAND, commands[1]);
-    create_container(res_pars->commands, COMMAND, commands[2]);
-    create_container(res_pars->commands, COMMAND, commands[3]);
-    create_container(res_pars->commands, COMMAND, commands[4]);
-    create_container(res_pars->commands, COMMAND, commands[5]);
-    create_container(res_pars->commands, COMMAND, commands[6]);
-    create_container(res_pars->commands, COMMAND, commands[7]);
-    create_container(res_pars->commands, COMMAND, commands[8]);
-    create_container(res_pars->commands, COMMAND, commands[9]);
-    create_container(res_pars->commands, COMMAND, commands[10]);
-    create_container(res_pars->commands, COMMAND, commands[11]);
-    create_container(res_pars->commands, COMMAND, commands[12]);
-    create_container(res_pars->commands, COMMAND, commands[13]);
-    create_container(res_pars->commands, COMMAND, commands[14]);
-    create_container(res_pars->commands, COMMAND, commands[15]);
-    create_container(res_pars->commands, COMMAND, commands[16]);
+    create_container(res_pars->commands, COMMAND, &commands[1]);
+    create_container(res_pars->commands, COMMAND, &commands[2]);
+    create_container(res_pars->commands, COMMAND, &commands[3]);
+    create_container(res_pars->commands, COMMAND, &commands[4]);
+    create_container(res_pars->commands, COMMAND, &commands[5]);
+    create_container(res_pars->commands, COMMAND, &commands[6]);
+    create_container(res_pars->commands, COMMAND, &commands[7]);
+    create_container(res_pars->commands, COMMAND, &commands[8]);
+    create_container(res_pars->commands, COMMAND, &commands[9]);
+    create_container(res_pars->commands, COMMAND, &commands[10]);
+    create_container(res_pars->commands, COMMAND, &commands[11]);
+    create_container(res_pars->commands, COMMAND, &commands[12]);
+    create_container(res_pars->commands, COMMAND, &commands[13]);
+    create_container(res_pars->commands, COMMAND, &commands[14]);
+    create_container(res_pars->commands, COMMAND, &commands[15]);
+    create_container(res_pars->commands, COMMAND, &commands[16]);
 }
-
+*/
 int check_string3 (char *str_one, char *str_two) {
     if (str_two == NULL || str_one == NULL) return 1;
     if (strlen(str_one) != strlen(str_two)) return 1;

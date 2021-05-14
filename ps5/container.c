@@ -39,28 +39,40 @@ struct container* destroy_containers (struct container* first)
     if (first != NULL)
     {
         struct container* FIRST = first;
+        struct container* SECOND = NULL;
 
-        for (;!(FIRST->next == NULL);)
+        for (;FIRST != NULL;)
         {
-            struct container* SECOND = FIRST->next;
-            free(FIRST);
-            FIRST = SECOND;
-        } free(FIRST);
+            SECOND = FIRST->next;
 
-        return NULL;
-    } else {
-        return NULL;
+            if (FIRST->type == ROOM) {
+                destroy_room(FIRST->room);
+                free(FIRST);
+            } else if (FIRST->type == COMMAND) {
+                destroy_command(FIRST->command);
+                free(FIRST);
+            } else if (FIRST->type == ITEM) {
+                destroy_item(FIRST->item);
+                free(FIRST);
+            } else if (FIRST->type == TEXT) {
+                free(FIRST->text);
+                free(FIRST);
+            }
+            FIRST = SECOND;
+        }
     }
+
+    return NULL;
 }
 
 void* get_from_container_by_name(struct container *first, const char *name) {
     if (name == NULL || first == NULL) return NULL;
-    char* text = NULL; unsigned long len = strlen(name); char str[len+1];
+    char* text = NULL;// unsigned long len = strlen(name); //char str[len+1];
     struct container *cont = first;
 
-    for (unsigned long i = 0; i < len; ++i) str[i] = name[i];
-    str[len] = '\0';
-    char *str_2 = str;
+    //for (unsigned long i = 0; i < len; ++i) str[i] = name[i];
+    //str[len] = '\0';
+    //char *str_2 = str;
 
     for (;cont != NULL;)
     {
@@ -74,7 +86,7 @@ void* get_from_container_by_name(struct container *first, const char *name) {
         } else {
             cont = cont->next;
             continue;
-        } if (check_string2(str_2, text) == 0) {
+        } if (check_string2((char*)name, text) == 0) {
             return cont;
         } else cont = cont->next;
     }

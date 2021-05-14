@@ -2,6 +2,9 @@
 #include "room.h"
 #include <stdlib.h>
 
+#include <stdio.h>
+
+
 
 struct game* create_game() {
     struct game* alloc_game = calloc(1, sizeof(struct game));
@@ -12,6 +15,7 @@ struct game* create_game() {
                                              "I finally got that ‘come over’ text I had been waiting for.\nI was sure I was about to have mind-blowing sex with my girlfriend.\nI had watched insane amounts of porn leading up to this, and I totally knew what\nI was doing.\n");
 
         alloc_game->world = create_container(NULL, ROOM, ROOM_DATA);
+
         alloc_game->current_room = get_from_container_by_name(alloc_game->world, "ROOM_NAME");
 
         alloc_game->backpack = create_backpack(1);
@@ -43,8 +47,9 @@ struct game* destroy_game(struct game* game) {
 }
 
 void play_game(struct game* game) {
-    char * str = "My name is Giovanni Giorgio, but everybody calls me Giorgio ...";
-    if (str == NULL) return;
+    char str[] = "My name is Giovanni Giorgio, but everybody calls me Giorgio ...";
+    if (str[0] == 'M') return;
+    return;
 }
 
 void execute_command(struct game* game, struct command* command) {
@@ -86,7 +91,6 @@ void execute_command(struct game* game, struct command* command) {
     else if (command == (get_from_container_by_name(game->parser->commands, "KONIEC")))
     {
         game->state = GAMEOVER;
-        return;
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "RESTART")))
     {

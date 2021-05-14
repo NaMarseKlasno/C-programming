@@ -23,46 +23,6 @@ int main (void)
 
     printf("%s\n", game1->current_room->name);
 
-    char *data = "DATA";
-    char *data2 = "DATA2";
-    char *deskf = "face";
-    char *desk = "\nNachadzas sa v chyzi svarneho suhaja. Na vychode sa nachadzaju dvere veduce z chyze von.\nMozne vychody z miesnosti:\n    vychod\nVidíš:\n    kluc\n    popisany papier\n";
-    //char *desk2 = "    “Virginity,” it's a loaded word and we place a lot of\nimportance and pressure on losing it and gaining sexual experience.\nAs a result, having sex for the first time becomes a major milestone for many,\nand the memories of those often awkward, sometimes painful,\noccasionally funny moments tend to stay with us.\n";
-    char *desk3 = "I was in high school and had just started dating a\ngirl who was a year older than me, which was a pretty big deal.\nWe must have waited two, maybe three months before having sex for the first time\n(an eternity in the mind of a teen boy).\n";
-
-    struct container *cont = create_container(NULL, ROOM, data);
-    cont->room = create_room("room_1", desk);
-    cont->next = create_container(cont, ROOM, data2);
-
-    char *fake = "FAKE TAXI";
-    cont->next->room = create_room(fake, deskf);
-
-    show_room(cont->room);
-
-    struct container * fake_room = get_from_container_by_name(cont, fake);
-    fake_room->room->description = deskf;
-
-    show_room(cont->next->room);
-    printf("                                              face taxi\n");
-    show_room(fake_room->room);
-    printf("                                              face taxi\n");
-
-    struct room *n_room = create_room("north", desk3);
-    struct room *room1 = create_room("north", desk3);
-    struct room *room2 = create_room("north", desk3);
-    struct room *room3 = create_room("north", desk3);
-
-    set_exits_from_room(fake_room->room, n_room, room1, room2, room3);
-
-    show_room(fake_room->room->north);
-    add_item_to_room(fake_room->room, NULL);
-    struct item* predmet = get_item_from_room(fake_room->room, NULL);
-    delete_item_from_room(fake_room->room, predmet);
-
-    destroy_room(n_room);
-    destroy_room(room1);
-    destroy_room(room2);
-    destroy_room(room3);
 
     // ***** COMMAND  ------------------------------------------------------------------
     struct command* help = create_command("POMOC", "Zobrazi zoznam vsetkych prikazov", "(POMOC)", 1);
@@ -71,19 +31,21 @@ int main (void)
     execute_command(NULL, NULL);
 
 
+    //(1 + 3) != 4? printf("first") : printf("second");
 
     // ***** PARSER  --------------------------------------------------------------------
     struct parser* parser = create_parser();
 
-    char* input = "VERZIA";
+    char* input = "VERZ IA          ";
     struct command* cmd = parse_input(parser, input);
     if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
 
-    char* unknown_input = "VERZIA";
+    char* unknown_input = "         VERZ IA";
     cmd = parse_input(parser, unknown_input);
     if (cmd != NULL && cmd->name != NULL) printf("%s\n", cmd->name);
 
     destroy_command(cmd);
+
     parser = destroy_parser(parser);
     // ***** PARSER  --------------------------------------------------------------------
 
@@ -144,13 +106,28 @@ int main (void)
     // ***** BACKPACK   --------------------------------------------------------------------
     key = destroy_item(key);
 
+    // ***** get_from_container_by_name   --------------------------------------------------------------------
+    struct room* rr = create_room("neviem", "tiez neviem");
+    struct room* rr2 = create_room("n2222eviem", "tiez 222 neviem");
+    struct room* rr3 = create_room("n3333eviem", "tiez 333 neviem");
+    struct item* dildo = create_item("XL", "xD", MOVABLE | USABLE);
+    add_item_to_room(rr3, dildo);
+
+    struct container *cont2 = create_container(NULL, ROOM, rr);
+    create_container(cont2, ROOM, rr2);
+    create_container(cont2, ROOM, rr3);
+
+
+    struct container* find_rr = get_from_container_by_name(cont2, "n3333eviem");
+    show_room(find_rr->room);
+    printf("\n%s\n", find_rr->room->items->item->name);
+
+    if (get_item_from_room(find_rr->room, "fnsjcsd") == NULL) printf("fnidjv\n");
+    delete_item_from_room(find_rr->room, dildo);
+    // ***** get_from_container_by_name   --------------------------------------------------------------------
 
     // ***** clean all shit
-    struct container * new_first = remove_container(cont, data2);
-    printf("ksdvjsk\n");
 
-    if (new_first == NULL) printf("yes\n");
-    destroy_containers(cont);
 
     // create game first with all the members of the game structure
     struct game* game = create_game();
