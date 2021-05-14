@@ -21,7 +21,6 @@
  *          ::'':.--''   '.)))          __.--'
  */
 
-
 struct game* create_game() {
     struct game* alloc_game = calloc(1, sizeof(struct game));
 

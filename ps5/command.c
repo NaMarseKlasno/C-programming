@@ -4,6 +4,8 @@
 
 
 struct command* create_command(char* name, char* description, char* pattern, size_t nmatch) {
+    // https://pubs.opengroup.org/onlinepubs/009695399/functions/regcomp.html
+
     if (name == NULL || description == NULL || name[0] == '\0' || description[0] == '\0') return NULL;
 
     struct command* comm = calloc(1, sizeof(struct command));
@@ -15,12 +17,16 @@ struct command* create_command(char* name, char* description, char* pattern, siz
     comm->description = calloc(strlen(description)+1, sizeof(char));
     strcpy(comm->description, description);
 
-    if (nmatch) comm->nmatch = nmatch;
+
     if (pattern != NULL) {
-        regex_t regex;
-        regcomp(&regex, pattern, 0);
-        comm->preg = regex;
+        if (regcomp(&comm->preg, pattern, REG_ICASE | REG_EXTENDED) != 0) {
+            free(comm);
+            return NULL;
+        }
     }
+
+    comm->nmatch = nmatch;
+
     return comm;
 }
 
