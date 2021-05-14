@@ -109,8 +109,8 @@ int main (void)
     struct room* rr = create_room("neviem", "tiez neviem");
     struct room* rr2 = create_room("n2222eviem", "tiez 222 neviem");
     struct room* rr3 = create_room("n3333eviem", "tiez 333 neviem");
-    struct item* dildo = create_item("XL", "xD", MOVABLE | USABLE);
-    add_item_to_room(rr3, dildo);
+    struct item* itm = create_item("XL", "xD", MOVABLE | USABLE);
+    add_item_to_room(rr3, itm);
 
     struct container *cont2 = create_container(NULL, ROOM, rr);
     create_container(cont2, ROOM, rr2);
@@ -122,17 +122,11 @@ int main (void)
     printf("\n%s\n", find_rr->items->item->name);
 
     if (get_item_from_room(find_rr, "fnsjcsd") == NULL) printf("fnidjv\n");
-    delete_item_from_room(find_rr, dildo);
+    delete_item_from_room(find_rr, itm);
     if (get_item_from_room(find_rr, "XL") == NULL) printf("DILDO is not in room\n");
 
 
-    //destroy_containers(cont2);
-    //free(dildo->name);
-    //free(dildo->description);
-    //free(dildo);
     // ***** get_from_container_by_name   --------------------------------------------------------------------
-
-    // ***** clean all shit
 
 
     // create game first with all the members of the game structure
