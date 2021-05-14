@@ -36,6 +36,10 @@ struct parser* create_parser () {
 
     // ***** add history to res_pars && release memory
     pars->history = create_container(NULL, COMMAND,  create_command("start", "lets go", "(Start)", 0));
+    if (pars->history == NULL) {
+        free(pars);
+        return NULL;
+    }
 
     return pars;
 }

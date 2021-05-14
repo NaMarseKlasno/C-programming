@@ -4,7 +4,7 @@
 
 
 struct command* create_command(char* name, char* description, char* pattern, size_t nmatch) {
-    if (name == NULL || description == NULL || strlen(name) == 0 || strlen(description) == 0) return NULL;
+    if (name == NULL || description == NULL || name[0] == '\0' || description[0] == '\0') return NULL;
 
     struct command* comm = calloc(1, sizeof(struct command));
     if (comm == NULL) return NULL;
