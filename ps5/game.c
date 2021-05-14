@@ -81,7 +81,7 @@ void execute_command(struct game* game, struct command* command) {
     else if (command == (get_from_container_by_name(game->parser->commands, "SEVER")))
     {
         if (game->current_room->north != NULL) {
-            game->current_room = game->current_room->north;//ceking@
+            game->current_room = game->current_room->north;
             game->parser->history = create_container(game->parser->history, TEXT, "SEVER");
             show_room(game->current_room);
         }
@@ -89,7 +89,7 @@ void execute_command(struct game* game, struct command* command) {
     else if (command == (get_from_container_by_name(game->parser->commands, "JUH")))
     {
         if (game->current_room->south != NULL) {
-            game->current_room = game->current_room->south;//ceking
+            game->current_room = game->current_room->south;
             game->parser->history = create_container(game->parser->history, TEXT, "JUH");
             show_room(game->current_room);
         }
@@ -110,5 +110,12 @@ void execute_command(struct game* game, struct command* command) {
     else if (command == (get_from_container_by_name(game->parser->commands, "RESTART")))
     {
         game->state = RESTART;
+    } else if (command == (get_from_container_by_name(game->parser->commands, "O HRE")))
+    {
+        printf("Decisions used to be easy, huh? What time to get up, what to wear, where to go.\n");
+        printf("Now it's a bit different. Could you tell friend from foe? Could you kill? Could you do worse?\n");
+        printf("If a loved one was infected, could you do the right thing? Could you put your life\n");
+        printf("on the line for me the way I would for you? Could you be... the last of us?\n");
+        printf("— Launch trailer.\n");
     }
 }

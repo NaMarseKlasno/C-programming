@@ -50,11 +50,7 @@ struct parser* create_parser () {
     create_container(pars->commands, COMMAND, create_command("ULOZ", "Príkaz uloží stav rozohratej hry na disk. Voliteľným parametrom je cesta k súboru.", "(SAVE)", 1));
 
     // ***** add history to res_pars && release memory
-    pars->history = create_container(NULL, COMMAND,  create_command("start", "lets go", "(Start)", 0));
-    if (pars->history == NULL) {
-        free(pars);
-        return NULL;
-    }
+    pars->history = create_container(NULL, COMMAND,  create_command("O HRE", "Príkaz zobrazí krátky text, ktorý poslúži ako úvod do príbehu. Ako dobrý začiatok sa javí známy text: Kde bolo tam bolo, …", "(ABOUT)", 1));
 
     return pars;
 }
