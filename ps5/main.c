@@ -29,7 +29,6 @@ int main (void)
    *          ::'':.--''   '.)))          __.--'
    */
 
-    /*
     struct game* game1 = create_game();
     struct room* north = create_room("Bakery", "The delightful smell of meat pies fills the air, making you hungry. The baker flashes a grin, as he slides a box marked 'Not Human Organs' under a table with his foot.");
     struct room* south = create_room("West X Street", "West X Street is the rich section of town. So rich, they paved the streets with gold. This probably was not a good idea. The thief guild opened up the next day.");
@@ -49,7 +48,7 @@ int main (void)
 
     execute_command(NULL, NULL);
 
-    */
+
     //(1 + 3) != 4? printf("first") : printf("second");
 
     // ***** PARSER  --------------------------------------------------------------------
@@ -68,7 +67,7 @@ int main (void)
     parser = destroy_parser(parser);
     // ***** PARSER  --------------------------------------------------------------------
 
-    /*
+
 
     // ***** WORLD  --------------------------------------------------------------------
     struct container* world = create_world();
@@ -158,7 +157,6 @@ int main (void)
 
     // destroy game at the end
     game = destroy_game(game);
-    */
 
     return 0;
 }
