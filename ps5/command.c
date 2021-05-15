@@ -24,6 +24,7 @@ struct command* create_command(char* name, char* description, char* pattern, siz
             return NULL;
         }
     }
+    reg
 
     comm->nmatch = nmatch;
 
