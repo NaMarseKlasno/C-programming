@@ -76,11 +76,10 @@ struct item* get_item_from_room(const struct room* room, const char* name) {
     if (room == NULL || name == NULL) return NULL;
 
     struct container *ITEM = room->items;
-    char *name2 = NULL;
-    //strcpy(name2, name);
-    char x[strlen(name)];
-    for (int i = 0; i < sizeof(name)-1; ++i) x[i] = name[i];
-    x[sizeof(name)] = '\0';
+    unsigned long len = strlen(name); char *name2 = NULL, x[len+1];
+
+    for (int i = 0; i < len; ++i) x[i] = name[i];
+    x[len] = '\0';
     name2 = x;
 
     for (;ITEM != NULL;)
