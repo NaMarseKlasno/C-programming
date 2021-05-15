@@ -25,6 +25,8 @@ int check_string3 (char *str_one, char *str_two);
  */
 
 struct parser* create_parser () {
+    /** this video helped me learn regular expressions
+      * https://www.youtube.com/watch?v=Sa92COTUkfw */
 
     struct parser *pars = calloc(1, sizeof(struct parser));
     if (pars == NULL) return NULL;
@@ -52,7 +54,7 @@ struct parser* create_parser () {
     // ***** add history to res_pars && release memory
     pars->history = create_container(NULL, COMMAND,  create_command("O HRE", "Príkaz zobrazí krátky text, ktorý poslúži ako úvod do príbehu. Ako dobrý začiatok sa javí známy text: Kde bolo tam bolo, …", "(^\\s{0,}(ABOUT)\\s{0,}$)", 1));
     if (pars->history == NULL) {
-        free(pars);
+        destroy_parser(pars);
         return NULL;
     }
 

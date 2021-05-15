@@ -1,10 +1,11 @@
 #include "command.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 
 struct command* create_command(char* name, char* description, char* pattern, size_t nmatch) {
-    // https://pubs.opengroup.org/onlinepubs/009695399/functions/regcomp.html
+    /** https://pubs.opengroup.org/onlinepubs/009695399/functions/regcomp.html */
 
     if (name == NULL || description == NULL || name[0] == '\0' || description[0] == '\0') return NULL;
 
@@ -17,16 +18,14 @@ struct command* create_command(char* name, char* description, char* pattern, siz
     comm->description = calloc(strlen(description)+1, sizeof(char));
     strcpy(comm->description, description);
 
-
     if (pattern != NULL) {
-        if (regcomp(&comm->preg, pattern, REG_ICASE | REG_EXTENDED) != 0) {
-            free(comm);
+        if (regcomp(&comm->preg, pattern, REG_EXTENDED) != 0)
+        {
+            //printf("regcomp == 0\n");
+            destroy_command(comm);
             return NULL;
         }
-    }
-
-
-    comm->nmatch = nmatch;
+    } comm->nmatch = nmatch;
 
     return comm;
 }
