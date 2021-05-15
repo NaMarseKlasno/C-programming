@@ -74,32 +74,38 @@ void execute_command(struct game* game, struct command* command) {
         if (game->current_room->west != NULL) {
             game->current_room = game->current_room->west;
         }
+        return;
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "SEVER")))
     {
         if (game->current_room->north != NULL) {
             game->current_room = game->current_room->north;
         }
+        return;
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "JUH")))
     {
         if (game->current_room->south != NULL) {
             game->current_room = game->current_room->south;
         }
+        return;
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "VYCHOD")))
     {
         if (game->current_room->east != NULL) {
             game->current_room = game->current_room->east;
         }
+        return;
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "KONIEC")))
     {
         game->state = GAMEOVER;
+        return;
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "RESTART")))
     {
         game->state = RESTART;
+        return;
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "O HRE")))
     {
@@ -108,5 +114,6 @@ void execute_command(struct game* game, struct command* command) {
         printf("If a loved one was infected, could you do the right thing? Could you put your life\n");
         printf("on the line for me the way I would for you? Could you be... the last of us?\n");
         printf("— Launch trailer.\n");
+        return;
     }
 }
