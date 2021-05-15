@@ -26,7 +26,7 @@ int check_string3 (char *str_one, char *str_two);
 
 struct parser* create_parser () {
     /** this video helped me learn regular expressions
-      * https://www.youtube.com/watch?v=Sa92COTUkfw */
+      * https://www.youtube.com/watch?v=Sa92COTUkfw тлоло*/
 
     struct parser *pars = calloc(1, sizeof(struct parser));
     if (pars == NULL) return NULL;

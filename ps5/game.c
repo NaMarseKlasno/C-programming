@@ -73,33 +73,24 @@ void execute_command(struct game* game, struct command* command) {
     {
         if (game->current_room->west != NULL) {
             game->current_room = game->current_room->west;
-            game->parser->history = create_container(game->parser->history, TEXT, "ZAPAD");
-            show_room(game->current_room);
         }
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "SEVER")))
     {
         if (game->current_room->north != NULL) {
             game->current_room = game->current_room->north;
-            game->parser->history = create_container(game->parser->history, TEXT, "SEVER");
-            show_room(game->current_room);
         }
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "JUH")))
     {
         if (game->current_room->south != NULL) {
             game->current_room = game->current_room->south;
-            game->parser->history = create_container(game->parser->history, TEXT, "JUH");
-            show_room(game->current_room);
         }
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "VYCHOD")))
     {
         if (game->current_room->east != NULL) {
             game->current_room = game->current_room->east;
-            game->parser->history = create_container(game->parser->history, TEXT, "VYCHOD");
-            show_room(game->current_room);
-
         }
     }
     else if (command == (get_from_container_by_name(game->parser->commands, "KONIEC")))
@@ -109,7 +100,8 @@ void execute_command(struct game* game, struct command* command) {
     else if (command == (get_from_container_by_name(game->parser->commands, "RESTART")))
     {
         game->state = RESTART;
-    } else if (command == (get_from_container_by_name(game->parser->commands, "O HRE")))
+    }
+    else if (command == (get_from_container_by_name(game->parser->commands, "O HRE")))
     {
         printf("Decisions used to be easy, huh? What time to get up, what to wear, where to go.\n");
         printf("Now it's a bit different. Could you tell friend from foe? Could you kill? Could you do worse?\n");
