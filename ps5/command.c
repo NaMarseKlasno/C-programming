@@ -27,6 +27,7 @@ struct command* create_command(char* name, char* description, char* pattern, siz
 struct command* destroy_command(struct command* command) {
     if (command == NULL) return NULL;
 
+    regfree(&command->preg);
     free(command->name);
     free(command->description);
     free(command);
