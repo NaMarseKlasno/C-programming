@@ -41,15 +41,12 @@ int main (void)
 
     printf("%s\n", game1->current_room->name);
 
-
     // ***** COMMAND  ------------------------------------------------------------------
     struct command* help = create_command("POMOC", "Zobrazi zoznam vsetkych prikazov", "(POMOC)", 1);
     help = destroy_command(help);
 
     execute_command(NULL, NULL);
-
-
-    //(1 + 3) != 4? printf("first") : printf("second");
+    // ***** COMMAND  ------------------------------------------------------------------
 
     // ***** PARSER  --------------------------------------------------------------------
     struct parser* parser = create_parser();
@@ -66,8 +63,6 @@ int main (void)
 
     parser = destroy_parser(parser);
     // ***** PARSER  --------------------------------------------------------------------
-
-
 
     // ***** WORLD  --------------------------------------------------------------------
     struct container* world = create_world();
@@ -88,14 +83,12 @@ int main (void)
 
     world = destroy_world(world);
     // ***** WORLD  --------------------------------------------------------------------
-
-
+    
     // ***** ITEM   --------------------------------------------------------------------
     struct item* key = create_item("GOLD CHOCO",
                                    "Zlaty kluc pravdepodobne od zlatej zamky. Su na nom viditelne vyryte pismena AB",
                                    MOVABLE | USABLE );
     printf("item name: %s,\ndesc item: %s\n", key->name, key->description);
-
     // ***** ITEM   --------------------------------------------------------------------
 
     // ***** BACKPACK   --------------------------------------------------------------------
@@ -117,12 +110,9 @@ int main (void)
     printf("%s\n", backpack->items->item->name);
     //printf("%s\n", backpack->items->next->item->name);
 
-
     backpack = destroy_backpack(backpack);
-
-
-    // ***** BACKPACK   --------------------------------------------------------------------
     key = destroy_item(key);
+    // ***** BACKPACK   --------------------------------------------------------------------
 
     // ***** get_from_container_by_name   --------------------------------------------------------------------
     struct room* rr = create_room("neviem", "tiez neviem");
@@ -143,10 +133,7 @@ int main (void)
     if (get_item_from_room(find_rr, "fnsjcsd") == NULL) printf("fnidjv\n");
     delete_item_from_room(find_rr, itm);
     if (get_item_from_room(find_rr, "XL") == NULL) printf("DILDO is not in room\n");
-
-
     // ***** get_from_container_by_name   --------------------------------------------------------------------
-
 
     // create game first with all the members of the game structure
     struct game* game = create_game();

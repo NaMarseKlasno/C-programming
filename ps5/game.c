@@ -1,7 +1,7 @@
 #include "game.h"
 #include "room.h"
 #include <stdlib.h>
-
+#include <string.h>
 #include <stdio.h>
 
 /**                         <RACCOON>
@@ -69,45 +69,45 @@ void play_game(struct game* game) {
 void execute_command(struct game* game, struct command* command) {
     if (game == NULL || command == NULL) return;
 
-    if (command == (get_from_container_by_name(game->parser->commands, "ZAPAD")))
+    if (strcmp(command->name, "ZAPAD") == 0)
     {
         if (game->current_room->west != NULL) {
             game->current_room = game->current_room->west;
         }
         return;
     }
-    else if (command == (get_from_container_by_name(game->parser->commands, "SEVER")))
+    else if (strcmp(command->name, "SEVER") == 0)
     {
         if (game->current_room->north != NULL) {
             game->current_room = game->current_room->north;
         }
         return;
     }
-    else if (command == (get_from_container_by_name(game->parser->commands, "JUH")))
+    else if (strcmp(command->name, "JUH") == 0)
     {
         if (game->current_room->south != NULL) {
             game->current_room = game->current_room->south;
         }
         return;
     }
-    else if (command == (get_from_container_by_name(game->parser->commands, "VYCHOD")))
+    else if (strcmp(command->name, "VYCHOD") == 0)
     {
         if (game->current_room->east != NULL) {
             game->current_room = game->current_room->east;
         }
         return;
     }
-    else if (command == (get_from_container_by_name(game->parser->commands, "KONIEC")))
+    else if (strcmp(command->name, "KONIEC") == 0)
     {
         game->state = GAMEOVER;
         return;
     }
-    else if (command == (get_from_container_by_name(game->parser->commands, "RESTART")))
+    else if (strcmp(command->name, "RESTART") == 0)
     {
         game->state = RESTART;
         return;
     }
-    else if (command == (get_from_container_by_name(game->parser->commands, "O HRE")))
+    else if (strcmp(command->name, "O HRE") == 0)
     {
         printf("Decisions used to be easy, huh? What time to get up, what to wear, where to go.\n");
         printf("Now it's a bit different. Could you tell friend from foe? Could you kill? Could you do worse?\n");
