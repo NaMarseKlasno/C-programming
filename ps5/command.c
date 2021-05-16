@@ -19,9 +19,9 @@ struct command* create_command(char* name, char* description, char* pattern, siz
     strcpy(comm->description, description);
 
     if (pattern != NULL) {
-        if (regcomp(&comm->preg, pattern, REG_EXTENDED) != 0)
+        if (regcomp(&comm->preg, pattern, 0) != 0)
         {
-            //printf("regcomp == 0\n");
+            //printf("regcomp == 0  #########################################################\n");
             destroy_command(comm);
             return NULL;
         }
