@@ -73,8 +73,6 @@ void execute_command(struct game* game, struct command* command) {
     {
         if (game->current_room->west != NULL) {
             game->current_room = game->current_room->west;
-            game->parser->history = create_container(game->parser->history, TEXT, "ZAPAD");
-            show_room(game->current_room);
         }
         return;
     }
@@ -82,8 +80,6 @@ void execute_command(struct game* game, struct command* command) {
     {
         if (game->current_room->north != NULL) {
             game->current_room = game->current_room->north;
-            game->parser->history = create_container(game->parser->history, TEXT, "SEVER");
-            show_room(game->current_room);
         }
         return;
     }
@@ -91,8 +87,6 @@ void execute_command(struct game* game, struct command* command) {
     {
         if (game->current_room->south != NULL) {
             game->current_room = game->current_room->south;
-            game->parser->history = create_container(game->parser->history, TEXT, "JUH");
-            show_room(game->current_room);
         }
         return;
     }
@@ -100,8 +94,6 @@ void execute_command(struct game* game, struct command* command) {
     {
         if (game->current_room->east != NULL) {
             game->current_room = game->current_room->east;
-            game->parser->history = create_container(game->parser->history, TEXT, "VYCHOD");
-            show_room(game->current_room);
         }
         return;
     }

@@ -18,9 +18,13 @@ struct command* create_command(char* name, char* description, char* pattern, siz
     comm->description = calloc(strlen(description)+1, sizeof(char));
     strcpy(comm->description, description);
 
-    if (pattern != NULL) {
-        if (regcomp(&comm->preg, pattern, 0) != 0)
+    if (pattern != NULL)
+    {
+        int res = 1;
+        res = regcomp(&comm->preg, pattern, REG_EXTENDED);
+        if (res != 0)
         {
+            regfree(&comm->preg);
             //printf("regcomp == 0  #########################################################\n");
             destroy_command(comm);
             return NULL;
