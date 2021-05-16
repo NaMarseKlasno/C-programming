@@ -18,8 +18,14 @@ struct command* create_command(char* name, char* description, char* pattern, siz
     comm->description = calloc(strlen(description)+1, sizeof(char));
     strcpy(comm->description, description);
 
-    comm->nmatch = nmatch;
-    comm->groups = &pattern;
+    if (pattern != NULL) {
+        if (regcomp(&comm->preg, pattern, 0) != 0)
+        {
+            //printf("regcomp == 0  #########################################################\n");
+            destroy_command(comm);
+            return NULL;
+        }
+    } comm->nmatch = nmatch;
 
     return comm;
 }

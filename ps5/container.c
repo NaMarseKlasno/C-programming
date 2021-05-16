@@ -31,6 +31,7 @@ struct container* create_container (struct container* first, enum container_type
     if (entry == NULL) return NULL;
 
     struct container* cont = calloc(1, sizeof(struct container));
+    if (cont == NULL) return NULL;
     cont->type = type;
     cont->next = NULL;
 
