@@ -20,15 +20,7 @@ struct command* create_command(char* name, char* description, char* pattern, siz
 
     if (pattern != NULL)
     {
-        int res = 1;
-        res = regcomp(&comm->preg, pattern, REG_EXTENDED);
-        if (res != 0)
-        {
-            regfree(&comm->preg);
-            //printf("regcomp == 0  #########################################################\n");
-            destroy_command(comm);
-            return NULL;
-        }
+        regcomp(&comm->preg, pattern, REG_EXTENDED);
     } comm->nmatch = nmatch;
 
     return comm;
