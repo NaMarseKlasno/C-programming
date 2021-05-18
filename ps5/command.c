@@ -20,7 +20,11 @@ struct command* create_command(char* name, char* description, char* pattern, siz
 
     if (pattern != NULL)
     {
-        regcomp(&comm->preg, pattern, REG_EXTENDED);
+        /// TODO: fix bug with memory leak
+        if (regcomp(&comm->preg, pattern, REG_EXTENDED) != 0) {
+            destroy_command(comm);
+            return NULL;
+        }
     } comm->nmatch = nmatch;
 
     return comm;
