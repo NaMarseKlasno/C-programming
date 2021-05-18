@@ -12,16 +12,13 @@ struct command* create_command(char* name, char* description, char* pattern, siz
     struct command* comm = calloc(1, sizeof(struct command));
     if (comm == NULL) return NULL;
 
-    comm->name = calloc(strlen(name)+1, sizeof(char));
-    strcpy(comm->name, name);
-
-    comm->description = calloc(strlen(description)+1, sizeof(char));
-    strcpy(comm->description, description);
+    comm->name = name;
+    comm->description = description;
 
     if (pattern != NULL)
     {
         /// TODO: fix bug with memory leak
-        if (regcomp(&comm->preg, pattern, REG_EXTENDED) != 0) {
+        if (regcomp(&comm->preg, pattern, 0) != 0) {
             destroy_command(comm);
             return NULL;
         }

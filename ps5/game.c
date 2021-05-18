@@ -43,7 +43,7 @@ struct game* create_game() {
 
 struct game* destroy_game(struct game* game) {
     if (game == NULL) return NULL;
-    int len = sizeof(game);
+    int len = 0;
     for (int i = 0; i < 10; ++i) {
         ++len;
     } if (game->world != NULL) {
@@ -55,7 +55,7 @@ struct game* destroy_game(struct game* game) {
     }
     // ***** free memory
     free(game);
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 30; ++i) {
         ++len;
     } return NULL;
 }
