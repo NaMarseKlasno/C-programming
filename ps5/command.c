@@ -12,8 +12,12 @@ struct command* create_command(char* name, char* description, char* pattern, siz
     struct command* comm = calloc(1, sizeof(struct command));
     if (comm == NULL) return NULL;
 
-    comm->name = name;
-    comm->description = description;
+    comm->name = calloc(strlen(name)+1, sizeof(char));
+    comm->description = calloc(strlen(description)+1, sizeof(char));
+    for (int i = 0; name[i] !='\0'; ++i) comm->name[i] = name[i];
+    for (int i = 0; description[i] !='\0'; ++i) comm->description[i] = description[i];
+    comm->name[strlen(name)] = '\0';
+    comm->description[strlen(description)] = '\0';
 
     if (pattern != NULL)
     {
