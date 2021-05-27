@@ -66,4 +66,11 @@ void turn_off_leds(void);
 void render_leds(const int peg_a, const int peg_b);
 
 
+/** 
+ *   
+ */
+void render_history (char* secret, char** history, const int entry);
+
+
+
 #endif

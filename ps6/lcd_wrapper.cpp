@@ -7,11 +7,71 @@ void lcd_init (void)
 {
   lcd.init();
   lcd.backlight();
+  show_splash_screen();
+  LCD_CLEAR();
+  turn_off_leds();
 }
 
 
 void show_splash_screen (void) 
 {
+  pinMode(LED_BLUE_1, OUTPUT);
+  pinMode(LED_BLUE_2, OUTPUT);
+  pinMode(LED_BLUE_3, OUTPUT);
+  pinMode(LED_BLUE_4, OUTPUT);
+  
+  pinMode(LED_RED_1, OUTPUT);
+  pinMode(LED_RED_2, OUTPUT);
+  pinMode(LED_RED_3, OUTPUT);
+  pinMode(LED_RED_4, OUTPUT);
+
+  digitalWrite(LED_BLUE_1,  HIGH);
+  digitalWrite(LED_BLUE_2,  HIGH);
+  digitalWrite(LED_BLUE_3,  HIGH);
+  digitalWrite(LED_BLUE_4,  HIGH);
+
+  delay(300);
+  digitalWrite(LED_BLUE_1,  LOW);
+  digitalWrite(LED_BLUE_2,  LOW);
+  digitalWrite(LED_BLUE_3,  LOW);
+  digitalWrite(LED_BLUE_4,  LOW);
+    
+  delay(300);
+  digitalWrite(LED_BLUE_1,  HIGH);
+  digitalWrite(LED_BLUE_2,  HIGH);
+  digitalWrite(LED_BLUE_3,  HIGH);
+  digitalWrite(LED_BLUE_4,  HIGH);
+
+  delay(300);
+  digitalWrite(LED_BLUE_1,  LOW);
+  digitalWrite(LED_BLUE_2,  LOW);
+  digitalWrite(LED_BLUE_3,  LOW);
+  digitalWrite(LED_BLUE_4,  LOW);
+  delay(300);
+
+  digitalWrite(LED_RED_1,  HIGH);
+  digitalWrite(LED_RED_2,  HIGH);
+  digitalWrite(LED_RED_3,  HIGH);
+  digitalWrite(LED_RED_4,  HIGH);
+
+  delay(300);
+  digitalWrite(LED_RED_1,  LOW);
+  digitalWrite(LED_RED_2,  LOW);
+  digitalWrite(LED_RED_3,  LOW);
+  digitalWrite(LED_RED_4,  LOW);
+    
+  delay(300);
+  digitalWrite(LED_RED_1,  HIGH);
+  digitalWrite(LED_RED_2,  HIGH);
+  digitalWrite(LED_RED_3,  HIGH);
+  digitalWrite(LED_RED_4,  HIGH);
+
+  delay(300);
+  digitalWrite(LED_RED_1,  LOW);
+  digitalWrite(LED_RED_2,  LOW);
+  digitalWrite(LED_RED_3,  LOW);
+  digitalWrite(LED_RED_4,  LOW);
+
   lcd.setCursor(3, 0); 
   lcd.print("Welcome to"); 
   lcd.setCursor(3, 1); 
@@ -40,12 +100,12 @@ void Show_Code_To_Guess (char* code, int length)
     return;
   }
   
-  char str1[] = "My guess:   ";
+  char str1[] = "My secret code";
   lcd.setCursor(0, 0); 
   lcd.print(str1); 
   
   char* str2 = "                ";
-  char str3[] = "                ";
+  char str3[] = "was:            ";
  
   //                      "-------11-------";
   if (length == 1) str2 = "        -       "; 
@@ -138,4 +198,38 @@ void restart()
       delay(1000);
     } 
   }  
+}
+
+
+void render_game_rounds(int round_number) 
+{  
+  char str1[] = "00:";
+  if (round_number == 10) str1[0] = '1';
+  else str1[1] = '0' + round_number;
+  
+  lcd.setCursor(0, 0);     
+  lcd.print(str1);
+}
+
+
+void render_game_rounds_str2(char* guess) 
+{
+  if (guess == NULL) return;
+  
+  char str2[] = "Your guess:     ";
+
+  for (int i = 0, j = 12; guess[i] != '\0'; ++i, ++j)
+  {
+     str2[j] = guess[i];
+  }
+
+  lcd.setCursor(0, 1);     
+  lcd.print(str2);
+}
+
+
+void lcd_print (char* string, int row)
+{
+  lcd.setCursor(0, row);     
+  lcd.print(string);
 }
