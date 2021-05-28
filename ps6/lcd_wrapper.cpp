@@ -169,7 +169,8 @@ void restart()
   pinMode(BTN_ENTER_PIN, INPUT);
 
   bool PRESS = false;
-  do {
+  while (!PRESS) 
+  {
     PRESS = digitalRead(BTN_ENTER_PIN);
     if (PRESS) break;
     PRESS = digitalRead(BTN_1_PIN);
@@ -181,7 +182,7 @@ void restart()
     PRESS = digitalRead(BTN_4_PIN);
 
     //timing = millis(); 
-  } while (PRESS != true);
+  }
 
   if (PRESS) 
   {

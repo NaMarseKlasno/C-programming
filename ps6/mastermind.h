@@ -67,10 +67,33 @@ void render_leds(const int peg_a, const int peg_b);
 
 
 /** 
- *   
+ *   The function renders the history of moves 
+ *   @parameter - char* secret - secret code
+ *   @parameter - char** history - login history   
+ *   @parameter - const int entry - column number
+ *   @return - nothing
  */
 void render_history (char* secret, char** history, const int entry);
 
+
+/** 
+ *   Function renders history menu. Menu control will be carried out 
+ *   by pressing the first second third button (BTN_1_PIN, BTN_2_PIN, BTN_3_PIN).
+ *   @input:
+ *      BTN_1_PIN - confirm at the beginning and exit at the end
+ *      BTN_2_PIN - moves the counter back when pressed
+ *      BTN_3_PIN - moves the counter forward when pressed
+ *   @parameters - char** history - login history   
+ *   @return - nothing
+ */
+void history_menu (char* secret, char** history);
+
+
+/** 
+ *   Function clean history
+ *   @return - nothing
+ */
+void clean_history(char** history);
 
 
 #endif

@@ -1,6 +1,5 @@
 #include "mastermind.h" 
 
-void clean_history(char** history);
 
 boolean is_repeat (char string[], int length) 
 {
@@ -87,9 +86,10 @@ char* generate_code(bool repeat, int length)
 
 void play_game(char* secret) 
 {  
+
   int len = 0;
   for (int i = 0; secret[i] != '\0'; ++i) ++len;
-  //show_secret_code(secret, len);
+  show_secret_code(secret, len);
   if (secret == NULL) return;
 
   //Show_Code_To_Guess(secret, len);
@@ -99,16 +99,27 @@ void play_game(char* secret)
   // render history
   char* history[10];
 
-  history[0] = "0000";
-  history[1] = "0000";
-  history[2] = "0000";
-  history[3] = "0000";
-  history[4] = "0000";
-  history[5] = "0000";
-  history[6] = "0000";
-  history[7] = "0000";
-  history[8] = "0000";
-  history[9] = "0000";
+  char strrr1[] = "0000";
+  char strrr2[] = "0000";
+  char strrr3[] = "0000";
+  char strrr4[] = "0000";
+  char strrr5[] = "0000";
+  char strrr6[] = "0000";
+  char strrr7[] = "0000";
+  char strrr8[] = "0000";
+  char strrr9[] = "0000";
+  char strrr10[] = "0000";
+
+  history[0] = strrr1;
+  history[1] = strrr2;
+  history[2] = strrr3;
+  history[3] = strrr4;
+  history[4] = strrr5;
+  history[5] = strrr6;
+  history[6] = strrr7;
+  history[7] = strrr8;
+  history[8] = strrr9;
+  history[9] = strrr10;
 
   pinMode(BTN_1_PIN, INPUT);
   pinMode(BTN_2_PIN, INPUT);
@@ -121,14 +132,8 @@ void play_game(char* secret)
   int ROUND = 0;
 
   for (ROUND = 0; ROUND < 10 && !WIN; ++ROUND) 
-  {    
-    while (PRESS_ENTER) {
-       PRESS_ENTER = digitalRead(BTN_ENTER_PIN); 
-       delay(20);
-    } 
-    //delay(200);
-      
-    while (!PRESS_ENTER)
+  {          
+    while (1)
     {
       PRESS_ENTER = digitalRead(BTN_ENTER_PIN);
 
@@ -149,7 +154,7 @@ void play_game(char* secret)
       if (PRESS_4 && (guess[3] - '0') == 9) guess[3] = '0';
       else if (PRESS_4) guess[3] = '0' + (guess[3] - '0')+1;
 
-      if (ROUND != 0) render_history(secret, history, ROUND);
+      if (ROUND != 0) render_history(secret, history, ROUND-1);
       else lcd_print("Generating ...", 0);
       //I am thinking a number:
       render_guess(guess);
@@ -172,22 +177,36 @@ void play_game(char* secret)
       } 
       
       int A = 0, B = 0;
-      if (PRESS_ENTER) get_score(secret, guess, &A, &B);
-
-      if (A == 4 && B == 0) {
-        WIN = true;
+      if (PRESS_ENTER) {
+        get_score(secret, guess, &A, &B);
+        if (A == 4 && B == 0) {
+          WIN = true;
+          break;
+        }
+        while (PRESS_ENTER) {
+          PRESS_ENTER = digitalRead(BTN_ENTER_PIN); 
+          delay(50);
+        }
         break;
       }
   
     }
+     
+  history[ROUND][0] = guess[0];
+  history[ROUND][1] = guess[1];
+  history[ROUND][2] = guess[2];
+  history[ROUND][3] = guess[3];
     
-    for (int i = 0; i < 4; ++i) history[ROUND][i] = guess[i];
-    for (int i = 0; i < 4; ++i) guess[i] = '0';
+  for (int i = 0; i < 4; ++i) guess[i] = '0';
     if (!WIN) {
       turn_off_leds();
     }
   
   }
+  Serial.println(history[0]);
+  Serial.println(history[1]);
+  Serial.println(history[2]);
+
 
   if (WIN) 
   {
@@ -200,24 +219,22 @@ void play_game(char* secret)
     delay(200);
     
     LCD_CLEAR();
-    render_history(secret, history, ROUND);
+    render_history(secret, history, ROUND-1);
     lcd_print("GG, you win!  xD", 1); 
-
-    clean_history(history);
     
-    delay(5000);
+    delay(10000);
     turn_off_leds(); 
      
   } else {
 
     /*
        TODO: fix lcd.init() - DONE
-       TODO: fix get_score() - 
+       TODO: fix get_score() - DONE
        TODO: new clean_history() - очистить историю хадов - DONE
     */
     
     LCD_CLEAR();
-    render_history(secret, history, ROUND);
+    render_history(secret, history, ROUND-1);
     // Looser! My secret combination was 9347.
     lcd_print("Looser! ham...", 1);
     delay(4000);
@@ -227,8 +244,6 @@ void play_game(char* secret)
     //for (int i = 4, j = 0; i < 8; ++i, ++j) str2[i] = secret[j];
     
     lcd_print("My secret code", 0);
-
-    clean_history(history);
 
     show_secret_code(secret, len);
 
@@ -240,6 +255,12 @@ void play_game(char* secret)
   
   delay(2000);
   turn_off_leds();
+
+  LCD_CLEAR();
+
+  history_menu(secret, history);
+  
+  clean_history(history);
 
   LCD_CLEAR();
   restart();
@@ -348,8 +369,8 @@ void render_history (char* secret, char** history, const int entry)
   if (history[ENTRY] == NULL || history == NULL) return;
 
   char str1[] = "00:             "; 
-  if (entry == 10) str1[0] = '1';
-  else str1[1] = '0' + entry;
+  if (entry == 9) str1[0] = '1';
+  else str1[1] = '0' + entry+1;
   
   for (int i = 4, j = 0; history[ENTRY][j] != '\0'; ++i, ++j)
   {
@@ -384,5 +405,81 @@ void clean_history(char** history)
     {
       history[i][j] = '0';
     }  
+  }
+}
+
+
+void history_menu (char* secret, char** history)
+{
+  lcd_print("1 - view history", 0); // history
+  lcd_print("ENTER to exit", 1);
+  //delay(2000);
+
+  pinMode(BTN_1_PIN, INPUT);
+  pinMode(BTN_2_PIN, INPUT);
+  pinMode(BTN_3_PIN, INPUT);
+  pinMode(BTN_ENTER_PIN, INPUT);
+
+  bool PRESS_ENTER = false, PRESS_1 = false, PRESS_2 = false, PRESS_3 = false;
+  //char str_ptr[] = "00:             ";
+  
+  while (!PRESS_1 && !PRESS_ENTER)
+  {
+    PRESS_ENTER = digitalRead(BTN_ENTER_PIN);
+    PRESS_1 = digitalRead(BTN_1_PIN);
+  }
+
+  if (PRESS_ENTER) return;
+
+  while (PRESS_1) {
+    PRESS_1 = digitalRead(BTN_1_PIN); 
+    delay(50);
+  }
+
+  LCD_CLEAR();
+  lcd_print("1 - exit        ", 0); 
+  lcd_print("2 - down, 3 - up", 1);
+
+  int ROUND = 0;
+
+  //Serial.begin(57600);
+
+  while (!PRESS_1)
+  {
+    PRESS_1 = digitalRead(BTN_1_PIN);
+    PRESS_2 = digitalRead(BTN_2_PIN);
+    PRESS_3 = digitalRead(BTN_3_PIN);
+
+    if (PRESS_1) break;
+    
+    if (PRESS_2) --ROUND;      
+    else if (PRESS_3) ++ROUND;
+
+    if (ROUND == 10) ROUND = 9;
+    else if (ROUND == -1) ROUND = 0;
+         
+    if (PRESS_2 || PRESS_3) {
+      turn_off_leds();
+
+      //LCD_CLEAR();
+
+      while (PRESS_2) {
+        PRESS_2 = digitalRead(BTN_2_PIN); 
+        delay(50);
+      }
+      while (PRESS_3) {
+        PRESS_3 = digitalRead(BTN_3_PIN); 
+        delay(50);
+      }
+      render_history(secret, history, ROUND);
+
+      //Serial.println(history[ROUND]);
+      //Serial.println(history[ROUND]);
+    }
+      
+    while (PRESS_1) {
+      PRESS_1 = digitalRead(BTN_1_PIN); 
+      delay(50);
+    }
   }
 }
