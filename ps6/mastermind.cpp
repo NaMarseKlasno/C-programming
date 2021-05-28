@@ -89,7 +89,7 @@ void play_game(char* secret)
 
   int len = 0;
   for (int i = 0; secret[i] != '\0'; ++i) ++len;
-  show_secret_code(secret, len);
+  //show_secret_code(secret, len);
   if (secret == NULL) return;
 
   //Show_Code_To_Guess(secret, len);
@@ -203,10 +203,6 @@ void play_game(char* secret)
     }
   
   }
-  Serial.println(history[0]);
-  Serial.println(history[1]);
-  Serial.println(history[2]);
-
 
   if (WIN) 
   {
@@ -217,9 +213,16 @@ void play_game(char* secret)
     delay(300);
     turn_off_leds();
     delay(200);
+    render_leds(4, 0);
+    delay(300);
+    turn_off_leds();
+    delay(200);
     
     LCD_CLEAR();
-    render_history(secret, history, ROUND-1);
+    //Serial.begin(57600);
+    //Serial.println(ROUND);
+    
+    render_history(secret, history, ROUND);
     lcd_print("GG, you win!  xD", 1); 
     
     delay(10000);
@@ -369,7 +372,7 @@ void render_history (char* secret, char** history, const int entry)
   if (history[ENTRY] == NULL || history == NULL) return;
 
   char str1[] = "00:             "; 
-  if (entry == 9) str1[0] = '1';
+  if (ENTRY == 9) str1[0] = '1';
   else str1[1] = '0' + entry+1;
   
   for (int i = 4, j = 0; history[ENTRY][j] != '\0'; ++i, ++j)
