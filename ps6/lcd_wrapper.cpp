@@ -2,6 +2,8 @@
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); 
 
+void show_splash_screen (void);
+
 
 void lcd_init (void) 
 {
@@ -15,6 +17,11 @@ void lcd_init (void)
 
 void show_splash_screen (void) 
 {
+  lcd.setCursor(3, 0); 
+  lcd.print("Welcome to"); 
+  lcd.setCursor(3, 1); 
+  lcd.print("MasterMind");
+  
   pinMode(LED_BLUE_1, OUTPUT);
   pinMode(LED_BLUE_2, OUTPUT);
   pinMode(LED_BLUE_3, OUTPUT);
@@ -72,11 +79,6 @@ void show_splash_screen (void)
   digitalWrite(LED_RED_3,  LOW);
   digitalWrite(LED_RED_4,  LOW);
 
-  lcd.setCursor(3, 0); 
-  lcd.print("Welcome to"); 
-  lcd.setCursor(3, 1); 
-  lcd.print("MasterMind");
-  delay(2000);
   lcd.clear();
   lcd.setCursor(0, 0); 
   lcd.print("Your goal is to"); 
@@ -89,7 +91,7 @@ void show_splash_screen (void)
 }
 
 
-void Show_Code_To_Guess (char* code, int length) 
+void show_secret_code (char* code, int length) 
 { 
   if (code == NULL) 
   {
@@ -143,7 +145,8 @@ void Show_Code_To_Guess (char* code, int length)
     lcd.print(str3[i]);
     if (str3[i] != ' ') delay(400);  
   }
-  
+
+  delay(4000);
 }
 
 
@@ -182,7 +185,7 @@ void restart()
 
   if (PRESS) 
   {
-    delay(1000);
+    //delay(1000);
     lcd.clear();
     lcd.setCursor(1,0);
  
@@ -201,18 +204,7 @@ void restart()
 }
 
 
-void render_game_rounds(int round_number) 
-{  
-  char str1[] = "00:";
-  if (round_number == 10) str1[0] = '1';
-  else str1[1] = '0' + round_number;
-  
-  lcd.setCursor(0, 0);     
-  lcd.print(str1);
-}
-
-
-void render_game_rounds_str2(char* guess) 
+void render_guess(char* guess) 
 {
   if (guess == NULL) return;
   

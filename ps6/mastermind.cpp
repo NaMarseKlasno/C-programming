@@ -1,5 +1,28 @@
 #include "mastermind.h" 
 
+void clean_history(char** history);
+
+boolean is_repeat (char string[], int length) 
+{
+  /**
+   * sourse of information:
+   * https://qna.habr.com/q/473022
+   */
+  
+  for (int i = 0; i < length; ++i) 
+  {
+    char * str_ptr1;
+    char * str_ptr2;
+  
+    str_ptr1 = strchr(string, string[i]);
+    str_ptr2 = strrchr(string, string[i]);
+
+    if (str_ptr2 != 0 && str_ptr2 != str_ptr1) return true;    
+  }
+
+  return false;
+}
+
 
 char* generate_code(bool repeat, int length)
 {
@@ -28,13 +51,28 @@ char* generate_code(bool repeat, int length)
  
   //if (RAND_NUM[0] == '0') RAND_NUM[0] = '0' + random(1, 10);
 
-  if (repeat) 
+  while (!repeat && is_repeat(RAND_NUM, length)) 
   {
     for (int i = 0; i < length; ++i) 
+    {
+      char * str_ptr1;
+      char * str_ptr2;
+  
+      str_ptr1 = strchr(RAND_NUM, RAND_NUM[i]);
+      str_ptr2 = strrchr(RAND_NUM, RAND_NUM[i]);
+
+      if (str_ptr2 != 0 && str_ptr2 != str_ptr1) { 
+        RAND_NUM[i] = '0' + random(10);
+      }
+    }
+
+    
+    /*
       for (int j = 0; j < length; ++j) 
         while (i != j && RAND_NUM[i] == RAND_NUM[j]) {
           RAND_NUM[i] = '0' + random(10);
         }
+    */
   }
 
   //Serial.begin(57600);
@@ -48,11 +86,13 @@ char* generate_code(bool repeat, int length)
 
 
 void play_game(char* secret) 
-{
+{  
   int len = 0;
-  if (secret != NULL) for (int i = 0; secret[i] != '\0'; ++i) ++len;
+  for (int i = 0; secret[i] != '\0'; ++i) ++len;
+  //show_secret_code(secret, len);
+  if (secret == NULL) return;
+
   //Show_Code_To_Guess(secret, len);
-  if (secret == NULL) delay(10000);
   //delay (2000);
   //LCD_CLEAR();
 
@@ -112,7 +152,7 @@ void play_game(char* secret)
       if (ROUND != 0) render_history(secret, history, ROUND);
       else lcd_print("Generating ...", 0);
       //I am thinking a number:
-      render_game_rounds_str2(guess);
+      render_guess(guess);
       
       while (PRESS_1) {
         PRESS_1 = digitalRead(BTN_1_PIN); 
@@ -142,8 +182,8 @@ void play_game(char* secret)
     }
     
     for (int i = 0; i < 4; ++i) history[ROUND][i] = guess[i];
+    for (int i = 0; i < 4; ++i) guess[i] = '0';
     if (!WIN) {
-      for (int i = 0; i < 4; ++i) guess[i] = '0';
       turn_off_leds();
     }
   
@@ -161,15 +201,20 @@ void play_game(char* secret)
     
     LCD_CLEAR();
     render_history(secret, history, ROUND);
+    lcd_print("GG, you win!  xD", 1); 
+
+    clean_history(history);
     
-    delay(10000);
+    delay(5000);
     turn_off_leds(); 
      
   } else {
 
-    // TODO: fix lcd.init()
-    // TODO: fix get_score()
-    // TODO: new clean_history() - очистить историю хадов
+    /*
+       TODO: fix lcd.init() - DONE
+       TODO: fix get_score() - 
+       TODO: new clean_history() - очистить историю хадов - DONE
+    */
     
     LCD_CLEAR();
     render_history(secret, history, ROUND);
@@ -182,10 +227,15 @@ void play_game(char* secret)
     //for (int i = 4, j = 0; i < 8; ++i, ++j) str2[i] = secret[j];
     
     lcd_print("My secret code", 0);
-    Show_Code_To_Guess(secret, len);
-    //lcd_print(str2, 1);
 
-    delay(8000);
+    clean_history(history);
+
+    show_secret_code(secret, len);
+
+    //Serial.begin(57600);
+    //Serial.println(guess);
+    //Serial.println(history[9]);
+    //lcd_print(str2, 1);
   }
   
   delay(2000);
@@ -215,9 +265,12 @@ void get_score(char* secret, char* guess, int* peg_a, int* peg_b)
       n = i;
     }
     
-    for (int j = 0; secret[j] != '\0'; ++j)
+    for (int j = 0; guess[j] != '\0'; ++j)
     {
-      if (i != j && secret[i] == guess[j] && i != n) ++PREG_B;
+      if (j != n && j != i && guess[j] == secret[i] && guess[j] != secret[j] && guess[i] != secret[i]) {
+        ++PREG_B;
+        break;
+      }
     }
     n = 99;
   }
@@ -320,4 +373,16 @@ void render_history (char* secret, char** history, const int entry)
   str1[n+4] = 'B';
   
   lcd_print(str1, 0);
+}
+
+
+void clean_history(char** history) 
+{
+  for (int i = 0; i < 10; ++i) 
+  {
+    for (int j = 0; history[i][j] != '\0'; ++j) 
+    {
+      history[i][j] = '0';
+    }  
+  }
 }

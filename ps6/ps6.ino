@@ -8,8 +8,10 @@ void setup()
 }
 
 void loop() 
-{
-  char* code = generate_code(false, 4);
+{ 
+
+  char* code = generate_code(true, 4);
+
   play_game(code);
   free(code);
 } 
