@@ -1,19 +1,18 @@
 CFLAGS= -std=c11 -Werror -Wall -Wconversion -lm
-OUTPUT = adventure
-BUILD_DIR := ./build
+OUTPUT = ps99
 
 all: $(OUTPUT)
 $(OUTPUT): main.c playlist.c playlist.h track.c track.h
-	$(CC) $(CFLAGS) main.c playlist.c track.c -o $(BUILD_DIR)/$(OUTPUT)
+	$(CC) $(CFLAGS) main.c playlist.c track.c -o $/$(OUTPUT)
 
 playlist.o: playlist.c playlist.h
-	gcc $(CFLAGS) -c playlist.c -o $(BUILD_DIR)/playlist.o
+	gcc $(CFLAGS) -c playlist.c -o $/playlist.o
 
 track.o: track.c track.h
-	gcc $(CFLAGS) -c track.c -o $(BUILD_DIR)/track.o
+	gcc $(CFLAGS) -c track.c -o $/track.o
 
 main.o: main.c
-	gcc $(CFLAGS) -c main.c -o $(BUILD_DIR)/main.o
+	gcc $(CFLAGS) -c main.c -o $/main.o
 
 clean:
-	rm -rf $(BUILD_DIR)/$(OUTPUT) *.0
+	rm -rf /$(OUTPUT) *.0

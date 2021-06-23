@@ -35,8 +35,9 @@ void append_track_to_playlist (struct playlist *playlist, struct track *track)
 {
     if (!playlist || !track) return;
 
-    struct entry* entry = NULL;
-    entry = calloc(1, sizeof(struct entry));
+    struct entry* entry = calloc(1, sizeof(struct entry));
+    if (entry == NULL) return;
+
     entry->track = track;
 
     if (playlist->first == NULL)
@@ -46,9 +47,9 @@ void append_track_to_playlist (struct playlist *playlist, struct track *track)
         entry->prev = NULL;
     } else {
         struct entry* last_entry = playlist->first;
-        while(last_entry->next != NULL) {
-            last_entry = last_entry->next;
-        }
+
+        while (last_entry->next != NULL) last_entry = last_entry->next;
+
         last_entry->next = entry;
         entry->prev = last_entry;
     }
@@ -62,18 +63,8 @@ struct track* play (struct playlist* playlist)
     if (!playlist) return NULL;
 
     struct entry* cur_tr = playlist->current;
-    switch (playlist->mode)
-    {
-        case ONE_SONG:
-            cur_tr->track = cur_tr->track;
-            break;
-        case REPEAT:
-            next(playlist);
-            break;
-        case DONT_REPEAT:
-            next(playlist);
-            break;
-    }
+
+    if (playlist->mode == DONT_REPEAT || playlist->mode == REPEAT) next(playlist);
 
     return cur_tr->track;
 }

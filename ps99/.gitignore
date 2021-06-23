@@ -1,0 +1,5 @@
+*ps99
+*ps99.dSYM/
+*.out
+*a.out
+./.DS_Store

@@ -10,10 +10,13 @@
 
 struct track* create_track (const char* title, int duration)
 {
-    if(!title || duration <= 0 || strlen(title) > 100) return NULL;
+    if (!title || duration <= 0 || strlen(title) > 100) return NULL;
     struct track* track = calloc(1, sizeof(struct track));
 
-    track->title = title;
+    track->title = calloc(strlen(title)+1, sizeof(char));
+    for (int i = 0; i < strlen(title); ++i) track->title[i] = title[i];
+    track->title[strlen(title)] = '\0';
+
     track->duration = duration;
 
     return track;
