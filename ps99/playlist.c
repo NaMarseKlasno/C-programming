@@ -1,8 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "playlist.h"
 
+
+
+struct playlist* create_playlist (char* name)
+{
+    if (name == NULL || strlen(name) > 100 || strlen(name) <= 0) return NULL;
+
+    struct playlist* playlist = calloc(1, sizeof(struct playlist));
+    if (playlist == NULL) return NULL;
+
+    playlist->name = calloc(strlen(name)+1, sizeof(char));
+    for (int i = 0; i < strlen(name); ++i) playlist->name[i] = name[i];
+    playlist->name[strlen(name)] = '\0';
+
+    playlist->duration = 0;
+    playlist->size = 0;
+    playlist->mode = REPEAT;
+    playlist->current = NULL;
+    playlist->first = NULL;
+
+    return playlist;
+}
 
 struct entry* find_last (struct playlist *playlist)
 {
@@ -13,22 +35,6 @@ struct entry* find_last (struct playlist *playlist)
     return last_entry;
 }
 
-
-struct playlist* create_playlist (char* name)
-{
-    if (!name) return NULL;
-
-    struct playlist* playlist = calloc(1, sizeof(struct playlist));
-
-    playlist->name = name;
-    playlist->duration = 0;
-    playlist->size = 0;
-    playlist->mode = REPEAT;
-    playlist->current = NULL;
-    playlist->first = NULL;
-
-    return playlist;
-}
 
 
 void append_track_to_playlist (struct playlist *playlist, struct track *track)
@@ -107,8 +113,26 @@ void change_mode (struct playlist* playlist, enum play_mode mode)
     playlist->mode = mode;
 }
 
+
 void free_playlist (struct playlist* playlist)
 {
-    if (!playlist) return;
+    if (playlist == NULL) return;
+
+    free(playlist->name);
+
+    struct entry* FIRST = playlist->first;
+
+    for (;FIRST != NULL;)
+    {
+        free_track(FIRST->track);
+
+        FIRST = FIRST->next;
+        free(FIRST->prev);
+        FIRST->prev = NULL;
+    }
+
+    free_track(playlist->current->track);
+    playlist->current->track = NULL;
+
     free(playlist);
 }
