@@ -1,216 +1,133 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#define M_PI 3.141592653
-#include <stdbool.h>
 
-double cheese (void);
-void WashCheese (int M, double ** Cheese);
-double VolumeHole (int R);
-double AlmostSphere (int R, int h);
-void VolumePiece (double VolumeHoleArr[], double **HoleinCheese, int M, int S, double outArr[]);
-double sum_volume (double arr[], int n);
+#define PI 3.14159265358979323846
+
+struct data{
+    double z, r;
+};
+
+void mzero(int s);
+void pol_dil(struct data mas[], double volume_cut, int num, int cut);
+double f(struct data mas[], int len, double min, double max);
+double calculate_buble(double r);
+double calculate_buble_sector(double r, double h);
+double search_buble(struct data buble, double min, double max);
 
 
-int main(int argc, const char * argv[])
-{
-    cheese();
-    //double v1 = VolumeHole(10);
-    //double v2 = VolumeHole(10);
-    //double v3 = VolumeHole(20);
-    //double vo = (100 * 100 * 100) - (v1 + v2 + v3); // общ. обьем без дырок
 
-    //printf("(%f) (%f) (%f)\n", v1, v2, v3);
-    //printf("общ. обьем без дырок: [%f], с дырками: 1 000 000\n", vo);
-    
-    //double vPise = vo/4.0;
-    //printf("обьем одной части 1/4: [%f], с дырками: 250 000\n", vPise);
+int main(){
+    int m, s;
+    scanf("%d %d", &m, &s);
+    struct data mas[m+1];
 
+    double bufx, bufy;
+    for(int i=0; i < m; i++){
+        scanf("%lf %lf %lf %lf", &(mas[i].r), &bufx, &bufy, &(mas[i].z));
+        mas[i].r /= 1000;
+        mas[i].z /= 1000;
+    }
+    if(m == 0){
+        mzero(s);
+        return 0;
+    }
+    else if(s == 1){
+        printf("100\n");
+        return 0;
+    }
+
+    double bubles_v = 0;
+    for(int i = 0; i < m; i++){
+        bubles_v += calculate_buble(mas[i].r);
+    }
+    double correct_v = (1000000 - bubles_v)/s;
+    pol_dil(mas, correct_v, m, s);
 
 
     return 0;
 }
 
-double cheese (void) {
-    int M = 0, S = 0;
-    scanf("%d %d",&M, &S);
-    if((M < 0) || (S < 0) ||(M > 10000) || (S > 100)) return 0;
-    
-//  ===============================================================================
-//               ЗАПОЛНЯЕМ 2. МАССИВ РАДИУСОМ И КООРДИНАТАМИ ДЫРОК В СЫРЕ
-//  ===============================================================================
+void pol_dil(struct data mas[], double volume_cut, int m, int s){
+    double min = 0, max = 100, centr = min, c_min = 0, f_min, f_centr, f_max,  last = 100, buf;
 
-    double **HoleinCheese = malloc( sizeof(double*)*M);
-    for (int i = 0; i < M; i++)
-    {
-        HoleinCheese[i] = malloc( sizeof(double)*4);
-        for (int j = 0; j < 4; j++)
-        {
-            int variable = 0;
-            scanf("%d",&variable);
-            if ((variable > 100000) || (variable < 0))
-            {
-                WashCheese(M, HoleinCheese);
-                return 0;
-            } HoleinCheese[i][j] = variable / 1000.0f;
-        }
-    }
-    bool a1 = false;
-    bool a2 = false;
-    bool a3 = false;
-    if (M == 3 && S == 4) {
-        if (HoleinCheese[0][0] == 10.0f && HoleinCheese[0][1] == 20.0f && HoleinCheese[0][2] == 20.0f && HoleinCheese[0][3] == 20.0f) a1 = true;
-        if (a1 == true && HoleinCheese[1][0] == 10.0f && HoleinCheese[1][1] == 40.0f && HoleinCheese[1][2] == 50.0f && HoleinCheese[1][3] == 45.0f) a2 = true;
-        if (a2 == true && HoleinCheese[2][0] == 20.0f && HoleinCheese[2][1] == 40.0f && HoleinCheese[2][2] == 50.0f && HoleinCheese[2][3] == 76.0f) a3 = true;
-        if (a3 == true){
-            double aa1 = 24.288715350f;
-            double aa2 = 24.354601965f;
-            double aa3 = 25.495107257f;
-            double aa4 = 25.861575428f;
-            printf("%f\n", aa1);
-            printf("%f\n", aa2);
-            printf("%f\n", aa3);
-            printf("%f\n", aa4);
+    for(int i = 0; i < s-1; i++){
+        do{
+            buf = centr;
+            centr = (min + max)/2;
 
-            for (int i = 0; i < M; ++i) {
-                free(HoleinCheese[i]);
-            } free(HoleinCheese);
+            // printf("min: %lf\ncentr: %lf\nmax: %lf\n", min, centr, max);
+            // printf("_min: %lf\n_centr: %lf\n_max: %lf\n\n", f_min, f_centr, f_max);
 
-            return 0.0;
-        }
-            
-    }
-    
-    for (int i = 0; i < M; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            printf("%f ", HoleinCheese[i][j]);
-        } printf("\n");
-    }
-    
-//  ===============================================================================
-//                  СЧИТАЕМ ОБЪЕМ КАЖДОЙ ДЫРКИ С ПОМОЩЬЮ ИНТЕГРАЛА
-//  ===============================================================================
-    
-    double VolumeHoleArr[M];
-    for (int i = 0; i < M; ++i) {
-        VolumeHoleArr[i] = VolumeHole(HoleinCheese[i][0]);
-    }
-    
-//  ===============================================================================
-//                        СЧИТАЕМ ОБЪЕМ КАЖДОЙ ЧАСТИ СЫРА
-//  ===============================================================================
-    
-    double volume_pieces[S];
-    VolumePiece(VolumeHoleArr, HoleinCheese, M, S, volume_pieces);
-    
-    //for (int i = 0; i < S; ++i) {
-    //    printf("%f ", volume_pieces[i]);
-    //} printf("\n");
-    
-//  ===============================================================================
-//                                      КОНЕЦ
-//  ===============================================================================
-    
-    if (M == 0) for (int i = 0; i < S; ++i) printf("%f\n", volume_pieces[i] / 10000);
-    if (M == 0) {
-        for (int i = 0; i < M; ++i) {
-            free(HoleinCheese[i]);
-            } free(HoleinCheese);
-        return 0.0;
-    }
-    double middle = sum_volume(volume_pieces, S);
-    middle /= (double)S;
-   
-    
-    
-    for (int i = 0; i < S; ++i) {
-        printf("%f\n", volume_pieces[i]);
+            f_min = f(mas, m, c_min, min);
+            f_centr = f(mas, m, c_min, centr);
+            f_max = f(mas, m, c_min, max);
+
+
+            if(f_min == f_centr || f_max == f_centr || f_centr == 0 ||buf == centr) {
+                break;
+            }
+            else if((f_min-volume_cut) * (f_centr-volume_cut) < 0){
+                max = centr;
+            }
+            else if((f_max-volume_cut) * (f_centr-volume_cut) < 0){
+                min = centr;
+            }
+        }while(fabs(f_centr-volume_cut) > 0.00000001);
+
+        printf("%.9lf\n", centr - c_min);
+
+        last -= centr - c_min;
+        c_min = centr;
+        buf = c_min;
+        max = 100;
+        min = c_min + 0.0000000001;
     }
 
-    for (int i = 0; i < M; ++i) {
-        free(HoleinCheese[i]);
-    } free(HoleinCheese);
-
-    return 0.0;
+    printf("%.9lf\n", last);
 }
 
-
-void WashCheese (int M, double ** Cheese) {
-    for (int i = 0; i < M; i++) free(Cheese[i]);
-    free(Cheese);
-}
-
-
-double VolumeHole (int R) {
-    double sphere =  (4/3.0f) * (M_PI *pow(R, 3)); //  СЧИТАЕМ ОБЪЕМ ДЫРКИ С РАДИУСОМ R
-    return sphere;
-} double AlmostSphere (int R, int h) {
-    double volume = M_PI * ( pow(h, 2) / 3) * (3 * R - h);
-    return volume;
-}
-
-
-void VolumePiece (double VolumeHoleArr[], double **HoleinCheese, int M, int S, double outArr[])
-{
-    double start = 0.0f;
-    double end = 100.0f / (double)S;
-    double res_volume = 0;
-
-    
-    for (int P = 0; P < S; ++P)
-    {
-        res_volume = 100.0f * 100.0f * (100.0f / (double)S);
-        
-        for (int i = 0; i < M; ++i) {
-            double center = HoleinCheese[i][3];
-            double radius = HoleinCheese[i][0];
-            
-            if ( (center - radius) > start && (center + radius) < end ) {
-                res_volume -= VolumeHoleArr[M];
-            }
-            if ( ((center - radius) < start) && ((center + radius) > end) ) {
-                double h1 = radius - (end - center);
-                double h2 = radius - (center - start);
-                
-                double v1 = AlmostSphere(radius, h1);
-                double v2 = AlmostSphere(radius, h2);
-
-                res_volume -= VolumeHoleArr[M] - (v1 + v2);
-            }
-            if ( ((center - radius) < start) && ((center + radius) > start) ) {
-                if(start < center){
-                    double h = start - (center - radius);
-                    double v = AlmostSphere(radius, h);
-                    res_volume -= VolumeHoleArr[M] - v;
-                }
-                else{
-                    double h = (center + radius) - start;
-                    double v = AlmostSphere(radius, h);
-                    res_volume -= v;
-                }
-            }
-            if ( ((center - radius) < end) && ((center + radius) > end) ) {
-                if(end < center){
-                    double h = end - (center - radius);
-                    double v = AlmostSphere(radius, h);
-                    res_volume -= v;
-                }
-                else{
-                    double h = (center + radius) - end;
-                    double v = AlmostSphere(radius, h);
-                    res_volume -= VolumeHoleArr[M] - v;
-                }
-            }
-        }
-        outArr[P] = res_volume;
-        
+double f(struct data mas[], int len, double min, double max){
+    double bubles_v = 0;
+    for(int i=0; i < len; i++){
+        bubles_v += search_buble(mas[i], min, max);
     }
-    
+    double cheese_v = 100 * 100 * (max-min);
+
+    return cheese_v - bubles_v;
 }
 
-double sum_volume (double arr[], int n)
-{
-    double res = 0;
-    for (int i = 0; i < n; ++i) res += arr[i];
-    return res;
+double search_buble(struct data buble, double min, double max){
+    if(buble.z - buble.r < min && max < buble.z + buble.r){
+        double buf = calculate_buble(buble.r);
+        buf -= calculate_buble_sector(buble.r, fabs(min - buble.z + buble.r));
+        buf -= calculate_buble_sector(buble.r, fabs(max - buble.z - buble.r));
+        return buf;
+    }
+    else if(buble.z - buble.r < max && max < buble.z + buble.r){
+        return calculate_buble_sector(buble.r, fabs(max - buble.z + buble.r));
+    }
+    else if(buble.z - buble.r < min && min < buble.z + buble.r){
+        return calculate_buble_sector(buble.r, fabs(min - buble.z - buble.r));
+    }
+    else if(min <= buble.z - buble.r && buble.z + buble.r <= max){
+        return calculate_buble(buble.r);
+    }
+    return 0;
+}
+
+void mzero(int s){
+    for(int i = 0; i < s; i++){
+        printf("%.9lf\n", (double)100/s);
+    }
+}
+
+double calculate_buble(double r){
+    double result = (double)(4 * r*r*r * PI) / 3;
+    return result;
+}
+
+double calculate_buble_sector(double r, double h){
+    double result = (double)(PI * h*h) * (r - (h/3));
+    return result;
 }
