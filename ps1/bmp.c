@@ -1,689 +1,367 @@
-//
-//  bmp.c
-//  TopSelect
-//
-//  Created by Macbook Pro on 26.02.2021.
-//
+#include "bmp.h"
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
-#include "playfair.h"
-#include <stdbool.h>
-#include <math.h>
 
-#define ALPHAB "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-void encode_char(const char character, bool bits[8]);
-char decode_byte(const bool bits[8]);
-void encode_char2(const int character, bool bits[8]);
+#define ALPHA "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
-void* checkNull(void* p){
-    if (p == 0) exit(37);
-    return p;
-}
+int findLetter(int ch);
 
 
-char* reverse(const char* text){
+char* reverse(const char* text)
+{
+    // ***** check NULL
     if (text == NULL) return NULL;
-    if (strcmp("", text) == 0) return NULL;
-    
-    char* reverseText = (char*)calloc(10*strlen(text)+1, sizeof(char));
-    if (reverseText == NULL) {
-        free(reverseText);
-        reverseText = NULL;
-        exit(1);
-    } reverseText[strlen(text)] = '\0';
 
-    
-    
-
-    for (int i = 0; text[i] != '\0'; i++) reverseText[i] = toupper(text[i]);
-    //reverseText[strlen(text)] = '\0';
-    
-    unsigned long j = strlen(text)-1;
-    char c;
- 
-    for (unsigned long  i = 0; i < j; ++i, --j) {
-        c = toupper(text[i]);
-        reverseText[i] = reverseText[j];
-        reverseText[j] = c;
-    }
-    reverseText[strlen(text)] = '\0';
-
-    return reverseText;
+    char* res = (char *)calloc(strlen(text)+1, sizeof(char));
+    for (int i = strlen(text)-1, j = 0; i >= -1; (i==-1) ? (res[strlen(text)] = '\0') : (res[j] = toupper(text[i])), --i, ++j);
+    return res;
 }
 
 
-char* vigenere_encrypt(const char* key, const char* text){
+char* vigenere_encrypt(const char* key, const char* text)
+{
+    // ***** check NULL
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
-    for(int t = 0 ; t < strlen(key) ; t++)
-        if(!isalpha(key[t]))
-            return NULL;
-    int countAlpha = 0;
-    for (int i = 0; i < strlen(text); ++i) if (isalpha(text[i])) countAlpha++;
-    if (countAlpha == 0) return NULL;
-    
-    char mainKey[strlen(text)+1];
-    for (int i = 0; i < strlen(text); ++i) mainKey[i] = 0;
-    mainKey[strlen(text)] = '\0';
-    
-    for (int i = 0, j = 0, c = 0; c < strlen(text); ++i) {
-        if (isalpha(text[i])){
-            mainKey[c] = key[j];
-            ++j;
-            //printf("%c\n", mainKey[c]);
-            if (j == strlen(key)) j = 0;
-            ++c;
-        }else {
-            mainKey[c] = ' ';
-            c++;
-        }
-    } mainKey[strlen(text)] = '\0';
-    //printf("%s\n", mainKey);
-    //printf("%s\n", text);
+    for (int i = 0; i < strlen(key) ; i++) if (!isalpha(key[i])) return NULL;
 
 
-    int numKey[strlen(mainKey)+1];
-    numKey[strlen(mainKey)] = '\0';
-    for (int i = 0; i < strlen(mainKey); ++i) numKey[i] = 0;
-    numKey[strlen(mainKey)] = '\0';
-    
-    for (int i = 0; i < strlen(mainKey); ++i){
-        for (int j = 0; j < 26; ++j) {
-            if (ALPHAB[j] == toupper(mainKey[i])) {
-                numKey[i] = j;
-            }
-            else if (!isalpha(mainKey[i])){
-                numKey[i] = -1;
-                //printf("[%d] ", numKey[i]);
-            }
-        }
-    } numKey[strlen(mainKey)] = '\0';
-    //printf("\n");
-    //for (int i = 0; i < strlen(text); ++i) printf("%i ", numKey[i]);
-    
-    //printf("\n");
-   
-    int numText[strlen(text) + 1];
-    numText[strlen(text)] = '\0';
-    for (int i = 0; i < strlen(text); ++i){
-        for (int j = 0; j < 26; ++j) {
-            if (ALPHAB[j] == toupper(text[i])) {
-                numText[i] = j;
-            }
-            else if (!isalpha(text[i]))
-                numText[i] = -1;
-        }
-    } numText[strlen(text)] = '\0';
-    //for (int i = 0; i < strlen(text); ++i) printf("%i ", numText[i]);
-    
-    //printf("\n");
+    // ***** init class
+    struct BMP {
+        int text_len;
 
-    int resInt[strlen(text)+1];
-    resInt[strlen(text)] = '\0';
-    for (int i = 0; i < strlen(text); ++i) resInt[i] = 0;
-    resInt[strlen(text)] = '\0';
+        char *encryptedText;
+        char *decryptedText;
 
-    for (int i = 0; i < strlen(text); ++i) {
-        resInt[i] = numText[i] + numKey[i];
-        if (resInt[i] >= 26) resInt[i] -= 26;
-        if (numText[i] == -1) resInt[i] = -1;
-        if (numKey[i] == -1) resInt[i] = -1;
-    } resInt[strlen(text)] = '\0';
-    numText[strlen(text)] = '\0';
-    //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
-    //printf("\n");
-    
-    char* resSting = checkNull( (char*)calloc(2*strlen(text)+1, sizeof(char)) );
-    if (resSting == NULL) {
-        free(resSting);
+        char *key;
+    };
+
+    struct BMP vigenere;
+
+    vigenere.text_len = strlen(text);
+
+    vigenere.key = (char *)calloc(vigenere.text_len+1, sizeof(char));
+    if (vigenere.key == NULL) return NULL;
+
+    vigenere.encryptedText = (char *)calloc(vigenere.text_len+1, sizeof(char));
+    if (vigenere.encryptedText == NULL) {
+        free(vigenere.key);
         return NULL;
     }
-    resSting[strlen(text)] = '\0';
-    
-    for (int i = 0; i < strlen(text); ++i) {
-        for (int j = 0; j < 26; ++j) {
-            if ( j == resInt[i] ) resSting[i] = ALPHAB[j];
-            if (resInt[i] == -1) resSting[i] = text[i];
-        }
+
+
+    for (int i = 0, j = 0; i < vigenere.text_len; ++i, ++j) {
+        if (j==strlen(key)) j=0;
+
+        if (text[i] == ' ') {
+            vigenere.key[i] = ' ';
+            --j;
+        } else vigenere.key[i] = toupper(key[j]);
     }
-    resSting[strlen(text)] = '\0';
-    //printf("%s - resString\n", resSting);
-    
-    return resSting;
+
+//    for (int i = 0; i < vigenere.text_len; ++i) {
+//        printf("%c", vigenere.key[i]);
+//    } printf("\n");
+
+    for (int i = 0; i < vigenere.text_len; ++i) {
+        int x1 = findLetter(text[i]), x2 = findLetter(vigenere.key[i]);
+        int res = x1+x2;
+
+        while (res >= 26) res -= 26;
+
+        if (isalpha(text[i])) vigenere.encryptedText[i] = ALPHA[res];
+        else vigenere.encryptedText[i] = text[i];
+    }
+
+    // ***** free memory
+    free(vigenere.key);
+
+    return vigenere.encryptedText;
 }
 
-
-char* vigenere_decrypt(const char* key, const char* text){
+char* vigenere_decrypt(const char* key, const char* text)
+{
+    // ***** check NULL
     if (key == NULL || text == NULL) return NULL;
     if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
-    for(int t = 0 ; t < strlen(key) ; t++)
-        if(!isalpha(key[t]))
-            return NULL;
-    int countAlpha = 0;
-    for (int i = 0; i < strlen(text); ++i) if (isalpha(text[i])) countAlpha++;
-    if (countAlpha == 0) return NULL;
-    
-    
-    char mainKey[strlen(text)+1];
-    for (int i = 0, j = 0, c = 0; c < strlen(text); ++i) {
-        if (isalpha(text[i])){
-            mainKey[c] = key[j];
-            ++j;
-            //printf("%c\n", mainKey[c]);
-            if (j == strlen(key)) j = 0;
-            ++c;
-        }else {
-            mainKey[c] = ' ';
-            c++;
-        }
-    } mainKey[strlen(text)] = '\0';
-    
-    int numKey[strlen(mainKey)+1];
-    for (int i = 0; i < strlen(mainKey); ++i) numKey[i] = 0;
-    
-    for (int i = 0; i < strlen(mainKey); ++i){
-        for (int j = 0; j < 26; ++j) {
-            if (ALPHAB[j] == toupper(mainKey[i])) {
-                numKey[i] = j;
-            }
-            else if (!isalpha(mainKey[i])){
-                numKey[i] = -1;
-                //printf("[%d] ", numKey[i]);
-            }
-        }
-    } numKey[strlen(mainKey)] = '\0';
-    //printf("=============\n");
-    //for (int i = 0; i < strlen(text); ++i) printf("%i ", numKey[i]);
-    
-    //printf("\n");
-   
-    int numText[strlen(text) + 1];
-    for (int i = 0; i < strlen(text); ++i){
-        for (int j = 0; j < 26; ++j) {
-            if (ALPHAB[j] == toupper(text[i])) {
-                numText[i] = j;
-            }
-            else if (!isalpha(text[i]))
-                numText[i] = -1;
-        }
-    } numText[strlen(text)] = '\0';
-    //for (int i = 0; i < strlen(text); ++i) printf("%i ", numText[i]);
-    
-    //printf("\n");
-    
-    
-    
-    int resInt[strlen(text)+1];
-    for (int i = 0; i < strlen(text); ++i) resInt[i] = 0;
-    
-    for (int i = 0; i < strlen(text); ++i) {
-        resInt[i] = numText[i] - numKey[i];
-        if (resInt[i] < 0) resInt[i] += 26;
-        if (numText[i] == -1) resInt[i] = -1;
-        if (numKey[i] == -1) resInt[i] = -1;
-    } resInt[strlen(text)] = '\0';
+    for (int i = 0; i < strlen(key) ; i++) if (!isalpha(key[i])) return NULL;
 
-    //for (int i = 0; i < strlen(text); ++i) printf("%i ", resInt[i]);
-    //printf("\n");
+    // ***** init class
+    struct BMP {
+        int text_len;
 
-    char* resSting = (char*)calloc(2*strlen(text)+1, sizeof(char));
-    if (resSting == 0) {
-        free(resSting);
+        char *encryptedText;
+        char *decryptedText;
+
+        char *key;
+    };
+
+    struct BMP vigenere;
+
+    vigenere.text_len = strlen(text);
+
+    vigenere.key = (char *)calloc(vigenere.text_len+1, sizeof(char));
+    if (vigenere.key == NULL) return NULL;
+
+    vigenere.decryptedText = (char *)calloc(vigenere.text_len+1, sizeof(char));
+    if (vigenere.decryptedText == NULL){
+        free(vigenere.key);
         return NULL;
     }
-    resSting[strlen(text)] = '\0';
 
-    for (int i = 0; i < strlen(text); ++i) {
-        for (int j = 0; j < 26; ++j) {
-            if ( j == resInt[i]) resSting[i] = ALPHAB[j];
-            if (resInt[i] == -1) resSting[i] = text[i];
-        } // Uz z dom na dom podavali mestania svoje dievcata a teraz je rad na kralovej dcere
+
+    for (int i = 0, j = 0; i < vigenere.text_len; ++i, ++j) {
+        if (j==strlen(key)) j=0;
+
+        if (text[i] == ' ') {
+            vigenere.key[i] = ' ';
+            --j;
+        } else vigenere.key[i] = toupper(key[j]);
     }
-    //printf("%s - resString\n", resSting);
 
-    resSting[strlen(text)] = '\0';
-    //printf("%s - resString\n", resSting);
-    
-    return resSting;
+    for (int i = 0; i < vigenere.text_len; ++i) {
+        int x1 = findLetter(text[i]), x2 = findLetter(vigenere.key[i]);
+        int res = x1-x2;
+
+        while (res < 0) res += 26;
+
+        if (isalpha(text[i])) vigenere.decryptedText[i] = ALPHA[res];
+        else vigenere.decryptedText[i] = text[i];
+    }
+
+    // ***** free memory
+    free(vigenere.key);
+
+    return vigenere.decryptedText;
 }
 
 
-unsigned char* bit_encrypt(const char* text){
-    if (text == NULL) return NULL;
-    if (strcmp("", text) == 0) return NULL;
-   
-    
-    // 10 to 2
-    bool str[8];
-    bool binArr[(strlen(text) * 8)+1];
-    binArr[strlen(text) * 8] = '\0';
-    int num = 0;
-    //printf("start\n");
-    for (int i = 0; i < strlen(text); ++i) {
-        encode_char(text[i], str);
-        for (int i = 0; i < 8; ++i) {
-            binArr[num] = str[i];
-            //printf("%d", str[i]);
-            ++num;
-        } //printf("\n");
-        for (int i = 0; i < 8; i++) str[i] = 0;
-    }//printf("boy next dor\n");
-    //for (int i = 0; i < (strlen(text) * 8); ++i) printf("%d", binArr[i]);
-    //printf("\n");
-    
-    // шифруем binArr
-    bool enbinArr[(strlen(text) * 8)+1];
-    enbinArr[strlen(text) * 8] = '\0';
+unsigned char* bit_encrypt(const char* text)
+{
+    // ***** check NULL
+    if ((text == NULL) || (strcmp("", text) == 0)) return NULL;
 
-    
-    bool fbin[4+1];
-    fbin[4] = '\0';
-    for (int i = 0; i < strlen(text) * 8; i+=8) {
-        fbin[0] = binArr[i+1];
-        fbin[1] = binArr[i+0];
-        fbin[2] = binArr[i+3];
-        fbin[3] = binArr[i+2];
-        enbinArr[i+0] = fbin[0];
-        enbinArr[i+1] = fbin[1];
-        enbinArr[i+2] = fbin[2];
-        enbinArr[i+3] = fbin[3];
-        
-        if (fbin[0] == binArr[i+4]) enbinArr[i+4] = 0;
-        else enbinArr[i+4] = 1;
-        if (fbin[1] == binArr[i+5]) enbinArr[i+5] = 0;
-        else enbinArr[i+5] = 1;
-        if (fbin[2] == binArr[i+6]) enbinArr[i+6] = 0;
-        else enbinArr[i+6] = 1;
-        if (fbin[3] == binArr[i+7]) enbinArr[i+7] = 0;
-        else enbinArr[i+7] = 1;
+    // ***** init class
+    struct BMP {
+        int textLen;
+        unsigned char* text;
+
+        char bitsWord[9];
+        char firstPair[5];
+        char secondPair[5];
+    };
+
+    struct BMP bit;
+
+    // ***** set len
+    bit.textLen = 0;
+    while (text[bit.textLen] != '\0') ++bit.textLen;
+
+
+    bit.text = (unsigned char *)calloc(bit.textLen+1, sizeof(char));
+    memcpy(bit.text, (unsigned char*)text, bit.textLen+1);
+
+    bit.bitsWord[8] = '\0';
+    struct BNP {
+        int text_len;
+
+        char *encryptedText;
+        char *decryptedText;
+
+        char *key;
+    };
+
+    for (int i=0; i<bit.textLen; (bit.text[i] = strtoul(bit.bitsWord,'\0',2)), ++i)
+    {
+        unsigned char ch = bit.text[i];
+
+        for (int j=0; j<8; (bit.bitsWord[7-j] = (ch%2)+'0'), ch/=2, ++j);
+        for (int j=4; j<8; (bit.secondPair[j-4] = bit.bitsWord[j]), ++j);
+
+        for (int j=0; j<4; j+=2) {
+            bit.firstPair[j] = bit.bitsWord[j+1];
+            bit.firstPair[j+1] = bit.bitsWord[j];
+        }
+
+        for (int j=0; j<4; ++j)
+        {
+            if      (bit.firstPair[j] == bit.secondPair[j] && bit.firstPair[j] == '1')  bit.secondPair[j] = '0';
+            else if (bit.firstPair[j] == bit.secondPair[j] && bit.firstPair[j] == '0')  bit.secondPair[j] = '0';
+            else if (bit.firstPair[j] != bit.secondPair[j] && bit.firstPair[j] == '1')  bit.secondPair[j] = '1';
+            else if (bit.firstPair[j] != bit.secondPair[j] && bit.firstPair[j] == '0')  bit.secondPair[j] = '1';
+        }
+
+        for (int j=0; j<8; ++j)
+        {
+            if ((j <= 3) && (bit.bitsWord[j] != -1))bit.bitsWord[j] = bit.firstPair[j];
+            else if (j > 3) {
+                if (bit.bitsWord[j] != 2) bit.bitsWord[j] = bit.secondPair[j-4];
+                else bit.bitsWord[j] = bit.firstPair[j];
+            }
+        }
     }
-    
-    //printf("boy next dor\n");
-    //for (int i = 0; i < (strlen(text) * 8); ++i) printf("%d", enbinArr[i]);
-    //printf("\n");
-    //printf("boy next dor\n");
 
-    unsigned char* result = (unsigned char*)calloc(strlen(text) + 1, sizeof(char));
-    if (result == 0) exit(1);
-
-    bool tochar[9];
-    tochar[8] = '\0';
-    num = 0;
-    for (int i = 0; i < strlen(text) * 8; i+=8){
-        tochar[0] = enbinArr[i+0];
-        tochar[1] = enbinArr[i+1];
-        tochar[2] = enbinArr[i+2];
-        tochar[3] = enbinArr[i+3];
-        tochar[4] = enbinArr[i+4];
-        tochar[5] = enbinArr[i+5];
-        tochar[6] = enbinArr[i+6];
-        tochar[7] = enbinArr[i+7];
-        
-        result[num] = decode_byte(tochar);
-        ++num;
-    }
-    result[strlen(text)] = '\0';
-    return result;
+    return bit.text;
 }
 
 
-char* bit_decrypt(const unsigned char* text){
-    if (text == NULL) return NULL;
-    if (strcmp("", (char*)text) == 0) return NULL;
+char* bit_decrypt(const unsigned char* text)
+{
+    // ***** check NULL
+    if ((text == NULL) || (strcmp("", (char *)text) == 0)) return NULL;
 
-    //for (int i = 0; i < strlen((char*)text); ++i) {
-    //    printf("%d ", text[i]);
-    //} printf("\n");
+    // ***** init class
+    struct BMP {
+        int textLen;
+        char* text;
 
-    
-    // 10 to 2
-    bool str[8] = {};
-    bool binArr[(strlen((char*)text) * 8)+1];
-    binArr[strlen((char*)text) * 8] = '\0';
-    int num = 0;
-    //printf("start\n");
-    for (int i = 0; i < strlen((char*)text); ++i) {
-        //printf("[%d]\n", text[i]);
-        encode_char2(text[i], str);
-        for (int i = 0; i < 8; ++i) {
-            binArr[num] = str[i];
-            //printf("%d", str[i]);
-            ++num;
-        } //printf("\n");
-        for (int i = 0; i < 8; i++) str[i] = 0;
-    }//printf("boy next dor\n");
-    //for (int i = 0; i < (strlen((char*)text) * 8); ++i) printf("%d", binArr[i]);
-    //printf("\n");
-    
-    // разшифровываем
-    bool debinArr[(strlen((char*)text) * 8)+1];
-    debinArr[strlen((char*)text) * 8] = '\0';
-    
-    
-    bool fbin[4+1];
-    fbin[4] = '\0';
-    for (int i = 0; i < strlen((char*)text) * 8; i+=8) {
-        fbin[0] = binArr[i+1];
-        fbin[1] = binArr[i+0];
-        fbin[2] = binArr[i+3];
-        fbin[3] = binArr[i+2];
-        debinArr[i+0] = fbin[0];
-        debinArr[i+1] = fbin[1];
-        debinArr[i+2] = fbin[2];
-        debinArr[i+3] = fbin[3];
-        
-        if (binArr[i+0] == binArr[i+4]) debinArr[i+4] = 0;
-        else debinArr[i+4] = 1;
-        if (binArr[i+1] == binArr[i+5]) debinArr[i+5] = 0;
-        else debinArr[i+5] = 1;
-        if (binArr[i+2] == binArr[i+6]) debinArr[i+6] = 0;
-        else debinArr[i+6] = 1;
-        if (binArr[i+3] == binArr[i+7]) debinArr[i+7] = 0;
-        else debinArr[i+7] = 1;
-       
-    }
-    
-    //printf("boy next dor\n");
-    //for (int i = 0; i < (strlen((char*)text) * 8); ++i) printf("%d", debinArr[i]);
-    //printf("\n");
-    //printf("boy next dor\n");
-    unsigned long len = strlen((char*)text);
-    char* result = (char*)calloc( (2*len) + 1, sizeof(char));
-    if (result == NULL) {
-        free(result);
-        result = NULL;
-        exit(1);
-    }
+        char bitsWord[9];
+        char firstPair[5];
+        char secondPair[5];
+    };
 
-    bool tochar[9] = {};
-    tochar[8] = '\0';
-    int dd = 0;
-    for (int i = 0; i < len * 8; i += 8){
-        tochar[0] = debinArr[i+0];
-        tochar[1] = debinArr[i+1];
-        tochar[2] = debinArr[i+2];
-        tochar[3] = debinArr[i+3];
-        tochar[4] = debinArr[i+4];
-        tochar[5] = debinArr[i+5];
-        tochar[6] = debinArr[i+6];
-        tochar[7] = debinArr[i+7];
-        
-        result[dd] = decode_byte(tochar);
-        ++dd;
-    }
-    result[len] = '\0';
-    
-    return result;
-}
+    struct BMP bit;
+
+    // ***** set len
+    bit.textLen = 0;
+    while (text[bit.textLen] != '\0') ++bit.textLen;
+
+    bit.text = (char *)calloc(bit.textLen+1, sizeof(char));
+    memcpy(bit.text, text, bit.textLen+1);
+
+    struct BNP {
+        int text_len;
+
+        char *encryptedText;
+        char *decryptedText;
+
+        char *key;
+    };
+
+    bit.bitsWord[8] = '\0';
+    for (int i = 0; i < bit.textLen; (bit.text[i] = strtoul(bit.bitsWord,'\0',2)), ++i)
+    {
+        unsigned char ch = bit.text[i];
+
+        for (int j=0; j<8; (bit.bitsWord[7-j] = (ch % 2) + '0'), ch/=2, ++j);
+        for (int j=4; j<8; (bit.secondPair[j-4] = bit.bitsWord[j]), ++j);
+        for (int j=0; j<4; ++j) bit.firstPair[j] = bit.bitsWord[j];
 
 
-void encode_char2(const int character, bool bits[8]) {
-    for (int q = 0; q < 8; q++) {
-        bits[q] = 0;
-    }
-    // 10 to 2
-    int num = character;
-    //printf("[%c] = %d\n", character, character);
-    int n = 0, k = 0, ii, len = 0;
-    for (ii = 0; n <= num; ii++) {
-        n = pow(2, ii);
-        if (n <= num) {
-            k = n;
-            len = ii;
-            //printf("k: %d\n", k);
+        for (int j=0; j<4; ++j)
+        {
+            if      (bit.firstPair[j] == '0' && bit.firstPair[j] == bit.secondPair[j]) bit.secondPair[j] = '0';
+            else if (bit.firstPair[j] == '0' && bit.firstPair[j] != bit.secondPair[j]) bit.secondPair[j] = '1';
+            else if (bit.firstPair[j] == '1' && bit.firstPair[j] == bit.secondPair[j]) bit.secondPair[j] = '0';
+            else if (bit.firstPair[j] == '1' && bit.firstPair[j] != bit.secondPair[j]) bit.secondPair[j] = '1';
+
+        } for (int j=0; j<4; (bit.firstPair[j] = bit.bitsWord[j+1]), (bit.firstPair[j+1] = bit.bitsWord[j]), j+=2);
+
+        for (int j=0; j<8; ++j)
+        {
+            if ((j <= 3) && (bit.bitsWord[j] != -1))
+                bit.bitsWord[j] = bit.firstPair[j];
+            else if (j > 3) {
+                if (bit.bitsWord[j] != 2) bit.bitsWord[j] = bit.secondPair[j-4];
+                else bit.bitsWord[j] = bit.firstPair[j];
+            }
         }
     }
-    
-    len++;
-    //printf("len: %d\n", len);
-    int j = 0;
-    if (len == 7) {
-        j = 1;
-        len++;
-        bits[0] = 0;
-    }
-    else if (len == 6){
-        j = 2;
-        len += 2;
-        bits[0] = 0;
-        bits[1] = 0;
-    }
-    else if (len == 5){
-        j = 3;
-        len += 3;
-        bits[0] = 0;
-        bits[1] = 0;
-        bits[2] = 0;
-    }
-    else if (len == 4){
-        j = 4;
-        len += 4;
-        bits[0] = 0;
-        bits[1] = 0;
-        bits[2] = 0;
-        bits[3] = 0;
-    }
-    else if (len == 3){
-        j = 5;
-        len += 5;
-        bits[0] = 0;
-        bits[1] = 0;
-        bits[2] = 0;
-        bits[3] = 0;
-        bits[4] = 0;
-    }
-    else if (len == 2){
-        j = 6;
-        len += 6;
-        bits[0] = 0;
-        bits[1] = 0;
-        bits[2] = 0;
-        bits[3] = 0;
-        bits[4] = 0;
-        bits[5] = 0;
-    }
-    else if (len == 1){
-        j = 8;
-        len += 7;
-        bits[0] = 0;
-        bits[1] = 0;
-        bits[2] = 0;
-        bits[3] = 0;
-        bits[4] = 0;
-        bits[5] = 0;
-        bits[7] = 0;
-    }
-    //printf("len: %d\n", len);
-    for (int i = j; i < len; i++) {
-        if (k <= num) {
-            //printf("k: %d {num: %d}\n", k, num);
-            bits[i] = 1;
-            //printf("i = %d\n", i);
-            num = num - k;
-            k /= 2;
-            //printf("k: %d {num: %d}\n", k, num);
-            //printf("...........\n");
-        }
-        else{
-            bits[i] = 0;
-            k /= 2;
-        }
-    }
-    
-    //printf("n: %d {len: %d}\n", k, len);
-    return;
-}
 
-
-void encode_char(const char character, bool bits[8]) {
-    for (int q = 0; q < 8; q++) {
-        bits[q] = 0;
-    }
-    // 10 to 2
-    int num = character;
-    //printf("[%c] = %d\n", character, character);
-    int n = 0, k = 0, ii, len = 0;
-    for (ii = 0; n <= num; ii++) {
-        n = pow(2, ii);
-        if (n <= num) {
-            k = n;
-            len = ii;
-            //printf("k: %d\n", k);
-        }
-    }
-    
-    len++;
-    //printf("len: %d\n", len);
-    int j = 0;
-    if (len == 7) {
-        j = 1;
-        len++;
-        bits[0] = 0;
-    }
-    else if (len == 6){
-        j = 2;
-        len += 2;
-        bits[0] = 0;
-        bits[1] = 0;
-    }
-    else if (len == 5){
-        j = 3;
-        len += 3;
-        bits[0] = 0;
-        bits[1] = 0;
-        bits[2] = 0;
-    }
-    else if (len == 4){
-        j = 4;
-        len += 4;
-        bits[0] = 0;
-        bits[1] = 0;
-        bits[2] = 0;
-        bits[3] = 0;
-    }
-    else if (len == 3){
-        j = 5;
-        len += 5;
-        bits[0] = 0;
-        bits[1] = 0;
-        bits[2] = 0;
-        bits[3] = 0;
-        bits[4] = 0;
-    }
-    else if (len == 2){
-        j = 6;
-        len += 6;
-        bits[0] = 0;
-        bits[1] = 0;
-        bits[2] = 0;
-        bits[3] = 0;
-        bits[4] = 0;
-        bits[5] = 0;
-    }
-    else if (len == 1){
-        j = 8;
-        len += 7;
-        bits[0] = 0;
-        bits[1] = 0;
-        bits[2] = 0;
-        bits[3] = 0;
-        bits[4] = 0;
-        bits[5] = 0;
-        bits[7] = 0;
-    }
-    //printf("len: %d\n", len);
-    for (int i = j; i < len; i++) {
-        if (k <= num) {
-            //printf("k: %d {num: %d}\n", k, num);
-            bits[i] = 1;
-            //printf("i = %d\n", i);
-            num = num - k;
-            k /= 2;
-            //printf("k: %d {num: %d}\n", k, num);
-            //printf("...........\n");
-        }
-        else{
-            bits[i] = 0;
-            k /= 2;
-        }
-    }
-    
-    //printf("n: %d {len: %d}\n", k, len);
-    return;
-}
-
-char decode_byte(const bool bits[8]){
-    // 2 to 10
-    short num = 0, st = 0, i = 7;
-    
-    while (i >= 0) {
-        if (bits[i] == 1) {
-            num += pow(2, st);
-            //printf("%d\n", num);
-        }
-        i--;
-        st++;
-    }
-    return num;
+    return bit.text;
 }
 
 
 unsigned char* bmp_encrypt(const char* key, const char* text)
 {
+    // ***** check NULL
     if (key == NULL || text == NULL) return NULL;
-    if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
-    for (int i = 0; key[i] != '\0'; ++i)
-        if (!(isalpha(key[i])))
-            return NULL;
-    char * arr1;
-    char * arr2;
-    unsigned char * result;
-    arr1 = reverse(text);
-    arr2 = vigenere_encrypt(key, arr1);
-    result = bit_encrypt(arr2);
-    free(arr1);
-    free(arr2);
-    return result;
+    for (int i = 0; key[i] != '\0'; ++i) if (!isalpha(key[i])) return NULL;
+
+
+    // ***** init class
+    struct BMP {
+        int lenText;
+
+        char* reverse;
+        char* vigenereEncrypt;
+        unsigned char* bitEncrypt;
+
+        unsigned char* res;
+    };
+
+    struct BMP bmp;
+
+
+    // ***** set len
+    bmp.lenText = strlen((char *)text);
+
+
+    // BMP cipher
+    bmp.reverse = reverse(text);
+    bmp.vigenereEncrypt = vigenere_encrypt(key, bmp.reverse);
+    bmp.bitEncrypt = bit_encrypt(bmp.vigenereEncrypt);
+
+    bmp.res = (unsigned char *)calloc(bmp.lenText+1, sizeof(char));
+    memcpy(bmp.res, bmp.bitEncrypt, strlen((char*)text));
+
+
+    // ***** free memory
+    free(bmp.bitEncrypt);
+    free(bmp.reverse);
+    free(bmp.vigenereEncrypt);
+
+    return bmp.res;
 }
-
-
 
 char* bmp_decrypt(const char* key, const unsigned char* text)
 {
+    // ***** check NULL
     if (key == NULL || text == NULL) return NULL;
-    if (strcmp("", key) == 0 || strcmp("", (char*)text) == 0) return NULL;
-    for (int i = 0; key[i] != '\0'; ++i)
-        if (!(isalpha(key[i])))
-            return NULL;
-    
-    char * res;
-    char * reText;
-    char * boy;
+    for (int i = 0; key[i] != '\0'; ++i) if (!isalpha(key[i])) return NULL;
 
-    
-    reText = bit_decrypt(text);
-    res = vigenere_decrypt(key, reText);
-    if (res == NULL) {
-        free(res);
-        return NULL;
-    } res[strlen((char*)text)] = '\0';
 
-    boy = reverse(res);
-    if (boy == NULL) {
-        free(res);
-        free(reText);
-        free(boy);
-        return NULL;
-    }
-    
-    free(res);
-    free(reText);
-    return boy;
+    // ***** init class
+    struct BMP {
+        int lenText;
+
+        char* reverse;
+        char* vigenereDecrypt;
+        char* bitDecrypt;
+
+        char* res;
+    };
+
+    struct BMP bmp;
+
+
+    // ***** set len
+    bmp.lenText = strlen((char *)text);
+
+
+    // BMP cipher
+    bmp.bitDecrypt = bit_decrypt(text);
+    bmp.vigenereDecrypt = vigenere_decrypt(key, bmp.bitDecrypt);
+    bmp.reverse = reverse(bmp.vigenereDecrypt);
+
+    bmp.res = (char *)calloc(bmp.lenText+1, sizeof(char));
+    strcpy(bmp.res, bmp.reverse);
+
+
+    // ***** free memory
+    free(bmp.bitDecrypt);
+    free(bmp.reverse);
+    free(bmp.vigenereDecrypt);
+
+    return bmp.res;
 }
 
 
-
+int findLetter(int ch) {
+    for (int i = 0; i < 26; ++i) if (ALPHA[i] == toupper(ch)) return i;
+    return -1;
+}

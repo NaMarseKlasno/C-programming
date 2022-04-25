@@ -1,612 +1,353 @@
-/**
- * PlayFair first task
- * Programovanie 2021, FEI TUKE
- * Lad coder: Stanislav Voloshyn
- * Telegram: @pchoul
- * GitHub: NaMarseKlasno
- * nickname: DONH
- */
-
-
 #include "playfair.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
+
 #include <stdlib.h>
-#define ALPHA "ABCDEFGHIJKLMNOPQRSTUVXYZ"
-
-#define SIZE 5
-/**
- *   ABCDE
- *   FGHIJ
- *   KLMNO
- *   PQRST
- *   UVXYZ
- */
+#include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdbool.h>
 
 
-
-void removeSpaces(char *string) {
-    if (string == NULL ) exit(1);
-    
-    int n = 0;
-    unsigned long len = strlen(string);
-
-    char arr[len];
-    for (int i = 0; i < len; ++i) arr[i] = 0;
-    arr[len] = '\0';
-    
-    for (int i = 0; i < len; ++i) arr[i] = 0;
-    
-    for (int i = 0; i < len; ++i) {
-        if (!isspace(string[i])) {
-            arr[n] = string[i];
-            ++n;
-        }
-    }
-    for (int i = 0; i < len; ++i) string[i] = 0;
-
-    for (int i = 0; i < len; ++i) {
-        if (arr[i] != 0)
-            string[i] = arr[i];
-        else string[i] = '\0';
-    }
-    //printf("string: %s\n", string);
+int countSymbols (const char *string, char Sym) {
+    int res = 0;
+    for (int i = 0; string[i] != '\0'; ++i) if (toupper(string[i]) == toupper(Sym)) ++res;
+    return res;
 }
 
 
 char* playfair_encrypt(const char* key, const char* text)
 {
-    if (key == NULL || text == NULL) return NULL;
-    if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
-    
-    for (int i = 0; i < strlen(key); ++i) {
-        if ((isalpha(key[i]) == 0) && (key[i] != ' ')) {
-            return NULL;
-        }
-    }
-    for (int i = 0; i < strlen(text); ++i) {
-        if ((isalpha(text[i]) == 0) && (text[i] != ' ')) {
-            return NULL;
-        }
-    }
-    
-    
-    int countAlpha = 0;
-    for (int i = 0; i < strlen(key); ++i) if (isalpha(key[i])) countAlpha++;
-    if (countAlpha == 0) return NULL;
-    
-    short n = 0;
-    
-    char helpArr[5][5] = {};
-    
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++){
-            helpArr[i][j] = ALPHA[n];
-            n++;
-        }
-    }
+    // ***** check NULL
+    if (text == NULL || key == NULL) return NULL;
+    if (strcmp("", text) == 0 || strcmp("", key) == 0) return NULL;
+    for (int i = 0; i < 2; ++i) if (key[i] == ' ' && key[++i] == '\0') return NULL;
+    for (int i = 0; key[i] != '\0'; ++i) if (key[i] != ' ' && !isalpha(key[i])) return NULL;
 
-    // Check the key for duplicate letters
-    //char reKey[strlen(key)];
-    char* reKey = (char*)calloc(2*strlen(key)+1, sizeof(char));
-    if (reKey == NULL) {
-        free(reKey);
-        reKey = NULL;
-        return NULL;
-    }
-    reKey[strlen(key)] = '\0';
-    
-    for (int i = 0; i < strlen(key); i++)
-        reKey[i] = key[i];
-    
-    unsigned long len = strlen(reKey);
 
-    if (reKey != 0){
-        int lett = 1;
-        for (int i = 1; i < len; ++i){
-            int j = 0;
-            for (j = 0; j < lett; ++j)
-                if (reKey[i] == reKey[j]){
-                    reKey[i] = 0;
-                    break;
-                }
-            if (j == lett) {
-                reKey[lett] = reKey[i];
-                ++lett;
-            }
-        }
-        reKey[lett] = 0;
-    }
-    
-    // Вывод в терминал
-    
-    //printf("[%s]", reKey);
-    //printf(" - %s\n", key);
-    //printf("---------\n");
-    
+    struct Position {
+        int x1, y1;
+        int x2, y2;
+    } position;
 
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            for (int c = 0; c < strlen(reKey); c++) {
-                if(helpArr[i][j] == toupper(reKey[c]) ) helpArr[i][j] = '-';
-            }
-            //printf("%c", helpArr[i][j]);
-        }
-        //printf("\n");
-    }
-    
-    //printf("---------\n");
+    struct Playfair {
+        int key_len;
+        int text_len;
 
-    n = 0;
-    bool cont = true;
+        struct Position res;
+        char *encryptedText;
+        char *decryptedText;
 
-    char bgArr[5][5] = {};
-    
-    short x = 0;
-    short y = 0;
-    bool checkW = false;
-    
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            if(cont){
-                bgArr[i][j] = toupper(reKey[n]);
-                if(bgArr[i][j] == 'W' ) {
-                    bgArr[i][j] = 'V';
-                    checkW = true;
-                }
-                n++;
-            }
-            if(!cont){
-                if (helpArr[y][x] == 'V' && checkW == true){
-                    ++x;
-                    if(x == 5){
-                        x = 0;
-                        ++y;
-                    }
-                }
-                while(helpArr[y][x] == '-'){
-                    x++;
-                    if(x == 5){
-                        x = 0;
-                        y++;
-                    }
-                }
-                if(helpArr[y][x] != '-')
-                    bgArr[i][j] = helpArr[y][x];
-                x++;
-                if(x == 5){
-                    x = 0;
-                    y++;
+        char *text;
+        char *key;
+        char table[5][5];
+
+    };
+
+
+    int isDuplicate(char ch, int index1, int index2, struct Playfair *playfair ) {
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                if (playfair->table[i][j] == toupper(ch) && i<=index1) {
+                    if ((j<index2) || (j >= index2 && i < index1)) return 1;
                 }
             }
-            if (n == strlen(reKey)) cont = false;
-            //printf("%c", bgArr[i][j]);
+        } return 0;
+    }
+
+    struct Playfair playfair;
+
+
+    // ***** set len
+    playfair.key_len = strlen(key) - countSymbols(key,' ');
+    playfair.text_len = strlen(text);
+
+    playfair.key = (char *)calloc(playfair.key_len+1, sizeof(char));
+    if (playfair.key == NULL) {
+        perror("memory failed");
+        exit(1);
+    }
+
+    for (int i=0, j=0; i < strlen(key); ++i) {
+        if (key[i] != ' ') {
+            toupper(key[i]) == 'W' ? (playfair.key[j] = 'V') : (playfair.key[j] = toupper(key[i]));
+            ++j;
         }
-        //printf("\n");
-    } //printf("------.----\n");
-    
-    free(reKey);
-    reKey = NULL;
-    /**
-     *  Кодируем *char taxt с помощю созданого ключа *char bgArr
-     */
-    
-    char* reText = (char*)calloc(2*strlen(text)+1, sizeof(char));
-    if (reText == NULL) {
-        free(reText);
-        reText = NULL;
-        return NULL;
-    }
-    reText[strlen(text)] = '\0';
-        
-    for (int i = 0; i < strlen(text); i++){
-        reText[i] = toupper(text[i]);
-        if (toupper(text[i]) == 'W') reText[i] = 'V';
-    }
-    
-    //printf(".........1\n");
-    removeSpaces(reText);
-    //printf("%s\n", reText);
-    //printf(".........1\n");
+    } playfair.key[playfair.key_len] = '\0';
 
 
-    unsigned long h = 0;
-    for (int i = 0; i < strlen(reText); ++i) if (reText[i] == '.') h++;
-    h = strlen(reText) - h;
-    
-    char* reText2 = (char*)calloc(2*h+1, sizeof(char));
-    if (reText2 == NULL) {
-        free(reText2);
-        reText2 = NULL;
-        return NULL;
-    }
+    // ***** init table
+    for (int i = 0; i < 5; ++i) for (int j = 0; j < 5; (playfair.table[i][j] = '0'), ++j); //playfair.TABLE[i][j] = ALPHA[k];
 
-    for (int i = 0; i < strlen(text); i++) reText2[i] = reText[i];
-    reText2[h] = '\0';
-    free(reText);
-    
-    if (reText2 == 0) return NULL;
-    
-    
-    int a = 0;
-    unsigned long numIcv = 0;
-    for (int i = 0; i < strlen(text); i++){
-        if (a == 1 && reText2[i] == reText2[i-1] && reText2[i] != 'X' && reText2[i-2] != 'X'){
-            reText2[i-1] = '.';
-            ++numIcv;
-        }
-        a = 1;
-    }
-    char* reText3 = (char*)calloc(2*strlen(text)+numIcv+1, sizeof(char));
-    if (reText3 == NULL) {
-        free(reText3);
-        reText3 = NULL;
-        return NULL;
-    }
-    for (int i = 0; i < strlen(text); i++) reText3[i] = reText2[i];
-    reText3[strlen(text)+numIcv] = '\0';
-    free(reText2);
-    
-    
-
-    //char helpText[strlen(text)+numIcv];
-    char* helpText = (char*)calloc(2*strlen(text)+numIcv+1, sizeof(char));
-    if (helpText == NULL) {
-        free(helpText);
-        helpText = NULL;
-        return NULL;
-    }
-    helpText[strlen(text)+numIcv] = '\0';
-    
-    for (int i = 0; i < strlen(text)+numIcv; ++i) {
-        if (reText3[i] == '.'){
-            ++i;
-            helpText[i] = 'X';
-        }
-    }
-
-    unsigned long c = 0;
-    for (int i = 0; i < strlen(text)+numIcv; ++i) {
-        if (reText3[c] == '.') {
-            helpText[i] = reText3[c+1];
-            ++i;
-        }
-        helpText[i] = reText3[c];
-        // длинна ртекст - с не будет больше длинны хелп текст - и
-        ++c;
-    }
-    helpText[strlen(text)+numIcv] = '\0';
-    
-    for (int i = 0; i < strlen(text)+numIcv; ++i) if (helpText[i] == '.') helpText[i] = 'X';
-
-    
-    //printf("[%s] %lu\n", reText, numIcv);
-    //printf("{%s}\n", helpText);
-
-    numIcv = strlen(text) - numIcv;
-    
-    free(reText3);
-    reText3 = NULL;
-
-    char* eText = (char*)calloc(10*strlen(text)+numIcv+1, sizeof(char));
-    if (eText == NULL) {
-        free(eText);
-        eText = NULL;
-        return NULL;
-    }
-    eText[strlen(text)+numIcv] = '\0';
-
-    for (int i = 0; i < strlen(text)+numIcv; i++) eText[i] = helpText[i];
-    numIcv = strlen(eText);
-    if (numIcv % 2 != 0) {
-        eText = (char*)realloc(eText, numIcv+1);
-        if (eText == NULL){
-            free(eText);
-            free(helpText);
-            return NULL;
-        }
-        eText[numIcv] = '\0';
-        
-        for (int i = 0; i < numIcv; i++)
-            eText[i] = eText[i];
-        eText[numIcv] = 'X';
-        ++numIcv;
-        //printf("[%s] %lu\n", eText, numIcv);
-    } //printf("----------\n");
-    
-    char* reFair = (char*)calloc(2*numIcv+1, sizeof(char));
-    if (reFair == NULL) {
-        free(reFair);
-        free(eText);
-        free(helpText);
-        return NULL;
-    }
-    reFair[numIcv] = '\0';
-    
-    free(helpText);
-    helpText = NULL;
-    
-    for (int i = 0; i < numIcv; i += 2)
+    for (int i = 0, k = 0, m = 0; i < 5; ++i)
     {
-        for (int x = 0; x < SIZE; ++x) {
-            for (int y = 0; y < SIZE; ++y) {
-                if (bgArr[x][y] == eText[i]) {
-                    
-                    // Проверяем второе значение
-                    for (int x1 = 0; x1 < SIZE; ++x1) {
-                        for (int y1 = 0; y1 < SIZE; ++y1)
-                        {
-                            if (bgArr[x1][y1] == eText[i+1]) {
-                                if (x != x1 && y != y1) {
-                                    reFair[i] = bgArr[x][y1];
-                                    reFair[i+1] = bgArr[x1][y];
-                                }
-                                else if (y == y1) {
-                                    short q = x+1, w = x1+1;
-                                    if(x == 4) q = 0;
-                                    if(x1 == 4) w = 0;
-                                    reFair[i] = bgArr[q][y];
-                                    reFair[i+1] = bgArr[w][y1];
-                                }
-                                else if (x == x1) {
-                                    short s = y+1, d = y1+1;
-                                    if(y == 4) s = 0;
-                                    if(y1 == 4) d = 0;
-                                    reFair[i] = bgArr[x][s];
-                                    reFair[i+1] = bgArr[x1][d];
-                                }
-                            }
-                        }
-                    }
-                }
+        for (int j = 0; j < 5; ++j, ++k)
+        {
+            if (k < playfair.key_len) {
+                while (isDuplicate(playfair.key[k], i, j, &playfair)) ++k;
+
+                if (k >= playfair.key_len) {
+                    if (j==0) {--i; j=4;}
+                    else --j;
+                    continue;
+                } playfair.table[i][j] = playfair.key[k];
+            } else {
+                while (isDuplicate(ALPHA[m], i, j, &playfair)) ++m;
+                playfair.table[i][j] = ALPHA[m];
+                ++m;
             }
         }
     }
-    free(eText);
-    eText = NULL;
-    int value = 0;
-    for (int i = 0; i < strlen(reFair); i += 2) {
-        //printf("%c%c ", reFair[i], reFair[i+1]);
-        value++;
-    }
-    //printf("\n");
-    
-    char* result = (char*)calloc(10*strlen(reFair) + value+1, sizeof(char));
-    if (result == NULL) {
-        free(result);
-        result = NULL;
-        return NULL;
-    }
-    result[strlen(reFair) + value] = '\0';
-    
-    int ee = 0;
-    for (int i = 0; i < strlen(reFair); i += 2) {
-        result[ee] = reFair[i];
-        result[ee+1] = reFair[i+1];
-        if (ee+2 != strlen(reFair) + value-1) {
-            result[ee+2] = ' ';
-            ee++;
-        }
-        ee+=2;
-    }
-    result[strlen(reFair) + value-1] = '\0';
-    
 
-    
-    // Освобождаем ненужную память
-    //char res[strlen(reFair)];
-    //strcpy(res, reFair);
-    free(reFair);
-    reFair = NULL;
-    return result;
+
+    // ***** подготовка текста к шифровке
+    for (int i = 0; i < strlen(text); ++i) if (text[i] == ' ') -- playfair.text_len;
+    char *textTest = (char *) calloc(playfair.text_len+1, sizeof(char));
+    int textTest_len = 0;
+    for (int i = 0; i < strlen(text); ++i) {
+        if (text[i] != ' ') {
+            textTest[textTest_len] = text[i];
+            ++textTest_len;
+        }
+    } textTest[textTest_len] = '\0';
+
+    char *alterText = (char *)calloc(playfair.text_len*3, sizeof(char));
+    if (alterText == NULL) return NULL;
+
+    int last_j = 0, status = 0;
+
+    for (int i = 0; textTest[i] != '\0'; ++i, ++last_j)
+    {
+        alterText[last_j] = ((toupper(textTest[i]) == 'W') ? ('V') : (toupper(textTest[i])));
+        if (textTest[i+1] != '\0') {
+            if (status == 0 && textTest[i] == textTest[i+1] && i%2==0 && toupper(textTest[i]) != 'X' && toupper(textTest[i+1]) != 'X') {
+//                printf("---------  %c %c\n", textTest[i],textTest[i+1]);
+                alterText[++last_j] = 'X';
+                status = 1;
+            }
+            if (status == 1 && textTest[i] == textTest[i+1] && i%2!=0 && toupper(textTest[i]) != 'X' && toupper(textTest[i+1]) != 'X') {
+//                printf("---------  %c %c\n", textTest[i],textTest[i+1]);
+                alterText[++last_j] = 'X';
+                status = 0;
+            }
+        }
+    } if (last_j%2!=0) alterText[last_j++] = 'X';
+
+    playfair.text = (char *)calloc(last_j+1, sizeof(char));
+    for (int i = 0; i < last_j; playfair.text[i] = alterText[i], ++i);
+    playfair.text[last_j] = '\0';
+    playfair.text_len = last_j;
+
+    printf("len:%d-------------\n", playfair.text_len);
+
+
+    // ***** шифровка
+    playfair.encryptedText = (char *)calloc((playfair.text_len+((playfair.text_len/2)-1)+1), sizeof(char));
+
+    for (int len = 0, ix = 0; len < playfair.text_len; len+=2, ix+=3)
+    {
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                if (playfair.table[i][j] == playfair.text[len]) {
+                    position.x1 = i;
+                    position.y1 = j;
+                } if (playfair.table[i][j] == playfair.text[len+1]) {
+                    position.x2 = i;
+                    position.y2 = j;
+                }
+            }
+        }
+
+
+        if ((position.y1 < position.y2 && position.x1!=position.x2) || (position.y1 > position.y2 && position.x1!=position.x2)) {
+            playfair.res.y1 = position.y2;
+            playfair.res.x1 = position.x1;
+
+            playfair.res.y2 = position.y1;
+            playfair.res.x2 = position.x2;
+        }
+        else if (position.y1 == position.y2) {
+            if (position.x1+1<=4) playfair.res.x1 = position.x1+1;
+            else playfair.res.x1 = 0;
+            if (position.x2+1<=4) playfair.res.x2 = position.x2+1;
+            else playfair.res.x2 = 0;
+
+            playfair.res.y1 = position.y1;
+            playfair.res.y2 = position.y2;
+        }
+        else if (position.x1 == position.x2) {
+            if (position.y1+1<=4) playfair.res.y1 = position.y1+1;
+            else playfair.res.y1 = 0;
+            if (position.y2+1<=4) playfair.res.y2 = position.y2+1;
+            else playfair.res.y2 = 0;
+            playfair.res.x1 = position.x1;
+            playfair.res.x2 = position.x2;
+        }
+
+
+        playfair.encryptedText[ix] = playfair.table[playfair.res.x1][playfair.res.y1];
+        playfair.encryptedText[ix+1] = playfair.table[playfair.res.x2][playfair.res.y2];
+
+        if (ix+2 == (playfair.text_len+((playfair.text_len/2)-1))) playfair.encryptedText[ix+2] = '\0';
+        else playfair.encryptedText[ix+2] = ' ';
+    }
+
+
+    // ***** free memory
+    free(playfair.text);
+    playfair.text = NULL;
+    free(alterText);
+    alterText = NULL;
+
+    free(textTest);
+    textTest = NULL;
+    free(playfair.key);
+    playfair.key = NULL;
+
+
+    return playfair.encryptedText;
 }
-/**
- *   ABCDE
- *   FGHIJ
- *   KLMNO
- *   PQRST
- *   UVXYZ
- */
+
 
 char* playfair_decrypt(const char* key, const char* text)
 {
-    if (key == NULL || text == NULL) return NULL;
-    if (strcmp("", key) == 0 || strcmp("", text) == 0) return NULL;
-    
-    for(int t = 0 ; key[t] != '\0'; t++){
-        if( (key[t] != ' ') && (isalpha(key[t] == 0)) ){
-            return NULL;
-        }
-    }
-  
-    for (int i = 0; i < strlen(text); ++i) {
-        if (toupper(text[i]) == 'W') return NULL;
-    }
-    
-    
-    int countAlpha = 0;
-    for (int i = 0; i < strlen(key); ++i) if (isalpha(key[i])) countAlpha++;
-    if (countAlpha == 0) return NULL;
-    
-    short n = 0;
-    
-    char helpArr[5][5] = {};
-    
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++){
-            helpArr[i][j] = ALPHA[n];
-            n++;
-        }
-    }
+    // ***** check NULL
+    if (text == NULL || key == NULL) return NULL;
+    if (strcmp("", text) == 0 || strcmp("", key) == 0 || countSymbols(text,'W')>=1) return NULL;
+    for (int i = 0; i < 2; ++i) if (key[i] == ' ' && key[++i] == '\0') return NULL;
+    for (int i = 0; key[i] != '\0'; ++i) if (key[i] != ' ' && !isalpha(key[i])) return NULL;
+    int cA=0, cS=0;
+    for (int i = 0; text[i] != '\0'; ++i) {
+        if (isalpha(text[i])) ++cA;
+        if (text[i] == ' ') ++cS;
+    } if ((cA % 2 != 0) || (strlen(text) != cA+cS)) return NULL;
 
-    // Check the key for duplicate letters
-    //char reKey[strlen(key)];
-    char* reKey = (char*)calloc(2*strlen(key)+1, sizeof(char));
-    if (reKey == NULL) {
-        free(reKey);
-        reKey = NULL;
-        return NULL;
-    }
-    reKey[strlen(key)] = '\0';
-    for (int i = 0; i < strlen(key); i++)
-        reKey[i] = key[i];
-    
-    unsigned long len = strlen(reKey);
+    struct Position {
+        int x1, y1;
+        int x2, y2;
+    } position;
 
-    if (reKey != 0){
-        int lett = 1;
-        for (int i = 1; i < len; ++i){
-            int j = 0;
-            for (j = 0; j < lett; ++j)
-                if (reKey[i] == reKey[j]){
-                    reKey[i] = 0;
-                    break;
-                }
-            if (j == lett) {
-                reKey[lett] = reKey[i];
-                ++lett;
-            }
-        }
-        reKey[lett] = 0;
-    }
-    
-    // Вывод в терминал
-    
-    //printf("[%s]", reKey);
-    //printf(" - %s\n", key);
-    //printf("---------\n");
-    
+    struct Playfair {
+        int key_len;
+        int text_len;
 
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            for (int c = 0; c < strlen(reKey); c++) {
-                if(helpArr[i][j] == toupper(reKey[c]) ) helpArr[i][j] = '-';
-            }
-            //printf("%c", helpArr[i][j]);
-        }
-        //printf("\n");
-    }
-    
-    //printf("---------\n");
+        struct Position res;
+        char *encryptedText;
+        char *decryptedText;
 
-    n = 0;
-    bool cont = true;
+        char *text;
+        char *key;
+        char table[5][5];
 
-    char bgArr[5][5] = {};
-    
-    short x = 0;
-    short y = 0;
-    bool checkW = false;
-    
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            if(cont){
-                bgArr[i][j] = toupper(reKey[n]);
-                if(bgArr[i][j] == 'W' ) {
-                    bgArr[i][j] = 'V';
-                    checkW = true;
-                }
-                n++;
-            }
-            if(!cont){
-                if (helpArr[y][x] == 'V' && checkW == true){
-                    ++x;
-                    if(x == 5){
-                        x = 0;
-                        ++y;
-                    }
-                }
-                while(helpArr[y][x] == '-'){
-                    x++;
-                    if(x == 5){
-                        x = 0;
-                        y++;
-                    }
-                }
-                if(helpArr[y][x] != '-')
-                    bgArr[i][j] = helpArr[y][x];
-                x++;
-                if(x == 5){
-                    x = 0;
-                    y++;
+    };
+
+    struct Playfair playfair;
+
+    int isDuplicate(char ch, int index1, int index2, struct Playfair *playfair ) {
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                if (playfair->table[i][j] == toupper(ch) && i<=index1) {
+                    if ((j<index2) || (j >= index2 && i < index1)) return 1;
                 }
             }
-            if (n == strlen(reKey)) cont = false;
-            //printf("%c", bgArr[i][j]);
+        } return 0;
+    }
+
+
+    // ***** set len
+    playfair.key_len = strlen(key) - countSymbols(key,' ');
+    playfair.text_len = strlen(text);
+
+    playfair.key = (char *)calloc(playfair.key_len+1, sizeof(char));
+    if (playfair.key == NULL) {
+        perror("memory failed");
+        exit(1);
+    }
+
+    for (int i=0, j=0; i < strlen(key); ++i) {
+        if (key[i] != ' ') {
+            toupper(key[i]) == 'W' ? (playfair.key[j] = 'V') : (playfair.key[j] = toupper(key[i]));
+            ++j;
         }
-        //printf("\n");
-    } //printf("----------\n");
-    
-    free(reKey);
-    reKey = NULL;
-    
-    char* reFair = (char*)calloc(2*strlen(text)+1, sizeof(char));
-    if (reFair == NULL) {
-        free(reFair);
-        reFair = NULL;
-        return NULL;
-    } reFair[strlen(text)] = '\0';
-    for (int i = 0; i < strlen(text); ++i) {
-        reFair[i] = text[i];
-    }
-    char* desct = (char*)calloc(10*strlen(text)+1, sizeof(char));
-    if (desct == NULL) {
-        free(desct);
-        free(reFair);
-        return NULL;
-    }
-    desct[strlen(text)] = '\0';
+    } playfair.key[playfair.key_len] = '\0';
 
-    
-    //printf("{%s} - до\n", reFair);
-    removeSpaces(reFair);
-    //printf("{%s} - после\n", reFair);
-    //printf("----------\n");
 
-    
-    
-    
-    for (int i = 0; i < strlen(reFair); i += 2)
+    // ***** init table
+    for (int i = 0; i < 5; ++i) for (int j = 0; j < 5; (playfair.table[i][j] = '0'), ++j); //playfair.TABLE[i][j] = ALPHA[k];
+
+    for (int i = 0, k = 0, m = 0; i < 5; ++i)
     {
-        for (int x = 0; x < SIZE; ++x) {
-            for (int y = 0; y < SIZE; ++y) {
-                if (bgArr[x][y] == reFair[i]) {
-                    
-                    // Проверяем второе значение
-                    for (int x1 = 0; x1 < SIZE; ++x1) {
-                        for (int y1 = 0; y1 < SIZE; ++y1)
-                        {
-                            if (bgArr[x1][y1] == reFair[i+1]) {
-                                if (x != x1 && y != y1) {
-                                    desct[i] = bgArr[x][y1];
-                                    desct[i+1] = bgArr[x1][y];
-                                }
-                                else if (y == y1) {
-                                    short q = x-1, w = x1-1;
-                                    if(x == 0) q = 4;
-                                    if(x1 == 0) w = 4;
-                                    desct[i] = bgArr[q][y];
-                                    desct[i+1] = bgArr[w][y1];
-                                }
-                                else if (x == x1) {
-                                    short s = y-1, d = y1-1;
-                                    if(y == 0) s = 4;
-                                    if(y1 == 0) d = 4;
-                                    desct[i] = bgArr[x][s];
-                                    desct[i+1] = bgArr[x1][d];
-                                }
-                            }
-                        }
-                    }
-                }
+        for (int j = 0; j < 5; ++j, ++k)
+        {
+            if (k < playfair.key_len) {
+                while (isDuplicate(playfair.key[k], i, j, &playfair)) ++k;
+
+                if (k >= playfair.key_len) {
+                    if (j==0) {--i; j=4;}
+                    else --j;
+                    continue;
+                } playfair.table[i][j] = playfair.key[k];
+            } else {
+                while (isDuplicate(ALPHA[m], i, j, &playfair)) ++m;
+                playfair.table[i][j] = ALPHA[m];
+                ++m;
             }
         }
     }
-    
-    free(reFair);
-    reFair = NULL;
-    return desct;
-}
 
+
+    // ***** дешифровка
+    playfair.decryptedText = (char *)calloc(playfair.text_len+1, sizeof(char));
+
+    for (int len = 0, ix = 0; len < playfair.text_len; len+=3, ix+=2)
+    {
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                if (playfair.table[i][j] == text[len]) {
+                    position.x1 = i;
+                    position.y1 = j;
+                } if (playfair.table[i][j] == text[len+1]) {
+                    position.x2 = i;
+                    position.y2 = j;
+                }
+            }
+        }
+
+
+        if ((position.y1 < position.y2 && position.x1!=position.x2) || (position.y1 > position.y2 && position.x1!=position.x2)) {
+            playfair.res.y1 = position.y2;
+            playfair.res.x1 = position.x1;
+
+            playfair.res.y2 = position.y1;
+            playfair.res.x2 = position.x2;
+        }
+        else if (position.y1 == position.y2) {
+            if (position.x1-1>=0) playfair.res.x1 = position.x1-1;
+            else playfair.res.x1 = 4;
+            if (position.x2-1>=0) playfair.res.x2 = position.x2-1;
+            else playfair.res.x2 = 4;
+
+            playfair.res.y1 = position.y1;
+            playfair.res.y2 = position.y2;
+        } // MQ XQ IV MZ BA ME
+        else if (position.x1 == position.x2) {
+            if (position.y1-1>=0) playfair.res.y1 = position.y1-1;
+            else playfair.res.y1 = 4;
+            if (position.y2-1>=0) playfair.res.y2 = position.y2-1;
+            else playfair.res.y2 = 4;
+
+            playfair.res.x1 = position.x1;
+            playfair.res.x2 = position.x2;
+        }
+
+        playfair.decryptedText[ix] = playfair.table[playfair.res.x1][playfair.res.y1];
+        playfair.decryptedText[ix+1] = playfair.table[playfair.res.x2][playfair.res.y2];
+
+        if (ix+2 == playfair.text_len) playfair.decryptedText[ix+2] = '\0';
+    }
+
+    // ***** free memory
+    if (playfair.key!=NULL)free(playfair.key);
+    playfair.key = NULL;
+
+    return playfair.decryptedText;
+}
